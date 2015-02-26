@@ -22,7 +22,7 @@ module.exports = function (grunt) {
             "options": {
                 "configFile": "eslintrc.json"
             },
-            "target": ["src/*.js", "spec/*.js"]
+            "target": ["src/*.js", "tests/*.js"]
         },
         "githooks": {
             "all": {

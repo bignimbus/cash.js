@@ -1,0 +1,39 @@
+{
+  "name": "cash.js",
+  "version": "0.0.0",
+  "description": "detects currencies displayed on a webpage and injects a UI that calculates exchange rates. Configurable, lightweight and modern-looking.",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jasmine": "^0.8.2",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-eslint": "^7.0.1",
+    "grunt-githooks": "^0.3.1",
+    "grunt-template-jasmine-requirejs": "^0.2.0"
+  },
+  "dependencies": {
+    "jquery": "1.11.2"
+  },
+  "scripts": {
+    "test": "grunt precommit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bignimbus/cash.js.git"
+  },
+  "keywords": [
+    "currency",
+    "dom",
+    "exchange",
+    "rate"
+  ],
+  "author": "Jeff Auriemma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bignimbus/cash.js/issues"
+  },
+  "homepage": "https://github.com/bignimbus/cash.js"
+}

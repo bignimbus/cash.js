@@ -1,0 +1,47 @@
+{
+    "env": {
+        "browser": true,
+        "amd": true
+    },
+    "globals": {
+        "$": false,
+        "jQuery": false,
+        "amd": false,
+        "define": false,
+        "require": false,
+        "jasmine": false,
+        "describe": false,
+        "it": false,
+        "expect": false,
+        "beforeEach": false,
+        "afterEach": false,
+        "spyOn": false,
+        "waitsFor": false,
+        "runs": false,
+        "module": false
+    },
+    "rules": {
+        "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+        "complexity": [1, 10],
+        "consistent-this": [1, "self"],
+        "eqeqeq": 2,
+        "max-nested-callbacks": [1, 4],
+        "no-console": 2,
+        "no-eq-null": 2,
+        "no-extra-parens": 1,
+        "no-nested-ternary": 2,
+        "no-self-compare": 2,
+        "no-spaced-func": 2,
+        "no-undefined": 2,
+        "no-underscore-dangle": 0,
+        "no-unused-vars": [1, {"vars": "local", "args": "none"}],
+        "one-var": 1,
+        "quotes": 0,
+        "quote-props": 2,
+        "radix": 2,
+        "space-after-keywords": [2, "always"],
+        "space-in-brackets": [1, "never"],
+        "space-in-parens": [1, "never"],
+        "space-unary-ops": 2
+    }
+}

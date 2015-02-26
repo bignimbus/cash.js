@@ -26,7 +26,7 @@ module.exports = function (grunt) {
         },
         "githooks": {
             "all": {
-                "pre-commit": "eslint"
+                "pre-commit": "precommit"
             }
         }
     });

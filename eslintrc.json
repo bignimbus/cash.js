@@ -18,7 +18,9 @@
         "spyOn": false,
         "waitsFor": false,
         "runs": false,
-        "module": false
+        "module": false,
+        "export": false,
+        "class": false,
     },
     "rules": {
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],

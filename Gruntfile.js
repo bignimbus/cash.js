@@ -1,4 +1,3 @@
-/*eslint-disable  */
 module.exports = function (grunt) {
     grunt.initConfig({
         "jasmine": {
@@ -6,7 +5,7 @@ module.exports = function (grunt) {
                 "src": 'src/*.js',
                 "options": {
                     "specs": 'tests/*.spec.js',
-                    "version": "2.1.4",
+                    "version": '2.1.4',
                     "template": require('grunt-template-jasmine-requirejs')
                 }
             }

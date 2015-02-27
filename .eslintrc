@@ -2,8 +2,7 @@
     "env": {
         "browser": true,
         "amd": true,
-        "jasmine": true,
-        "node": true
+        "jasmine": true
     },
     "ecmaFeatures": {
         "arrowFunctions": true,
@@ -17,7 +16,8 @@
         "require": false,
         "jasmine": false,
         "runs": false,
-        "module": false
+        "module": false,
+        "class": false
     },
     "rules": {
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],

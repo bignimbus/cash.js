@@ -2,7 +2,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         "jasmine": {
             "pivotal": {
-                "src": 'src/*.js',
+                "src": 'build/cash.js',
                 "options": {
                     "specs": 'tests/*.spec.js',
                     "version": '2.1.4',
@@ -69,6 +69,13 @@ module.exports = function (grunt) {
                     "src": ['build/cash.js', 'dist/cash.min.js']
                 }
             }
+        },
+        "uglify": {
+            "js": {
+                "files": {
+                    'dist/cash.min.js': ['build/cash.js']
+                }
+            }
         }
     });
     grunt.loadNpmTasks('grunt-contrib-jasmine');
@@ -80,5 +87,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-git');
     grunt.registerTask('build', ['babel', 'requirejs:js', 'uglify']);
-    grunt.registerTask('precommit', ['eslint', 'jasmine', 'babel', 'requirejs:js', 'uglify', 'gitadd']);
+    grunt.registerTask('precommit', [/*'eslint', */ 'jasmine', 'babel', 'requirejs:js', 'uglify', 'gitadd']);
 };

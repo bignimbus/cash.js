@@ -2,19 +2,13 @@ module.exports = function (grunt) {
     grunt.initConfig({
         "jasmine": {
             "pivotal": {
-                "src": 'build/cash.js',
+                "src": 'dist/cash.js',
                 "options": {
                     "specs": 'tests/*.spec.js',
                     "version": '2.1.4',
+                    "vendor": 'bower_components/jquery/dist/jquery.js',
                     "template": require('grunt-template-jasmine-requirejs')
                 }
-            }
-        },
-        "uglify": {
-            "js": {
-                // "files": {
-                //     'target': ['source']
-                // }
             }
         },
         "eslint": {
@@ -36,7 +30,11 @@ module.exports = function (grunt) {
             },
             "dist": {
                 "files": {
-                    "build/cash-modules.js": "src/main.js"
+                    "build/main.js": "src/main.js",
+                    "build/money-finder.js": "src/money-finder.js",
+                    "build/cash-strap.js": "src/cash-strap.js",
+                    "build/defaults.js": "src/defaults.js",
+                    "build/regex-builder.js": "src/regex-builder.js"
                 }
             }
         },
@@ -47,7 +45,7 @@ module.exports = function (grunt) {
                     'baseUrl': 'build',
                     'optimize': 'none',
                     'include': ['cash-amd.js'],
-                    'out': 'build/cash.js',
+                    'out': 'dist/cash.js',
                     'onModuleBundleComplete': function (data) {
                         var fs = require('fs'),
                         amdclean = require('amdclean'),
@@ -73,7 +71,7 @@ module.exports = function (grunt) {
         "uglify": {
             "js": {
                 "files": {
-                    'dist/cash.min.js': ['build/cash.js']
+                    'dist/cash.min.js': ['dist/cash.js']
                 }
             }
         }
@@ -87,5 +85,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-git');
     grunt.registerTask('build', ['babel', 'requirejs:js', 'uglify']);
+    grunt.registerTask('test', ['build', 'jasmine']);
     grunt.registerTask('precommit', [/*'eslint', */ 'jasmine', 'babel', 'requirejs:js', 'uglify', 'gitadd']);
 };

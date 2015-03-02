@@ -31,7 +31,6 @@ module.exports = function (grunt) {
             "dist": {
                 "files": {
                     "es5-amd/cash-dom.js": "src/cash-dom.js",
-                    "es5-amd/money-finder.js": "src/money-finder.js",
                     "es5-amd/cash-main.js": "src/cash-main.js",
                     "es5-amd/defaults.js": "src/defaults.js"
                 }

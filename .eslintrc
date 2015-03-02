@@ -1,4 +1,5 @@
 {
+    "parser": "babel-eslint",
     "env": {
         "browser": true,
         "amd": true,
@@ -41,6 +42,7 @@
         "space-after-keywords": [2, "always"],
         "space-in-brackets": [1, "never"],
         "space-in-parens": [1, "never"],
-        "space-unary-ops": 2
+        "space-unary-ops": 2,
+        "strict": 0
     }
 }

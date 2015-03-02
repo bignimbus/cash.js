@@ -1,5 +1,5 @@
 ;(function() {
-var money_finder, defaults, cash_strap, regex_builder, main, cash_amdjs;
+var money_finder, defaults, cash_main, cash_dom, cash_domamdjs;
 money_finder = function (exports) {
   
   var _classCallCheck = function (instance, Constructor) {
@@ -30,13 +30,10 @@ defaults = function (exports) {
         thousand: 1000,
         grand: 1000,
         lakh: 100000,
-        mil: 1000000,
-        million: 1000000,
+        'mil(?:lion)': 1000000,
         crore: 10000000,
-        bil: 1000000000,
-        billion: 1000000000,
-        tril: 1000000000000,
-        trillion: 1000000000000
+        'bil(?:lion)?': 1000000000,
+        'tril(?:lion)': 1000000000000
       },
       numberWords: {
         a: 1,
@@ -61,10 +58,16 @@ defaults = function (exports) {
   }
   return exports;
 }({});
-cash_strap = function (exports, _defaults) {
+cash_main = function (exports, _defaults) {
   
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
+  };
+  var _prototypeProperties = function (child, staticProps, instanceProps) {
+    if (staticProps)
+      Object.defineProperties(child, staticProps);
+    if (instanceProps)
+      Object.defineProperties(child.prototype, instanceProps);
   };
   var _classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -72,24 +75,58 @@ cash_strap = function (exports, _defaults) {
     }
   };
   var setOptions = _interopRequire(_defaults);
-  var CashStrap = function CashStrap(options) {
-    _classCallCheck(this, CashStrap);
-    options = options || {};
-    this.settings = options.overrides && !options.overrides.overwriteAll ? setOptions(options.overrides || {}) : options.overrides || setOptions({});
-  };
+  var CashStrap = function () {
+    function CashStrap(options) {
+      _classCallCheck(this, CashStrap);
+      options = options || {};
+      this.settings = options.overrides && !options.overrides.overwriteAll ? setOptions(options.overrides || {}) : options.overrides || setOptions({});
+    }
+    _prototypeProperties(CashStrap, {
+      stringFilter: {
+        value: function stringFilter(figure) {
+          figure = figure.trim();
+          return figure.length > 1 && /\D/.test(figure);
+          // when filter support is implemented...
+          return this.settings.filters.every(function (filter) {
+            return filter(figure);
+          });
+        },
+        writable: true,
+        configurable: true
+      },
+      buildRegex: {
+        value: function buildRegex(settings) {
+          // TODO: use getters and setters
+          var magnitudes = Object.keys(settings.magnitudes).join('|'), currencyStr = Object.keys(settings.currencies).join('|'), numberStr = Object.keys(settings.numberWords).join('|'),
+            // work in progress; needs TLC:
+            regexStr = '(?:(?:(' + currencyStr + ')\\s?)+[\\.\\b\\s]?)?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*(?:(?:' + currencyStr + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
+          return regex;
+        },
+        writable: true,
+        configurable: true
+      }
+    }, {
+      addTags: {
+        value: function addTags(html) {
+          var _this = this;
+          var moneyStrings = this.constructor.buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
+              if (_this.constructor.stringFilter(figure)) {
+                figure = ' ' + ('<span class="cash-node">' + figure.trim() + '</span>').trim() + ' ';
+              }
+              return figure;
+            });
+          return wrapped;
+        },
+        writable: true,
+        configurable: true
+      }
+    });
+    return CashStrap;
+  }();
   exports = CashStrap;
   return exports;
 }({}, defaults);
-regex_builder = function (exports) {
-  
-  exports = buildRegex;
-  function buildRegex(settings) {
-    var magnitudes = Object.keys(settings.magnitudes).join('|'), currencyStr = Object.keys(settings.currencies).join('|'), numberStr = Object.keys(settings.numberWords).join('|'), regexStr = '((' + currencyStr + '|\\.|\\b){1,3})\\s?' + '((\\d|' + numberStr + ')+[\\s\\.,]*)+' + '(' + magnitudes + ')*(' + currencyStr + '|\\s|\\b){1,3}', regex = new RegExp(regexStr, 'ig');
-    return regex;
-  }
-  return exports;
-}({});
-main = function (exports, _moneyFinder, _cashStrap, _regexBuilder) {
+cash_dom = function (exports, _moneyFinder, _cashMain) {
   
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
@@ -140,22 +177,20 @@ main = function (exports, _moneyFinder, _cashStrap, _regexBuilder) {
     }
   };
   var MoneyFinder = _interopRequire(_moneyFinder);
-  var CashStrap = _interopRequire(_cashStrap);
-  var buildRegex = _interopRequire(_regexBuilder);
-  var Cash = function (CashStrap) {
-    function Cash(options) {
-      _classCallCheck(this, Cash);
-      _get(Object.getPrototypeOf(Cash.prototype), 'constructor', this).call(this, options);
+  var Cash = _interopRequire(_cashMain);
+  var CashDom = function (Cash) {
+    function CashDom(options) {
+      _classCallCheck(this, CashDom);
+      _get(Object.getPrototypeOf(CashDom.prototype), 'constructor', this).call(this, options);
     }
-    _inherits(Cash, CashStrap);
-    _prototypeProperties(Cash, null, {
+    _inherits(CashDom, Cash);
+    _prototypeProperties(CashDom, null, {
       grab: {
         value: function grab(nodes) {
           var _this = this;
           nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
           for (var _iterator = nodes[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
             var node = _step.value;
-            console.log(node);
             $(node).each(function (i, el) {
               _this.wrap($(el));
             });
@@ -171,26 +206,16 @@ main = function (exports, _moneyFinder, _cashStrap, _regexBuilder) {
         },
         writable: true,
         configurable: true
-      },
-      addTags: {
-        value: function addTags(html) {
-          var moneyStrings = buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
-              return ' ' + ('<span class="cash-node">' + figure.trim() + '</span>').trim() + ' ';
-            });
-          return wrapped;
-        },
-        writable: true,
-        configurable: true
       }
     });
-    return Cash;
-  }(CashStrap);
-  exports = Cash;
+    return CashDom;
+  }(Cash);
+  exports = CashDom;
   return exports;
-}({}, money_finder, cash_strap, regex_builder);
+}({}, money_finder, cash_main);
 (function (Cash) {
   
   window.Cash = Cash;
-}(main));
-cash_amdjs = undefined;
+}(cash_dom));
+cash_domamdjs = undefined;
 }());

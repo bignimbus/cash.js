@@ -30,11 +30,10 @@ module.exports = function (grunt) {
             },
             "dist": {
                 "files": {
-                    "build/main.js": "src/main.js",
-                    "build/money-finder.js": "src/money-finder.js",
-                    "build/cash-strap.js": "src/cash-strap.js",
-                    "build/defaults.js": "src/defaults.js",
-                    "build/regex-builder.js": "src/regex-builder.js"
+                    "es5-amd/cash-dom.js": "src/cash-dom.js",
+                    "es5-amd/money-finder.js": "src/money-finder.js",
+                    "es5-amd/cash-main.js": "src/cash-main.js",
+                    "es5-amd/defaults.js": "src/defaults.js"
                 }
             }
         },
@@ -42,9 +41,9 @@ module.exports = function (grunt) {
             "js": {
                 "options": {
                     'findNestedDependencies': true,
-                    'baseUrl': 'build',
+                    'baseUrl': 'es5-amd',
                     'optimize': 'none',
-                    'include': ['cash-amd.js'],
+                    'include': ['cash-dom.amd.js'],
                     'out': 'dist/cash.js',
                     'onModuleBundleComplete': function (data) {
                         var fs = require('fs'),
@@ -64,7 +63,7 @@ module.exports = function (grunt) {
                     "force": true
                 },
                 "files": {
-                    "src": ['build/cash.js', 'dist/cash.min.js']
+                    "src": ['es5-amd/', 'dist/']
                 }
             }
         },
@@ -86,5 +85,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-git');
     grunt.registerTask('build', ['babel', 'requirejs:js', 'uglify']);
     grunt.registerTask('test', ['build', 'jasmine']);
-    grunt.registerTask('precommit', [/*'eslint', */ 'jasmine', 'babel', 'requirejs:js', 'uglify', 'gitadd']);
+    grunt.registerTask('precommit', [/*'eslint', */ 'test', 'gitadd']);
 };

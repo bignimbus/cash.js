@@ -1,8 +1,7 @@
 import MoneyFinder from 'money-finder';
-import CashStrap from 'cash-strap';
-import buildRegex from 'regex-builder';
+import Cash from 'cash-main';
 
-export default class Cash extends CashStrap {
+export default class CashDom extends Cash {
     constructor (options) {
         super(options);
     }
@@ -10,7 +9,6 @@ export default class Cash extends CashStrap {
     grab (nodes) {
         nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
         for (let node of nodes) {
-            console.log(node);
             $(node).each((i, el) => {
                 this.wrap($(el));
             });
@@ -20,12 +18,5 @@ export default class Cash extends CashStrap {
     wrap ($el) {
         let html = $el.html();
         $el.html(this.addTags(html));
-    }
-
-    addTags (html) {
-        let moneyStrings = buildRegex(this.settings),
-            wrapped = html.replace(moneyStrings,
-                (figure) => ' ' + ('<span class="cash-node">' + figure.trim() + '</span>').trim() + ' ');
-        return wrapped;
     }
 }

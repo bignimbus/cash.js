@@ -12,13 +12,10 @@ export default function setOptions (overrides) {
             "thousand": 1e3,
             "grand": 1e3,
             "lakh": 1e5,
-            "mil": 1e6,
-            "million": 1e6,
+            "mil(?:lion)": 1e6,
             "crore": 1e7,
-            "bil": 1e9,
-            "billion": 1e9,
-            "tril": 1e12,
-            "trillion": 1e12
+            "bil(?:lion)?": 1e9,
+            "tril(?:lion)": 1e12,
         },
         "numberWords": {
             "a": 1,

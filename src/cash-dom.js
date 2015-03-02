@@ -1,4 +1,3 @@
-import MoneyFinder from 'money-finder';
 import Cash from 'cash-main';
 
 export default class CashDom extends Cash {

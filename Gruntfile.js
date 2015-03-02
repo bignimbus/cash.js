@@ -37,13 +37,31 @@ module.exports = function (grunt) {
             }
         },
         "requirejs": {
-            "js": {
+            "main": {
                 "options": {
                     'findNestedDependencies': true,
                     'baseUrl': 'es5-amd',
                     'optimize': 'none',
                     'include': ['cash-dom.amd.js'],
                     'out': 'dist/cash.js',
+                    'onModuleBundleComplete': function (data) {
+                        var fs = require('fs'),
+                        amdclean = require('amdclean'),
+                        outputFile = data.path;
+
+                        fs.writeFileSync(outputFile, amdclean.clean({
+                            'filePath': outputFile
+                        }));
+                    }
+                }
+            },
+            "lite": {
+                "options": {
+                    'findNestedDependencies': true,
+                    'baseUrl': 'es5-amd',
+                    'optimize': 'none',
+                    'include': ['cash-lite.amd.js'],
+                    'out': 'dist/cash-lite.js',
                     'onModuleBundleComplete': function (data) {
                         var fs = require('fs'),
                         amdclean = require('amdclean'),
@@ -69,6 +87,7 @@ module.exports = function (grunt) {
         "uglify": {
             "js": {
                 "files": {
+                    'dist/cash-lite.min.js': ['dist/cash-lite.js'],
                     'dist/cash.min.js': ['dist/cash.js']
                 }
             }
@@ -82,7 +101,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-git');
-    grunt.registerTask('build', ['babel', 'requirejs:js', 'uglify']);
+    grunt.registerTask('build', ['babel', 'requirejs:main', 'requirejs:lite', 'uglify']);
     grunt.registerTask('test', ['build', 'jasmine']);
     grunt.registerTask('precommit', [/*'eslint', */ 'test', 'gitadd']);
 };

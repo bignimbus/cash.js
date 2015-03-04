@@ -32,7 +32,7 @@ module.exports = function (grunt) {
                 "files": {
                     "es5-amd/cash-dom.js": "src/cash-dom.js",
                     "es5-amd/cash-main.js": "src/cash-main.js",
-                    "es5-amd/defaults.js": "src/defaults.js"
+                    "es5-amd/settings.js": "src/settings.js"
                 }
             }
         },

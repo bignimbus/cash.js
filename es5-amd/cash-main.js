@@ -1,4 +1,4 @@
-define(["exports", "module", "defaults"], function (exports, module, _defaults) {
+define(["exports", "module", "settings"], function (exports, module, _settings) {
     "use strict";
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7,19 +7,19 @@ define(["exports", "module", "defaults"], function (exports, module, _defaults) 
 
     var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-    var setOptions = _interopRequire(_defaults);
+    var Settings = _interopRequire(_settings);
 
-    var CashStrap = (function () {
-        function CashStrap(options) {
-            _classCallCheck(this, CashStrap);
+    var Cash = (function () {
+        function Cash(options) {
+            _classCallCheck(this, Cash);
 
             options = options || {};
-            this.settings = options.overrides && !options.overrides.overwriteAll ? setOptions(options.overrides || {}) : options.overrides || setOptions({});
+            this.settings = new Settings(options.overrides || {});
         }
 
-        _prototypeProperties(CashStrap, {
-            stringFilter: {
-                value: function stringFilter(figure) {
+        _prototypeProperties(Cash, {
+            isValid: {
+                value: function isValid(figure) {
                     figure = figure.trim();
                     return figure.length > 1 && /\D/.test(figure);
                     // when filter support is implemented...
@@ -33,12 +33,13 @@ define(["exports", "module", "defaults"], function (exports, module, _defaults) 
             buildRegex: {
                 value: function buildRegex(settings) {
                     // TODO: use getters and setters
-                    var magnitudes = Object.keys(settings.magnitudes).join("|"),
-                        currencyStr = Object.keys(settings.currencies).join("|"),
-                        numberStr = Object.keys(settings.numberWords).join("|"),
+                    var magnitudes = settings.magnitudeStrings.join("|"),
+                        prefixes = settings.prefixes.join("|"),
+                        suffixes = settings.suffixes.join("|"),
+                        numberStr = settings.numberStrings.join("|"),
 
                     // work in progress; needs TLC:
-                    regexStr = "(?:(?:(" + currencyStr + ")\\s?)+[\\.\\b\\s]?)?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*(?:(?:" + currencyStr + ")\\s?)*",
+                    regexStr = "(?:(?:(" + prefixes + ")\\s?)+[\\.\\b\\s]?)?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*(?:(?:" + suffixes + ")\\s?)*",
                         regex = new RegExp(regexStr, "ig");
                     return regex;
                 },
@@ -52,7 +53,7 @@ define(["exports", "module", "defaults"], function (exports, module, _defaults) 
 
                     var moneyStrings = this.constructor.buildRegex(this.settings),
                         wrapped = html.replace(moneyStrings, function (figure) {
-                        if (_this.constructor.stringFilter(figure)) {
+                        if (_this.constructor.isValid(figure)) {
                             figure = " " + ("<span class=\"cash-node\">" + figure.trim() + "</span>").trim() + " ";
                         }
                         return figure;
@@ -64,8 +65,8 @@ define(["exports", "module", "defaults"], function (exports, module, _defaults) 
             }
         });
 
-        return CashStrap;
+        return Cash;
     })();
 
-    module.exports = CashStrap;
+    module.exports = Cash;
 });

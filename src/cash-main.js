@@ -1,17 +1,15 @@
-import setOptions from 'defaults';
+import Settings from 'settings';
 
-export default class CashStrap {
+export default class Cash {
     constructor (options) {
         options = options || {};
-        this.settings = options.overrides && !options.overrides.overwriteAll ?
-            setOptions(options.overrides || {}) : options.overrides || setOptions({});
-
+        this.settings = new Settings(options.overrides || {});
     }
 
     addTags (html) {
         let moneyStrings = this.constructor.buildRegex(this.settings),
             wrapped = html.replace(moneyStrings, (figure) => {
-                if (this.constructor.stringFilter(figure)) {
+                if (this.constructor.isValid(figure)) {
                     figure = ' ' + ('<span class="cash-node">' + figure.trim() + '</span>').trim() + ' ';
                 }
                 return figure;
@@ -19,7 +17,7 @@ export default class CashStrap {
         return wrapped;
     }
 
-    static stringFilter (figure) {
+    static isValid (figure) {
         figure = figure.trim();
         return figure.length > 1 && /\D/.test(figure);
         // when filter support is implemented...
@@ -30,14 +28,15 @@ export default class CashStrap {
 
     static buildRegex (settings) {
         // TODO: use getters and setters
-        let magnitudes = Object.keys(settings.magnitudes).join('|'),
-            currencyStr = Object.keys(settings.currencies).join('|'),
-            numberStr = Object.keys(settings.numberWords).join('|'),
+        let magnitudes = settings.magnitudeStrings.join('|'),
+            prefixes = settings.prefixes.join('|'),
+            suffixes = settings.suffixes.join('|'),
+            numberStr = settings.numberStrings.join('|'),
             // work in progress; needs TLC:
-            regexStr = '(?:(?:(' + currencyStr + ')\\s?)+[\\.\\b\\s]?)?'
+            regexStr = '(?:(?:(' + prefixes + ')\\s?)+[\\.\\b\\s]?)?'
                 + '((\\d|' + numberStr + ')+(?:\\.|,)?)+\\s?'
                 + '(?:(?:' + magnitudes + ')\\s?)*(?:(?:'
-                + currencyStr + ')\\s?)*',
+                + suffixes + ')\\s?)*',
             regex = new RegExp(regexStr, 'ig');
         return regex;
     }

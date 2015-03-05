@@ -271,7 +271,6 @@ cash_main = function (exports, _settings) {
       },
       buildRegex: {
         value: function buildRegex(settings) {
-          // TODO: use getters and setters
           var magnitudes = settings.magnitudeStrings.join('|'), prefixes = settings.prefixes.join('|'), suffixes = settings.suffixes.join('|'), numberStr = settings.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+' + '[\\.\\b\\s]?' + ')?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)' + '+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*' + '(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');

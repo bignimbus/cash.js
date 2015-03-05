@@ -68,7 +68,6 @@ export default class Cash {
     }
 
     static buildRegex (settings) {
-        // TODO: use getters and setters
         let magnitudes = settings.magnitudeStrings.join('|'),
             prefixes = settings.prefixes.join('|'),
             suffixes = settings.suffixes.join('|'),

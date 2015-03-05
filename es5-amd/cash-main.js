@@ -47,7 +47,6 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
             },
             buildRegex: {
                 value: function buildRegex(settings) {
-                    // TODO: use getters and setters
                     var magnitudes = settings.magnitudeStrings.join("|"),
                         prefixes = settings.prefixes.join("|"),
                         suffixes = settings.suffixes.join("|"),

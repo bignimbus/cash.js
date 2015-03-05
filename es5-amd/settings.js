@@ -5,6 +5,7 @@ define(["exports", "module"], function (exports, module) {
     function Settings(overrides) {
         var _this = this;
 
+        // we should do this without jQuery
         $.extend(true, this, {
             "default": "USD",
             supportedCurrencies: [],
@@ -54,10 +55,15 @@ define(["exports", "module"], function (exports, module) {
                 thousand: 1000,
                 grand: 1000,
                 lakh: 100000,
-                "mil(?:lion)?": 1000000,
+                million: 1000000,
                 crore: 10000000,
-                "bil(?:lion)?": 1000000000,
-                "tril(?:lion)?": 1000000000000
+                billion: 1000000000,
+                trillion: 1000000000000
+            },
+            magnitudeAbbreviations: {
+                mil: "million",
+                bil: "billion",
+                tril: "trillion"
             },
             numberWords: {
                 a: 1,
@@ -77,7 +83,8 @@ define(["exports", "module"], function (exports, module) {
                 fourteen: 14,
                 fifteen: 15,
                 sixteen: 16
-            }
+            },
+            cache: []
             // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
         }, overrides);
 
@@ -122,12 +129,22 @@ define(["exports", "module"], function (exports, module) {
             },
             magnitudeStrings: {
                 get: function () {
-                    return Object.keys(this.magnitudes);
+                    return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
                 }
             },
             numberStrings: {
                 get: function () {
                     return Object.keys(this.numberWords);
+                }
+            },
+            register: {
+                get: function () {
+                    return this.cache.map(function (hash) {
+                        return hash;
+                    });
+                },
+                set: function (hash) {
+                    this.cache.push(hash);
                 }
             }
         });

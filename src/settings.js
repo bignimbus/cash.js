@@ -1,4 +1,5 @@
 export default function Settings (overrides) {
+    // we should do this without jQuery
     $.extend(true, this, {
         "default": "USD",
         "supportedCurrencies": [],
@@ -48,10 +49,15 @@ export default function Settings (overrides) {
             "thousand": 1e3,
             "grand": 1e3,
             "lakh": 1e5,
-            "mil(?:lion)?": 1e6,
+            "million": 1e6,
             "crore": 1e7,
-            "bil(?:lion)?": 1e9,
-            "tril(?:lion)?": 1e12
+            "billion": 1e9,
+            "trillion": 1e12
+        },
+        "magnitudeAbbreviations": {
+            "mil": "million",
+            "bil": "billion",
+            "tril": "trillion"
         },
         "numberWords": {
             "a": 1,
@@ -71,7 +77,8 @@ export default function Settings (overrides) {
             "fourteen": 14,
             "fifteen": 15,
             "sixteen": 16
-        }
+        },
+        "cache": []
         // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
     }, overrides);
 
@@ -116,12 +123,22 @@ export default function Settings (overrides) {
         },
         "magnitudeStrings": {
             "get": function () {
-                return Object.keys(this.magnitudes);
+                return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
             }
         },
         "numberStrings": {
             "get": function () {
                 return Object.keys(this.numberWords);
+            }
+        },
+        "register": {
+            "get": function () {
+                return this.cache.map(function (hash) {
+                    return hash;
+                });
+            },
+            "set": function (hash) {
+                this.cache.push(hash);
             }
         }
     });

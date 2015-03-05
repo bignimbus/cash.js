@@ -20,12 +20,11 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
         _prototypeProperties(Cash, {
             isValid: {
                 value: function isValid(figure) {
-                    figure = figure.trim();
                     return figure.length > 1 && /\D/.test(figure);
                     // when filter support is implemented...
-                    return this.settings.filters.every(function (filter) {
-                        return filter(figure);
-                    });
+                    // return this.settings.filters.every((filter) => {
+                    //     return filter(figure);
+                    // });
                 },
                 writable: true,
                 configurable: true
@@ -39,7 +38,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         numberStr = settings.numberStrings.join("|"),
 
                     // work in progress; needs TLC:
-                    regexStr = "(?:(?:(" + prefixes + ")\\s?)+[\\.\\b\\s]?)?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*(?:(?:" + suffixes + ")\\s?)*",
+                    regexStr = "(?:(?:(" + prefixes + ")\\s?)+" + "[\\.\\b\\s]?" + ")?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)" + "+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*" + "(?:(?:" + suffixes + ")\\s?)*",
                         regex = new RegExp(regexStr, "ig");
                     return regex;
                 },
@@ -53,12 +52,61 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
 
                     var moneyStrings = this.constructor.buildRegex(this.settings),
                         wrapped = html.replace(moneyStrings, function (figure) {
+                        figure = figure.trim();
                         if (_this.constructor.isValid(figure)) {
-                            figure = " " + ("<span class=\"cash-node\">" + figure.trim() + "</span>").trim() + " ";
+                            var guid = _this.register(figure);
+                            figure = " " + ("<span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span>").trim() + " ";
                         }
                         return figure;
                     });
                     return wrapped;
+                },
+                writable: true,
+                configurable: true
+            },
+            register: {
+                value: function register(figure) {
+                    var _this = this;
+
+                    var parseNums = function (num) {
+                        if (!isNaN(+num)) {
+                            return +num;
+                        }
+                        return _this.settings.numberWords[num] || -1;
+                    },
+
+                    // returns a string of 8 consecutive alphanumerics
+                    guid = (Math.random() + 1).toString(36).substring(7),
+                        nums = new RegExp("(?:\\d|" + this.settings.numberStrings.join("|") + "|\\.|,)+", "gi"),
+                        multipliers = new RegExp("(?:" + this.settings.magnitudeStrings.join("|") + ")+", "gi");
+                    this.cache(guid, {
+                        str: figure,
+                        coefficient: parseNums(figure.match(nums)[0].replace(",", "").trim()),
+                        magnitude: (figure.match(multipliers) || []).map(function (mul) {
+                            mul = mul.trim();
+                            if (_this.settings.magnitudeAbbreviations[mul]) {
+                                mul = _this.settings.magnitudeAbbreviations[mul];
+                            }
+                            return _this.settings.magnitudes[mul] || 1;
+                        })
+                    });
+                    return guid;
+                },
+                writable: true,
+                configurable: true
+            },
+            cache: {
+                value: function cache(guid, hash) {
+                    var obj = {};
+                    hash.exactValue = (function () {
+                        var val = hash.coefficient;
+                        hash.magnitude.forEach(function (factor) {
+                            val *= factor;
+                        });
+                        return val;
+                    })();
+                    obj[guid] = hash;
+                    this.settings.register = obj;
                 },
                 writable: true,
                 configurable: true

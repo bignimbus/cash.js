@@ -15,7 +15,9 @@ export default class CashDom extends Cash {
     }
 
     wrap ($el) {
-        let html = $el.html();
-        $el.html(this.addTags(html));
+        let html = $el.html() || null;
+        if (html) {
+            $el.html(super.addTags(html));
+        }
     }
 }

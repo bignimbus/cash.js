@@ -41,8 +41,10 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
             },
             wrap: {
                 value: function wrap($el) {
-                    var html = $el.html();
-                    $el.html(this.addTags(html));
+                    var html = $el.html() || null;
+                    if (html) {
+                        $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "addTags", this).call(this, html));
+                    }
                 },
                 writable: true,
                 configurable: true

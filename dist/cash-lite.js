@@ -5,6 +5,7 @@ settings = function (exports) {
   exports = Settings;
   function Settings(overrides) {
     var _this = this;
+    // we should do this without jQuery
     $.extend(true, this, {
       'default': 'USD',
       supportedCurrencies: [],
@@ -123,10 +124,15 @@ settings = function (exports) {
         thousand: 1000,
         grand: 1000,
         lakh: 100000,
-        'mil(?:lion)?': 1000000,
+        million: 1000000,
         crore: 10000000,
-        'bil(?:lion)?': 1000000000,
-        'tril(?:lion)?': 1000000000000
+        billion: 1000000000,
+        trillion: 1000000000000
+      },
+      magnitudeAbbreviations: {
+        mil: 'million',
+        bil: 'billion',
+        tril: 'trillion'
       },
       numberWords: {
         a: 1,
@@ -146,7 +152,8 @@ settings = function (exports) {
         fourteen: 14,
         fifteen: 15,
         sixteen: 16
-      }  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
+      },
+      cache: []  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
     }, overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
@@ -189,12 +196,22 @@ settings = function (exports) {
       },
       magnitudeStrings: {
         get: function () {
-          return Object.keys(this.magnitudes);
+          return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
         }
       },
       numberStrings: {
         get: function () {
           return Object.keys(this.numberWords);
+        }
+      },
+      register: {
+        get: function () {
+          return this.cache.map(function (hash) {
+            return hash;
+          });
+        },
+        set: function (hash) {
+          this.cache.push(hash);
         }
       }
     });
@@ -228,12 +245,10 @@ cash_main = function (exports, _settings) {
     _prototypeProperties(Cash, {
       isValid: {
         value: function isValid(figure) {
-          figure = figure.trim();
-          return figure.length > 1 && /\D/.test(figure);
-          // when filter support is implemented...
-          return this.settings.filters.every(function (filter) {
-            return filter(figure);
-          });
+          return figure.length > 1 && /\D/.test(figure);  // when filter support is implemented...
+                                                          // return this.settings.filters.every((filter) => {
+                                                          //     return filter(figure);
+                                                          // });
         },
         writable: true,
         configurable: true
@@ -243,7 +258,7 @@ cash_main = function (exports, _settings) {
           // TODO: use getters and setters
           var magnitudes = settings.magnitudeStrings.join('|'), prefixes = settings.prefixes.join('|'), suffixes = settings.suffixes.join('|'), numberStr = settings.numberStrings.join('|'),
             // work in progress; needs TLC:
-            regexStr = '(?:(?:(' + prefixes + ')\\s?)+[\\.\\b\\s]?)?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
+            regexStr = '(?:(?:(' + prefixes + ')\\s?)+' + '[\\.\\b\\s]?' + ')?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)' + '+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*' + '(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
           return regex;
         },
         writable: true,
@@ -254,12 +269,57 @@ cash_main = function (exports, _settings) {
         value: function addTags(html) {
           var _this = this;
           var moneyStrings = this.constructor.buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
+              figure = figure.trim();
               if (_this.constructor.isValid(figure)) {
-                figure = ' ' + ('<span class="cash-node">' + figure.trim() + '</span>').trim() + ' ';
+                var guid = _this.register(figure);
+                figure = ' ' + ('<span id="' + guid + '" class="cash-node">' + figure + '</span>').trim() + ' ';
               }
               return figure;
             });
           return wrapped;
+        },
+        writable: true,
+        configurable: true
+      },
+      register: {
+        value: function register(figure) {
+          var _this = this;
+          var parseNums = function (num) {
+              if (!isNaN(+num)) {
+                return +num;
+              }
+              return _this.settings.numberWords[num] || -1;
+            },
+            // returns a string of 8 consecutive alphanumerics
+            guid = (Math.random() + 1).toString(36).substring(7), nums = new RegExp('(?:\\d|' + this.settings.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + this.settings.magnitudeStrings.join('|') + ')+', 'gi');
+          this.cache(guid, {
+            str: figure,
+            coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
+            magnitude: (figure.match(multipliers) || []).map(function (mul) {
+              mul = mul.trim();
+              if (_this.settings.magnitudeAbbreviations[mul]) {
+                mul = _this.settings.magnitudeAbbreviations[mul];
+              }
+              return _this.settings.magnitudes[mul] || 1;
+            })
+          });
+          return guid;
+        },
+        writable: true,
+        configurable: true
+      },
+      cache: {
+        value: function cache(guid, hash) {
+          var obj = {};
+          hash.exactValue = function () {
+            var val = hash.coefficient;
+            hash.magnitude.forEach(function (factor) {
+              val *= factor;
+            });
+            return val;
+          }();
+          obj[guid] = hash;
+          this.settings.register = obj;
         },
         writable: true,
         configurable: true

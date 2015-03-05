@@ -243,6 +243,37 @@ cash_main = function (exports, _settings) {
       this.settings = new Settings(options.overrides || {});
     }
     _prototypeProperties(Cash, {
+      generateGuid: {
+        value: function generateGuid() {
+          // returns a string of 8 consecutive alphanumerics
+          return (Math.random() + 1).toString(36).substring(7);
+        },
+        writable: true,
+        configurable: true
+      },
+      formHash: {
+        value: function formHash(figure, settings) {
+          var parseNums = function (num) {
+              if (!isNaN(+num)) {
+                return +num;
+              }
+              return settings.numberWords[num] || -1;
+            }, nums = new RegExp('(?:\\d|' + settings.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + settings.magnitudeStrings.join('|') + ')+', 'gi');
+          return {
+            str: figure,
+            coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
+            magnitude: (figure.match(multipliers) || []).map(function (mul) {
+              mul = mul.trim();
+              if (settings.magnitudeAbbreviations[mul]) {
+                mul = settings.magnitudeAbbreviations[mul];
+              }
+              return settings.magnitudes[mul] || 1;
+            })
+          };
+        },
+        writable: true,
+        configurable: true
+      },
       cache: {
         value: function cache(guid, hash) {
           var obj = {};
@@ -286,39 +317,13 @@ cash_main = function (exports, _settings) {
           var moneyStrings = this.constructor.buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
               figure = figure.trim();
               if (_this.constructor.isValid(figure)) {
-                var guid = _this.register(figure);
+                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.settings);
+                _this.settings.register = _this.constructor.cache(guid, hash);
                 figure = ' ' + ('<span id="' + guid + '" class="cash-node">' + figure + '</span>').trim() + ' ';
               }
               return figure;
             });
           return wrapped;
-        },
-        writable: true,
-        configurable: true
-      },
-      register: {
-        value: function register(figure) {
-          var _this = this;
-          var parseNums = function (num) {
-              if (!isNaN(+num)) {
-                return +num;
-              }
-              return _this.settings.numberWords[num] || -1;
-            },
-            // returns a string of 8 consecutive alphanumerics
-            guid = (Math.random() + 1).toString(36).substring(7), nums = new RegExp('(?:\\d|' + this.settings.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + this.settings.magnitudeStrings.join('|') + ')+', 'gi');
-          this.settings.register = this.constructor.cache(guid, {
-            str: figure,
-            coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
-            magnitude: (figure.match(multipliers) || []).map(function (mul) {
-              mul = mul.trim();
-              if (_this.settings.magnitudeAbbreviations[mul]) {
-                mul = _this.settings.magnitudeAbbreviations[mul];
-              }
-              return _this.settings.magnitudes[mul] || 1;
-            })
-          });
-          return guid;
         },
         writable: true,
         configurable: true

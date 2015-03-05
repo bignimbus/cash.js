@@ -11,7 +11,9 @@ export default class Cash {
             wrapped = html.replace(moneyStrings, (figure) => {
                 figure = figure.trim();
                 if (this.constructor.isValid(figure)) {
-                    var guid = this.register(figure);
+                    let guid = this.constructor.generateGuid(),
+                        hash = this.constructor.formHash(figure, this.settings);
+                    this.settings.register = this.constructor.cache(guid, hash);
                     figure = ' ' + ('<span id="' + guid + '" class="cash-node">' + figure + '</span>').trim() + ' ';
                 }
                 return figure;
@@ -19,33 +21,35 @@ export default class Cash {
         return wrapped;
     }
 
-    register (figure) {
+    static generateGuid () {
+        // returns a string of 8 consecutive alphanumerics
+        return (Math.random() + 1).toString(36).substring(7);
+    }
+
+    static formHash (figure, settings) {
         let parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
                 }
-                return this.settings.numberWords[num] || -1;
+                return settings.numberWords[num] || -1;
             },
-        // returns a string of 8 consecutive alphanumerics
-            guid = (Math.random() + 1).toString(36).substring(7),
             nums = new RegExp('(?:\\d|'
-                + this.settings.numberStrings.join('|')
+                + settings.numberStrings.join('|')
                 + '|\\.|,)+', 'gi'),
-            multipliers = new RegExp('(?:' + this.settings.magnitudeStrings.join('|')
+            multipliers = new RegExp('(?:' + settings.magnitudeStrings.join('|')
                 + ')+', 'gi');
 
-        this.settings.register = this.constructor.cache(guid, {
+        return {
             "str": figure,
             "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
             "magnitude": (figure.match(multipliers) || []).map((mul) => {
                 mul = mul.trim();
-                if (this.settings.magnitudeAbbreviations[mul]) {
-                    mul = this.settings.magnitudeAbbreviations[mul];
+                if (settings.magnitudeAbbreviations[mul]) {
+                    mul = settings.magnitudeAbbreviations[mul];
                 }
-                return this.settings.magnitudes[mul] || 1;
+                return settings.magnitudes[mul] || 1;
             })
-        });
-        return guid;
+        };
     }
 
     static cache (guid, hash) {

@@ -33,7 +33,8 @@ export default class Cash {
                 + '|\\.|,)+', 'gi'),
             multipliers = new RegExp('(?:' + this.settings.magnitudeStrings.join('|')
                 + ')+', 'gi');
-        this.cache(guid, {
+
+        this.settings.register = this.constructor.cache(guid, {
             "str": figure,
             "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
             "magnitude": (figure.match(multipliers) || []).map((mul) => {
@@ -47,7 +48,7 @@ export default class Cash {
         return guid;
     }
 
-    cache (guid, hash) {
+    static cache (guid, hash) {
         let obj = {};
         hash.exactValue = () => {
             let val = hash.coefficient;
@@ -55,7 +56,7 @@ export default class Cash {
             return val;
         }();
         obj[guid] = hash;
-        this.settings.register = obj;
+        return obj;
     }
 
     static isValid (figure) {

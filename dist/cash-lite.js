@@ -243,6 +243,22 @@ cash_main = function (exports, _settings) {
       this.settings = new Settings(options.overrides || {});
     }
     _prototypeProperties(Cash, {
+      cache: {
+        value: function cache(guid, hash) {
+          var obj = {};
+          hash.exactValue = function () {
+            var val = hash.coefficient;
+            hash.magnitude.forEach(function (factor) {
+              val *= factor;
+            });
+            return val;
+          }();
+          obj[guid] = hash;
+          return obj;
+        },
+        writable: true,
+        configurable: true
+      },
       isValid: {
         value: function isValid(figure) {
           return figure.length > 1 && /\D/.test(figure);  // when filter support is implemented...
@@ -292,7 +308,7 @@ cash_main = function (exports, _settings) {
             },
             // returns a string of 8 consecutive alphanumerics
             guid = (Math.random() + 1).toString(36).substring(7), nums = new RegExp('(?:\\d|' + this.settings.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + this.settings.magnitudeStrings.join('|') + ')+', 'gi');
-          this.cache(guid, {
+          this.settings.register = this.constructor.cache(guid, {
             str: figure,
             coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
             magnitude: (figure.match(multipliers) || []).map(function (mul) {
@@ -304,22 +320,6 @@ cash_main = function (exports, _settings) {
             })
           });
           return guid;
-        },
-        writable: true,
-        configurable: true
-      },
-      cache: {
-        value: function cache(guid, hash) {
-          var obj = {};
-          hash.exactValue = function () {
-            var val = hash.coefficient;
-            hash.magnitude.forEach(function (factor) {
-              val *= factor;
-            });
-            return val;
-          }();
-          obj[guid] = hash;
-          this.settings.register = obj;
         },
         writable: true,
         configurable: true

@@ -311,8 +311,8 @@ cash_main = function (exports, _settings) {
         configurable: true
       }
     }, {
-      addTags: {
-        value: function addTags(html) {
+      tag: {
+        value: function tag(html) {
           var _this = this;
           var moneyStrings = this.constructor.buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
               figure = figure.trim();
@@ -413,7 +413,7 @@ cash_dom = function (exports, _cashMain) {
           }
           var html = $el.html() || null;
           if (html) {
-            $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'addTags', this).call(this, html));
+            $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'tag', this).call(this, html));
           }
         },
         writable: true,

@@ -6,7 +6,7 @@ export default class Cash {
         this.settings = new Settings(options.overrides || {});
     }
 
-    addTags (html) {
+    tag (html) {
         let moneyStrings = this.constructor.buildRegex(this.settings),
             wrapped = html.replace(moneyStrings, (figure) => {
                 figure = figure.trim();

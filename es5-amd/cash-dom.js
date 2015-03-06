@@ -46,7 +46,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                     }
                     var html = $el.html() || null;
                     if (html) {
-                        $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "addTags", this).call(this, html));
+                        $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", this).call(this, html));
                     }
                 },
                 writable: true,

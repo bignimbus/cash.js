@@ -20,7 +20,7 @@ export default class CashDom extends Cash {
         }
         let html = $el.html() || null;
         if (html) {
-            $el.html(super.addTags(html));
+            $el.html(super.tag(html));
         }
     }
 

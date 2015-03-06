@@ -37,7 +37,7 @@
                 decimals = ['.50'];
             expect(
                 cashCount(
-                    cash.addTags(
+                    cash.tag(
                         filler.concat(dollarSign, nums, decimals, usd, filler).join('')
                     )
                 )
@@ -45,7 +45,7 @@
 
             expect(
                 cashCount(
-                    cash.addTags(
+                    cash.tag(
                         filler.concat(filler, nums, filler).join('')
                     )
                 )
@@ -53,7 +53,7 @@
 
             expect(
                 cashCount(
-                    cash.addTags(
+                    cash.tag(
                         filler.concat(decimals, dollarSign, ['or 50'], ['cents']).join('')
                     )
                 )
@@ -61,7 +61,7 @@
 
             expect(
                 cashCount(
-                    cash.addTags(
+                    cash.tag(
                         filler.concat(bucks, nums, filler).join(' ')
                     )
                 )
@@ -69,7 +69,7 @@
 
             expect(
                 cashCount(
-                    cash.addTags(
+                    cash.tag(
                         filler.concat(nums, dollars, filler).join(' ')
                     )
                 )
@@ -90,13 +90,13 @@
                     'Meanwhile, Howard\'s Apple stock went to 150USD.',
                     '</p>'
                 ].join(' '),
-                processed = cash.addTags(usdHTML);
+                processed = cash.tag(usdHTML);
             expect(cashCount(processed)).toBe(7);
         });
 
         it('should parse all cash strings into values and store them in the "cache register"',
         function () {
-            cash.addTags('five dollars');
+            cash.tag('five dollars');
             var obj = cash.settings.register,
                 key = Object.keys(obj[0])[0];
             expect(obj[0][key].coefficient).toBe(5);
@@ -104,7 +104,7 @@
 
         it('should parse all numbers, decimals and commas into values and store them in the "cache register"',
         function () {
-            cash.addTags('$5,100.40');
+            cash.tag('$5,100.40');
             var obj = cash.settings.register,
                 key = Object.keys(obj[0])[0];
             expect(obj[0][key].coefficient).toBe(5100.40);
@@ -112,7 +112,7 @@
 
         it('should parse all magnitude strings into multipliers and store them in the "cache register"',
         function () {
-            cash.addTags('one hundred billion dollars');
+            cash.tag('one hundred billion dollars');
             var obj = cash.settings.register,
                 key = Object.keys(obj[0])[0];
             expect(obj[0][key].magnitude).toEqual([1e2, 1e9]);
@@ -120,7 +120,7 @@
 
         it('should store the exact value of the money string in the "cache register"',
         function () {
-            cash.addTags('if I had a million dollars...');
+            cash.tag('if I had a million dollars...');
             var obj = cash.settings.register,
                 key = Object.keys(obj[0])[0];
             expect(obj[0][key].exactValue).toBe(1000000);

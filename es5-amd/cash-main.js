@@ -95,8 +95,8 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             }
         }, {
-            addTags: {
-                value: function addTags(html) {
+            tag: {
+                value: function tag(html) {
                     var _this = this;
 
                     var moneyStrings = this.constructor.buildRegex(this.settings),

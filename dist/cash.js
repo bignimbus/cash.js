@@ -408,10 +408,22 @@ cash_dom = function (exports, _cashMain) {
       },
       wrap: {
         value: function wrap($el) {
+          if (!$el) {
+            throw new Error('please specify a jQuery object');
+          }
           var html = $el.html() || null;
           if (html) {
             $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'addTags', this).call(this, html));
           }
+        },
+        writable: true,
+        configurable: true
+      },
+      update: {
+        value: function update() {
+          this.settings.register.forEach(function (hash) {
+            console.log(hash);
+          });
         },
         writable: true,
         configurable: true

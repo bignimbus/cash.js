@@ -106,7 +106,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                             var guid = _this.constructor.generateGuid(),
                                 hash = _this.constructor.formHash(figure, _this.settings);
                             _this.settings.register = _this.constructor.cache(guid, hash);
-                            figure = " " + ("<span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span>").trim() + " ";
+                            figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }
                         return figure;
                     });

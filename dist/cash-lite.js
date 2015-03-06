@@ -319,7 +319,7 @@ cash_main = function (exports, _settings) {
               if (_this.constructor.isValid(figure)) {
                 var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.settings);
                 _this.settings.register = _this.constructor.cache(guid, hash);
-                figure = ' ' + ('<span id="' + guid + '" class="cash-node">' + figure + '</span>').trim() + ' ';
+                figure = ' <span id="' + guid + '" class="cash-node">' + figure + '</span> ';
               }
               return figure;
             });

@@ -153,7 +153,7 @@ settings = function (exports) {
         fifteen: 15,
         sixteen: 16
       },
-      cache: []  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
+      metadata: []  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
     }, overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
@@ -204,14 +204,14 @@ settings = function (exports) {
           return Object.keys(this.numberWords);
         }
       },
-      register: {
+      cache: {
         get: function () {
-          return this.cache.map(function (hash) {
+          return this.metadata.map(function (hash) {
             return hash;
           });
         },
         set: function (hash) {
-          this.cache.push(hash);
+          this.metadata.push(hash);
         }
       }
     });
@@ -240,7 +240,7 @@ cash_main = function (exports, _settings) {
     function Cash(options) {
       _classCallCheck(this, Cash);
       options = options || {};
-      this.settings = new Settings(options.overrides || {});
+      this.register = new Settings(options.overrides || {});
     }
     _prototypeProperties(Cash, {
       generateGuid: {
@@ -252,30 +252,30 @@ cash_main = function (exports, _settings) {
         configurable: true
       },
       formHash: {
-        value: function formHash(figure, settings) {
+        value: function formHash(figure, keywords) {
           var parseNums = function (num) {
               if (!isNaN(+num)) {
                 return +num;
               }
-              return settings.numberWords[num] || -1;
-            }, nums = new RegExp('(?:\\d|' + settings.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + settings.magnitudeStrings.join('|') + ')+', 'gi');
+              return keywords.numberWords[num] || -1;
+            }, nums = new RegExp('(?:\\d|' + keywords.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + keywords.magnitudeStrings.join('|') + ')+', 'gi');
           return {
             str: figure,
             coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
             magnitude: (figure.match(multipliers) || []).map(function (mul) {
               mul = mul.trim();
-              if (settings.magnitudeAbbreviations[mul]) {
-                mul = settings.magnitudeAbbreviations[mul];
+              if (keywords.magnitudeAbbreviations[mul]) {
+                mul = keywords.magnitudeAbbreviations[mul];
               }
-              return settings.magnitudes[mul] || 1;
+              return keywords.magnitudes[mul] || 1;
             })
           };
         },
         writable: true,
         configurable: true
       },
-      cache: {
-        value: function cache(guid, hash) {
+      compute: {
+        value: function compute(guid, hash) {
           var obj = {};
           hash.exactValue = function () {
             var val = hash.coefficient;
@@ -293,7 +293,7 @@ cash_main = function (exports, _settings) {
       isValid: {
         value: function isValid(figure) {
           return figure.length > 1 && /\D/.test(figure);  // when filter support is implemented...
-                                                          // return this.settings.filters.every((filter) => {
+                                                          // return this.register.filters.every((filter) => {
                                                           //     return filter(figure);
                                                           // });
         },
@@ -301,8 +301,8 @@ cash_main = function (exports, _settings) {
         configurable: true
       },
       buildRegex: {
-        value: function buildRegex(settings) {
-          var magnitudes = settings.magnitudeStrings.join('|'), prefixes = settings.prefixes.join('|'), suffixes = settings.suffixes.join('|'), numberStr = settings.numberStrings.join('|'),
+        value: function buildRegex(keywords) {
+          var magnitudes = keywords.magnitudeStrings.join('|'), prefixes = keywords.prefixes.join('|'), suffixes = keywords.suffixes.join('|'), numberStr = keywords.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+' + '[\\.\\b\\s]?' + ')?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)' + '+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*' + '(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
           return regex;
@@ -314,11 +314,11 @@ cash_main = function (exports, _settings) {
       tag: {
         value: function tag(html) {
           var _this = this;
-          var moneyStrings = this.constructor.buildRegex(this.settings), wrapped = html.replace(moneyStrings, function (figure) {
+          var moneyStrings = this.constructor.buildRegex(this.register), wrapped = html.replace(moneyStrings, function (figure) {
               figure = figure.trim();
               if (_this.constructor.isValid(figure)) {
-                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.settings);
-                _this.settings.register = _this.constructor.cache(guid, hash);
+                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.register);
+                _this.register.cache = _this.constructor.compute(guid, hash);
                 figure = ' <span id="' + guid + '" class="cash-node">' + figure + '</span> ';
               }
               return figure;

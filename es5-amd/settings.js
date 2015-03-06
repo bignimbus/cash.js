@@ -84,7 +84,7 @@ define(["exports", "module"], function (exports, module) {
                 fifteen: 15,
                 sixteen: 16
             },
-            cache: []
+            metadata: []
             // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
         }, overrides);
 
@@ -137,14 +137,14 @@ define(["exports", "module"], function (exports, module) {
                     return Object.keys(this.numberWords);
                 }
             },
-            register: {
+            cache: {
                 get: function () {
-                    return this.cache.map(function (hash) {
+                    return this.metadata.map(function (hash) {
                         return hash;
                     });
                 },
                 set: function (hash) {
-                    this.cache.push(hash);
+                    this.metadata.push(hash);
                 }
             }
         });

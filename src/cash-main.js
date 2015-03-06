@@ -3,17 +3,17 @@ import Settings from 'settings';
 export default class Cash {
     constructor (options) {
         options = options || {};
-        this.settings = new Settings(options.overrides || {});
+        this.register = new Settings(options.overrides || {});
     }
 
     tag (html) {
-        let moneyStrings = this.constructor.buildRegex(this.settings),
+        let moneyStrings = this.constructor.buildRegex(this.register),
             wrapped = html.replace(moneyStrings, (figure) => {
                 figure = figure.trim();
                 if (this.constructor.isValid(figure)) {
                     let guid = this.constructor.generateGuid(),
-                        hash = this.constructor.formHash(figure, this.settings);
-                    this.settings.register = this.constructor.cache(guid, hash);
+                        hash = this.constructor.formHash(figure, this.register);
+                    this.register.cache = this.constructor.compute(guid, hash);
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }
                 return figure;
@@ -26,17 +26,17 @@ export default class Cash {
         return (Math.random() + 1).toString(36).substring(7);
     }
 
-    static formHash (figure, settings) {
+    static formHash (figure, keywords) {
         let parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
                 }
-                return settings.numberWords[num] || -1;
+                return keywords.numberWords[num] || -1;
             },
             nums = new RegExp('(?:\\d|'
-                + settings.numberStrings.join('|')
+                + keywords.numberStrings.join('|')
                 + '|\\.|,)+', 'gi'),
-            multipliers = new RegExp('(?:' + settings.magnitudeStrings.join('|')
+            multipliers = new RegExp('(?:' + keywords.magnitudeStrings.join('|')
                 + ')+', 'gi');
 
         return {
@@ -44,15 +44,15 @@ export default class Cash {
             "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
             "magnitude": (figure.match(multipliers) || []).map((mul) => {
                 mul = mul.trim();
-                if (settings.magnitudeAbbreviations[mul]) {
-                    mul = settings.magnitudeAbbreviations[mul];
+                if (keywords.magnitudeAbbreviations[mul]) {
+                    mul = keywords.magnitudeAbbreviations[mul];
                 }
-                return settings.magnitudes[mul] || 1;
+                return keywords.magnitudes[mul] || 1;
             })
         };
     }
 
-    static cache (guid, hash) {
+    static compute (guid, hash) {
         let obj = {};
         hash.exactValue = () => {
             let val = hash.coefficient;
@@ -66,16 +66,16 @@ export default class Cash {
     static isValid (figure) {
         return figure.length > 1 && /\D/.test(figure);
         // when filter support is implemented...
-        // return this.settings.filters.every((filter) => {
+        // return this.register.filters.every((filter) => {
         //     return filter(figure);
         // });
     }
 
-    static buildRegex (settings) {
-        let magnitudes = settings.magnitudeStrings.join('|'),
-            prefixes = settings.prefixes.join('|'),
-            suffixes = settings.suffixes.join('|'),
-            numberStr = settings.numberStrings.join('|'),
+    static buildRegex (keywords) {
+        let magnitudes = keywords.magnitudeStrings.join('|'),
+            prefixes = keywords.prefixes.join('|'),
+            suffixes = keywords.suffixes.join('|'),
+            numberStr = keywords.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+'
                 + '[\\.\\b\\s]?'

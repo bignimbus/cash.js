@@ -67,12 +67,13 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             },
             isValid: {
-                value: function isValid(figure) {
-                    return figure.length > 1 && /\D/.test(figure);
-                    // when filter support is implemented...
-                    // return this.register.filters.every((filter) => {
-                    //     return filter(figure);
-                    // });
+                value: function isValid(figure, register) {
+                    var currencyStr = [].concat(register.prefixes, register.suffixes);
+                    var hasCurrencySpec = new RegExp("(?:" + currencyStr.join(")|(?:") + ")", "i"),
+                        isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
+                        return filter(figure);
+                    });
+                    return isValidStr;
                 },
                 writable: true,
                 configurable: true
@@ -100,7 +101,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                     var moneyStrings = this.constructor.buildRegex(this.register),
                         wrapped = html.replace(moneyStrings, function (figure) {
                         figure = figure.trim();
-                        if (_this.constructor.isValid(figure)) {
+                        if (_this.constructor.isValid(figure, _this.register)) {
                             var guid = _this.constructor.generateGuid(),
                                 hash = _this.constructor.formHash(figure, _this.register);
                             _this.register.cache = [guid, _this.constructor.compute(hash)];
@@ -109,6 +110,17 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         return figure;
                     });
                     return wrapped;
+                },
+                writable: true,
+                configurable: true
+            },
+            addFilters: {
+                value: function addFilters() {
+                    var filters = Array.prototype.slice.call(arguments);
+                    filters = filters.filter(function (filter) {
+                        return typeof filter === "function";
+                    });
+                    this.register.filters.concat(filters);
                 },
                 writable: true,
                 configurable: true

@@ -84,7 +84,8 @@ define(["exports", "module"], function (exports, module) {
                 fifteen: 15,
                 sixteen: 16
             },
-            metadata: {}
+            metadata: {},
+            filters: []
             // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
         }, overrides);
 

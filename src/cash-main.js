@@ -10,7 +10,7 @@ export default class Cash {
         let moneyStrings = this.constructor.buildRegex(this.register),
             wrapped = html.replace(moneyStrings, (figure) => {
                 figure = figure.trim();
-                if (this.constructor.isValid(figure)) {
+                if (this.constructor.isValid(figure, this.register)) {
                     let guid = this.constructor.generateGuid(),
                         hash = this.constructor.formHash(figure, this.register);
                     this.register.cache = [guid, this.constructor.compute(hash)];
@@ -19,6 +19,14 @@ export default class Cash {
                 return figure;
             });
         return wrapped;
+    }
+
+    addFilters () {
+        let filters = Array.prototype.slice.call(arguments);
+        filters = filters.filter(function (filter) {
+            return typeof filter === "function";
+        });
+        this.register.filters.concat(filters);
     }
 
     static generateGuid () {
@@ -61,12 +69,14 @@ export default class Cash {
         return hash;
     }
 
-    static isValid (figure) {
-        return figure.length > 1 && /\D/.test(figure);
-        // when filter support is implemented...
-        // return this.register.filters.every((filter) => {
-        //     return filter(figure);
-        // });
+    static isValid (figure, register) {
+        let currencyStr = [].concat(register.prefixes, register.suffixes);
+            let hasCurrencySpec = new RegExp('(?:' + currencyStr.join(')|(?:') + ')', 'i'),
+            isValidStr = hasCurrencySpec.test(figure)
+                && register.filters.every(function (filter) {
+                    return filter(figure);
+                });
+        return isValidStr;
     }
 
     static buildRegex (keywords) {

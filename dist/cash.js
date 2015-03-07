@@ -290,8 +290,7 @@ cash_main = function (exports, _settings) {
       },
       isValid: {
         value: function isValid(figure, register) {
-          var currencyStr = [].concat(register.prefixes, register.suffixes);
-          var hasCurrencySpec = new RegExp('(?:' + currencyStr.join(')|(?:') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
+          var currencyStr = [].concat(register.prefixes, register.suffixes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join(')|(?:') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
               return filter(figure);
             });
           return isValidStr;

@@ -68,8 +68,8 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
             },
             isValid: {
                 value: function isValid(figure, register) {
-                    var currencyStr = [].concat(register.prefixes, register.suffixes);
-                    var hasCurrencySpec = new RegExp("(?:" + currencyStr.join(")|(?:") + ")", "i"),
+                    var currencyStr = [].concat(register.prefixes, register.suffixes),
+                        hasCurrencySpec = new RegExp("(?:" + currencyStr.join(")|(?:") + ")", "i"),
                         isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
                         return filter(figure);
                     });

@@ -10,7 +10,7 @@
         });
     });
 
-    describe('buildRegex', function () {
+    describe('tag', function () {
         function cashCount (str) {
             var match = str.match(/\/span/g);
             return match ? match.length : 0;
@@ -98,32 +98,44 @@
         function () {
             cash.tag('five dollars');
             var obj = cash.register.cache,
-                key = Object.keys(obj[0])[0];
-            expect(obj[0][key].coefficient).toBe(5);
+                key = Object.keys(obj)[0];
+            expect(obj[key].coefficient).toBe(5);
         });
 
         it('should parse all numbers, decimals and commas into values and store them in the "cache register"',
         function () {
             cash.tag('$5,100.40');
             var obj = cash.register.cache,
-                key = Object.keys(obj[0])[0];
-            expect(obj[0][key].coefficient).toBe(5100.40);
+                key = Object.keys(obj)[0];
+            expect(obj[key].coefficient).toBe(5100.40);
         });
 
         it('should parse all magnitude strings into multipliers and store them in the "cache register"',
         function () {
             cash.tag('one hundred billion dollars');
             var obj = cash.register.cache,
-                key = Object.keys(obj[0])[0];
-            expect(obj[0][key].magnitude).toEqual([1e2, 1e9]);
+                key = Object.keys(obj)[0];
+            expect(obj[key].magnitude).toEqual([1e2, 1e9]);
         });
 
         it('should store the exact value of the money string in the "cache register"',
         function () {
             cash.tag('if I had a million dollars...');
             var obj = cash.register.cache,
-                key = Object.keys(obj[0])[0];
-            expect(obj[0][key].exactValue).toBe(1000000);
+                key = Object.keys(obj)[0];
+            expect(obj[key].exactValue).toBe(1000000);
+        });
+    });
+
+    describe('update', function () {
+        beforeEach(function () {
+
+        });
+        afterEach(function () {
+
+        });
+        it('', function () {
+
         });
     });
 })();

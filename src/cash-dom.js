@@ -25,8 +25,8 @@ export default class CashDom extends Cash {
     }
 
     update () {
-        this.settings.register.forEach(function (hash) {
-            console.log(hash);
-        });
+        for (let [id, data] of this.register.cache) {
+            console.log(id, data);
+        }
     }
 }

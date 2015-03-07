@@ -13,7 +13,7 @@ export default class Cash {
                 if (this.constructor.isValid(figure)) {
                     let guid = this.constructor.generateGuid(),
                         hash = this.constructor.formHash(figure, this.register);
-                    this.register.cache = this.constructor.compute(guid, hash);
+                    this.register.cache = [guid, this.constructor.compute(hash)];
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }
                 return figure;
@@ -52,15 +52,13 @@ export default class Cash {
         };
     }
 
-    static compute (guid, hash) {
-        let obj = {};
+    static compute (hash) {
         hash.exactValue = () => {
             let val = hash.coefficient;
             hash.magnitude.forEach((factor) => {val *= factor;});
             return val;
         }();
-        obj[guid] = hash;
-        return obj;
+        return hash;
     }
 
     static isValid (figure) {

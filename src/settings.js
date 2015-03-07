@@ -78,7 +78,7 @@ export default function Settings (overrides) {
             "fifteen": 15,
             "sixteen": 16
         },
-        "metadata": []
+        "metadata": {}
         // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
     }, overrides);
 
@@ -133,12 +133,11 @@ export default function Settings (overrides) {
         },
         "cache": {
             "get": function () {
-                return this.metadata.map(function (hash) {
-                    return hash;
-                });
+                return this.metadata;
             },
-            "set": function (hash) {
-                this.metadata.push(hash);
+            "set": function (arr) {
+                // [guid, hash]
+                this.metadata[arr[0]] = arr[1];
             }
         }
     });

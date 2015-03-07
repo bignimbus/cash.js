@@ -153,7 +153,7 @@ settings = function (exports) {
         fifteen: 15,
         sixteen: 16
       },
-      metadata: []  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
+      metadata: {}  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
     }, overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
@@ -206,12 +206,11 @@ settings = function (exports) {
       },
       cache: {
         get: function () {
-          return this.metadata.map(function (hash) {
-            return hash;
-          });
+          return this.metadata;
         },
-        set: function (hash) {
-          this.metadata.push(hash);
+        set: function (arr) {
+          // [guid, hash]
+          this.metadata[arr[0]] = arr[1];
         }
       }
     });
@@ -275,8 +274,7 @@ cash_main = function (exports, _settings) {
         configurable: true
       },
       compute: {
-        value: function compute(guid, hash) {
-          var obj = {};
+        value: function compute(hash) {
           hash.exactValue = function () {
             var val = hash.coefficient;
             hash.magnitude.forEach(function (factor) {
@@ -284,8 +282,7 @@ cash_main = function (exports, _settings) {
             });
             return val;
           }();
-          obj[guid] = hash;
-          return obj;
+          return hash;
         },
         writable: true,
         configurable: true
@@ -318,7 +315,10 @@ cash_main = function (exports, _settings) {
               figure = figure.trim();
               if (_this.constructor.isValid(figure)) {
                 var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.register);
-                _this.register.cache = _this.constructor.compute(guid, hash);
+                _this.register.cache = [
+                  guid,
+                  _this.constructor.compute(hash)
+                ];
                 figure = ' <span id="' + guid + '" class="cash-node">' + figure + '</span> ';
               }
               return figure;

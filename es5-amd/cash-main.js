@@ -53,8 +53,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             },
             compute: {
-                value: function compute(guid, hash) {
-                    var obj = {};
+                value: function compute(hash) {
                     hash.exactValue = (function () {
                         var val = hash.coefficient;
                         hash.magnitude.forEach(function (factor) {
@@ -62,8 +61,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         });
                         return val;
                     })();
-                    obj[guid] = hash;
-                    return obj;
+                    return hash;
                 },
                 writable: true,
                 configurable: true
@@ -105,7 +103,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         if (_this.constructor.isValid(figure)) {
                             var guid = _this.constructor.generateGuid(),
                                 hash = _this.constructor.formHash(figure, _this.register);
-                            _this.register.cache = _this.constructor.compute(guid, hash);
+                            _this.register.cache = [guid, _this.constructor.compute(hash)];
                             figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }
                         return figure;

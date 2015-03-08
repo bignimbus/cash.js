@@ -1,11 +1,44 @@
 ;(function() {
-var settings, cash_main, cash_dom, cash_domamdjs;
-settings = function (exports) {
+var polyfills, settings, cash_main, cash_dom, cash_domamdjs;
+polyfills = function (exports) {
+  
+  if (!Object.assign) {
+    Object.defineProperty(Object, 'assign', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: function value(target, firstSource) {
+        
+        if (target === undefined || target === null) {
+          throw new TypeError('Cannot convert first argument to object');
+        }
+        var to = Object(target);
+        for (var i = 1; i < arguments.length; i++) {
+          var nextSource = arguments[i];
+          if (nextSource === undefined || nextSource === null) {
+            continue;
+          }
+          var keysArray = Object.keys(Object(nextSource));
+          for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+            var nextKey = keysArray[nextIndex];
+            var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+            if (desc !== undefined && desc.enumerable) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+        return to;
+      }
+    });
+  }
+  exports = Object;
+  return exports;
+}({});
+settings = function (exports, _polyfills) {
   
   exports = Settings;
   function Settings(overrides) {
-    // we should do this without jQuery
-    $.extend(true, this, {
+    Object.assign(this, {
       'default': 'USD',
       current: 'USD',
       currencies: {
@@ -20,7 +53,7 @@ settings = function (exports) {
             'bucks',
             '(?:(?:US[A]?|American)\\s)?dollar[s]?'
           ],
-          magnitudes: ['cents']
+          magnitudes: ['cent[s]?']
         },
         GBP: {
           prefixes: [
@@ -92,7 +125,7 @@ settings = function (exports) {
             'buck[s]?',
             '(?:Canad(?:a|ian)\\s)?dollar[s]?'
           ],
-          magnitudes: ['cents']
+          magnitudes: ['cent[s]?']
         },
         AUD: {
           prefixes: [
@@ -105,7 +138,7 @@ settings = function (exports) {
             'buck[s]?',
             '(?:Australia[n]?\\s)?dollar[s]?'
           ],
-          magnitudes: ['cents']
+          magnitudes: ['cent[s]?']
         },
         INR: {
           prefixes: [
@@ -121,6 +154,39 @@ settings = function (exports) {
             'paise',
             'lakh',
             'crore'
+          ]
+        },
+        MXN: {
+          prefixes: [
+            'MXN',
+            'Mgex\\$',
+            '\\$'
+          ],
+          suffixes: [
+            'MXN',
+            'Mex\\$',
+            '\\$',
+            '(?:Mexic(?:o|an)\\s)?peso[s]?'
+          ],
+          magnitudes: [
+            'centavo',
+            'cent[s]?'
+          ]
+        },
+        BRL: {
+          prefixes: [
+            'BRL',
+            'R\\$'
+          ],
+          suffixes: [
+            'BRL',
+            'Real(?:es)?',
+            'R\\$',
+            '(?:Brazil(?:ian)?\\s)?real(?:es)?'
+          ],
+          magnitudes: [
+            'centavo',
+            'cent[s]?'
           ]
         }
       },
@@ -228,7 +294,7 @@ settings = function (exports) {
     return this;
   }
   return exports;
-}({});
+}({}, polyfills);
 cash_main = function (exports, _settings) {
   
   var _interopRequire = function (obj) {

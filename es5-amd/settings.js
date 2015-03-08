@@ -1,17 +1,16 @@
-define(["exports", "module"], function (exports, module) {
+define(["exports", "module", "polyfills"], function (exports, module, _polyfills) {
     "use strict";
 
     module.exports = Settings;
     function Settings(overrides) {
-        // we should do this without jQuery
-        $.extend(true, this, {
+        Object.assign(this, {
             "default": "USD",
             current: "USD",
             currencies: {
                 USD: {
                     prefixes: ["USD", "\\$"],
                     suffixes: ["USD", "\\$", "bucks", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
-                    magnitudes: ["cents"]
+                    magnitudes: ["cent[s]?"]
                 },
                 GBP: {
                     prefixes: ["GBP", "£"],
@@ -37,17 +36,27 @@ define(["exports", "module"], function (exports, module) {
                 CAD: {
                     prefixes: ["CAD", "\\$"],
                     suffixes: ["CAD", "\\$", "buck[s]?", "(?:Canad(?:a|ian)\\s)?dollar[s]?"],
-                    magnitudes: ["cents"]
+                    magnitudes: ["cent[s]?"]
                 },
                 AUD: {
                     prefixes: ["AUD", "\\$"],
                     suffixes: ["AUD", "\\$", "buck[s]?", "(?:Australia[n]?\\s)?dollar[s]?"],
-                    magnitudes: ["cents"]
+                    magnitudes: ["cent[s]?"]
                 },
                 INR: {
                     prefixes: ["INR", "Rs\\.?"],
                     suffixes: ["INR", "Rs\\.?", "(?:India(?:n)\\s)?rupee[s]?"],
                     magnitudes: ["paise", "lakh", "crore"]
+                },
+                MXN: {
+                    prefixes: ["MXN", "Mgex\\$", "\\$"],
+                    suffixes: ["MXN", "Mex\\$", "\\$", "(?:Mexic(?:o|an)\\s)?peso[s]?"],
+                    magnitudes: ["centavo", "cent[s]?"]
+                },
+                BRL: {
+                    prefixes: ["BRL", "R\\$"],
+                    suffixes: ["BRL", "Real(?:es)?", "R\\$", "(?:Brazil(?:ian)?\\s)?real(?:es)?"],
+                    magnitudes: ["centavo", "cent[s]?"]
                 }
             },
             magnitudes: {

@@ -57,7 +57,7 @@
                         filler.concat(decimals, dollarSign, ['or 50'], ['cents']).join('')
                     )
                 )
-            ).toBe(1);
+            ).toBe(2);
 
             expect(
                 cashCount(

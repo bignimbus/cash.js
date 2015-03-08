@@ -70,7 +70,7 @@ export default class Cash {
     }
 
     static isValid (figure, register) {
-        let currencyStr = [].concat(register.prefixes, register.suffixes),
+        let currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes),
             hasCurrencySpec = new RegExp(`(?:${currencyStr.join(')|(?:')})`, 'i'),
             isValidStr = hasCurrencySpec.test(figure)
                 && register.filters.every(function (filter) {

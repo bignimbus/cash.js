@@ -2,15 +2,18 @@ export default function Settings (overrides) {
     // we should do this without jQuery
     $.extend(true, this, {
         "default": "USD",
+        "current": "USD",
         "supportedCurrencies": [],
         "currencies": {
             "USD": {
                 "prefixes": ["USD", "\\$"],
-                "suffixes": ["USD", "\\$", "bucks", "(?:(?:US[A]?|American)\\s)?dollar[s]?"]
+                "suffixes": ["USD", "\\$", "bucks", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
+                "magnitudes": ["cents"]
             },
             "GBP": {
                 "prefixes": ["GBP", "£"],
-                "suffixes": ["GBP", "£", "quid", "pound[s]?"]
+                "suffixes": ["GBP", "£", "quid", "pound[s]?"],
+                "magnitudes": ["pence"]
             },
             "EUR": {
                 "prefixes": ["EUR", "€"],
@@ -30,15 +33,18 @@ export default function Settings (overrides) {
             },
             "CAD": {
                 "prefixes": ["CAD", "\\$"],
-                "suffixes": ["CAD", "\\$", "buck[s]?", "(?:Canad(?:a|ian)\\s)?dollar[s]?"]
+                "suffixes": ["CAD", "\\$", "buck[s]?", "(?:Canad(?:a|ian)\\s)?dollar[s]?"],
+                "magnitudes": ["cents"]
             },
             "AUD": {
                 "prefixes": ["AUD", "\\$"],
-                "suffixes": ["AUD", "\\$", "buck[s]?", "(?:Australia[n]?\\s)?dollar[s]?"]
+                "suffixes": ["AUD", "\\$", "buck[s]?", "(?:Australia[n]?\\s)?dollar[s]?"],
+                "magnitudes": ["cents"]
             },
             "INR": {
                 "prefixes": ["INR", "Rs\\.?"],
-                "suffixes": ["INR", "Rs\\.?", "(?:India(?:n)\\s)?rupee[s]?"]
+                "suffixes": ["INR", "Rs\\.?", "(?:India(?:n)\\s)?rupee[s]?"],
+                "magnitudes": ["paise", "lakh", "crore"]
             }
         },
         "magnitudes": {
@@ -120,6 +126,11 @@ export default function Settings (overrides) {
                 } else {
                     throw new Error('prefixes must be expressed as an array of strings');
                 }
+            }
+        },
+        "specialMagnitudes": {
+            "get": function () {
+                return this.currencies[this.default].magnitudes;
             }
         },
         "magnitudeStrings": {

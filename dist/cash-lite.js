@@ -8,6 +8,7 @@ settings = function (exports) {
     // we should do this without jQuery
     $.extend(true, this, {
       'default': 'USD',
+      current: 'USD',
       supportedCurrencies: [],
       currencies: {
         USD: {
@@ -20,7 +21,8 @@ settings = function (exports) {
             '\\$',
             'bucks',
             '(?:(?:US[A]?|American)\\s)?dollar[s]?'
-          ]
+          ],
+          magnitudes: ['cents']
         },
         GBP: {
           prefixes: [
@@ -32,7 +34,8 @@ settings = function (exports) {
             '\xA3',
             'quid',
             'pound[s]?'
-          ]
+          ],
+          magnitudes: ['pence']
         },
         EUR: {
           prefixes: [
@@ -90,7 +93,8 @@ settings = function (exports) {
             '\\$',
             'buck[s]?',
             '(?:Canad(?:a|ian)\\s)?dollar[s]?'
-          ]
+          ],
+          magnitudes: ['cents']
         },
         AUD: {
           prefixes: [
@@ -102,7 +106,8 @@ settings = function (exports) {
             '\\$',
             'buck[s]?',
             '(?:Australia[n]?\\s)?dollar[s]?'
-          ]
+          ],
+          magnitudes: ['cents']
         },
         INR: {
           prefixes: [
@@ -113,6 +118,11 @@ settings = function (exports) {
             'INR',
             'Rs\\.?',
             '(?:India(?:n)\\s)?rupee[s]?'
+          ],
+          magnitudes: [
+            'paise',
+            'lakh',
+            'crore'
           ]
         }
       },
@@ -193,6 +203,11 @@ settings = function (exports) {
           } else {
             throw new Error('prefixes must be expressed as an array of strings');
           }
+        }
+      },
+      specialMagnitudes: {
+        get: function () {
+          return this.currencies[this['default']].magnitudes;
         }
       },
       magnitudeStrings: {
@@ -290,7 +305,7 @@ cash_main = function (exports, _settings) {
       },
       isValid: {
         value: function isValid(figure, register) {
-          var currencyStr = [].concat(register.prefixes, register.suffixes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join(')|(?:') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
+          var currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join(')|(?:') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
               return filter(figure);
             });
           return isValidStr;

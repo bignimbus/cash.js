@@ -47,6 +47,9 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         throw new Error("please specify a jQuery object");
                     }
                     var html = $el.html() || null;
+                    html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                        return text;
+                    });
                     if (html) {
                         $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", this).call(this, html));
                     }
@@ -55,14 +58,27 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                 configurable: true
             },
             update: {
+
+                /*
+                what is needed?
+                first, adding a check on wrap() or grab() that makes sure we're not double-
+                counting any nodes.
+                second, a way for the user to manage the current currency on display. need
+                to know whether storing the current currency in the cache register is necessary.
+                My instinct is that it is not necessary, since we will keep the dom updated with
+                every change in currency.  There should be no cash nodes in memory that differ
+                from the current currency.
+                The update algorithm is key. We should engineer a generator method that spaces
+                everything out over an interval to preclude performance issues with multiple dom
+                lookups and computation.
+                */
+
                 value: function update() {
                     for (var _iterator = this.register.cache[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
                         var _step$value = _slicedToArray(_step.value, 2);
 
                         var id = _step$value[0];
                         var data = _step$value[1];
-
-                        console.log(id, data);
                     }
                 },
                 writable: true,

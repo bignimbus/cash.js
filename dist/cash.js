@@ -367,21 +367,6 @@ cash_dom = function (exports, _cashMain) {
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
   };
-  var _slicedToArray = function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      var _arr = [];
-      for (var _iterator = arr[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
-        _arr.push(_step.value);
-        if (i && _arr.length === i)
-          break;
-      }
-      return _arr;
-    } else {
-      throw new TypeError('Invalid attempt to destructure non-iterable instance');
-    }
-  };
   var _prototypeProperties = function (child, staticProps, instanceProps) {
     if (staticProps)
       Object.defineProperties(child, staticProps);
@@ -442,10 +427,7 @@ cash_dom = function (exports, _cashMain) {
           for (var _iterator = nodes[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
             var node = _step.value;
             $(node).each(function (i, el) {
-              var $el = $(el), html = $el.html() || '';
-              html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
-                return text;
-              });
+              var $el = $(el).not('.cash-node'), html = $el.html() || '';
               if (html) {
                 $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'tag', _this).call(_this, html));
               }
@@ -457,22 +439,20 @@ cash_dom = function (exports, _cashMain) {
       },
       update: {
         /*
-        what is needed?
-        second, a way for the user to manage the current currency on display. need
-        to know whether storing the current currency in the cache register is necessary.
-        My instinct is that it is not necessary, since we will keep the dom updated with
-        every change in currency.  There should be no cash nodes in memory that differ
-        from the current currency.
-        The update algorithm is key. We should engineer a generator method that spaces
-        everything out over an interval to preclude performance issues with multiple dom
-        lookups and computation.
+        exchange -> populates the register with exchange rates
+            useful for devs who do not have backend filling these things in on pageload
+            ajax requests
+            useful for devs using multiple api's, perhaps for the case of bitcoin, dogecoin,
+            or some random valuation (diamond cleans, stock price)
+            everything depends on the default currency, all operations go through this
+        update -> redraws the cash nodes in the dom
+            dying to write a generator function called on an interval for this.
+            should probably configure it to run in realtime if dev desires.
+            use Object.observe on register - bind to the dom element!
+        setCurrency -> sets register.current; triggers update?
+            
         */
         value: function update() {
-          for (var _iterator = this.register.cache[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
-            var _step$value = _slicedToArray(_step.value, 2);
-            var id = _step$value[0];
-            var data = _step$value[1];
-          }
         },
         writable: true,
         configurable: true

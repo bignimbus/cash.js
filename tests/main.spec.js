@@ -125,17 +125,29 @@
                 key = Object.keys(obj)[0];
             expect(obj[key].exactValue).toBe(1000000);
         });
+        it('should filter all caught currency strings through functions defined by the dev',
+        function () {
+            var count = 0;
+            cash.addFilters(function (str) {
+                count++;
+                return str.length > 2;
+            }, function (str) {
+                count++;
+                return /\d/.test(str);
+            });
+            expect(cash.register.filters.length).toBe(2);
+            cash.tag('$5.00, and ten million bucks');
+            expect(count).toBe(4);
+            expect(Object.keys(cash.register.cache).length).toBe(1);
+        });
     });
 
     describe('update', function () {
         beforeEach(function () {
-
+            cash = new Cash();
         });
         afterEach(function () {
-
-        });
-        it('', function () {
-
+            cash = null;
         });
     });
 })();

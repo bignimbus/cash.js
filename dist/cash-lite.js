@@ -335,7 +335,7 @@ cash_main = function (exports, _settings) {
           filters = filters.filter(function (filter) {
             return typeof filter === 'function';
           });
-          this.register.filters.concat(filters);
+          this.register.filters = this.register.filters.concat(filters);
         },
         writable: true,
         configurable: true

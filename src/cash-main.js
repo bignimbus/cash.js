@@ -26,7 +26,7 @@ export default class Cash {
         filters = filters.filter(function (filter) {
             return typeof filter === "function";
         });
-        this.register.filters.concat(filters);
+        this.register.filters = this.register.filters.concat(filters);
     }
 
     static generateGuid () {

@@ -3,13 +3,10 @@ define(["exports", "module"], function (exports, module) {
 
     module.exports = Settings;
     function Settings(overrides) {
-        var _this = this;
-
         // we should do this without jQuery
         $.extend(true, this, {
             "default": "USD",
             current: "USD",
-            supportedCurrencies: [],
             currencies: {
                 USD: {
                     prefixes: ["USD", "\\$"],
@@ -98,16 +95,13 @@ define(["exports", "module"], function (exports, module) {
         Object.defineProperties(this, {
             supportedCurrencies: {
                 get: function () {
-                    return this.supportedCurrencies.concat(this["default"]);
-                },
-                set: function (currencies) {
-                    if (currencies instanceof Array) {
-                        _this.supportedCurrencies = currencies.filter(function (currency) {
-                            return currency !== this["default"];
-                        }, _this);
-                    } else {
-                        throw new Error("currencies must be expressed as an array of strings");
+                    var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
+                        return this.currencies[currency].prefixes.length && this.currencies[currency].suffixes.length && this.currencies[currency].value !== void 0;
+                    }, this);
+                    if (validCurrencies.length) {
+                        return validCurrencies;
                     }
+                    throw new Error("no valid currencies detected!");
                 }
             },
             prefixes: {
@@ -130,7 +124,7 @@ define(["exports", "module"], function (exports, module) {
                     if (suffixes instanceof Array) {
                         this.currencies[this["default"]].suffixes = suffixes;
                     } else {
-                        throw new Error("prefixes must be expressed as an array of strings");
+                        throw new Error("suffixes must be expressed as an array of strings");
                     }
                 }
             },

@@ -142,12 +142,22 @@
         });
     });
 
-    describe('update', function () {
+    describe('exchange', function () {
         beforeEach(function () {
             cash = new Cash();
         });
         afterEach(function () {
             cash = null;
+        });
+        it('should populate the register with the exchange rates', function () {
+            cash.exchange({
+                "USD": 1,
+                "EUR": 0.92,
+                "JPY": 120.83
+            });
+            expect(cash.register.currencies.USD.value).toBe(1);
+            expect(cash.register.currencies.EUR.value).toBe(0.92);
+            expect(cash.register.currencies.JPY.value).toBe(120.83);
         });
     });
 })();

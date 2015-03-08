@@ -29,6 +29,20 @@ export default class Cash {
         this.register.filters = this.register.filters.concat(filters);
     }
 
+    exchange (hash) {
+        // always make the default currency worth 1
+        if (!(hash instanceof Object)) {
+            throw new Error('exchange rates must be passed as an object, e.g.{"USD": 1, "EUR": 0.92}');
+            return;
+        }
+        for (let currency in hash) {
+            let value = +hash[currency];
+            if (!isNaN(value)) {
+                this.register.currencies[currency].value = hash[currency];
+            }
+        }
+    }
+
     static generateGuid () {
         // returns a string of 8 consecutive alphanumerics
         return (Math.random() + 1).toString(36).substring(7);

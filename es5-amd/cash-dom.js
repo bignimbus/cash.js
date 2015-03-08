@@ -49,7 +49,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
             update: {
 
                 /*
-                exchange -> populates the register with exchange rates
+                exchangeRates -> populates the register with exchange rates
                     useful for devs who do not have backend filling these things in on pageload
                     ajax requests
                     useful for devs using multiple api's, perhaps for the case of bitcoin, dogecoin,

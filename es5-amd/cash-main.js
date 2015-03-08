@@ -125,6 +125,23 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 },
                 writable: true,
                 configurable: true
+            },
+            exchange: {
+                value: function exchange(hash) {
+                    // always make the default currency worth 1
+                    if (!(hash instanceof Object)) {
+                        throw new Error("exchange rates must be passed as an object, e.g.{\"USD\": 1, \"EUR\": 0.92}");
+                        return;
+                    }
+                    for (var currency in hash) {
+                        var value = +hash[currency];
+                        if (!isNaN(value)) {
+                            this.register.currencies[currency].value = hash[currency];
+                        }
+                    }
+                },
+                writable: true,
+                configurable: true
             }
         });
 

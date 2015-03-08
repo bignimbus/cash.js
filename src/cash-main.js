@@ -13,7 +13,7 @@ export default class Cash {
                 if (this.constructor.isValid(figure, this.register)) {
                     let guid = this.constructor.generateGuid(),
                         hash = this.constructor.formHash(figure, this.register);
-                    this.register.cache = [guid, this.constructor.compute(hash)];
+                    this.register.cache = [guid, this.constructor.computeExactValue(hash)];
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }
                 return figure;
@@ -38,7 +38,7 @@ export default class Cash {
         for (let currency in hash) {
             let value = +hash[currency];
             if (!isNaN(value)) {
-                this.register.currencies[currency].value = hash[currency];
+                this.register.currencies[currency].value = value;
             }
         }
     }
@@ -75,7 +75,7 @@ export default class Cash {
         };
     }
 
-    static compute (hash) {
+    static computeExactValue (hash) {
         hash.exactValue = () => {
             let val = hash.coefficient;
             hash.magnitude.forEach((factor) => {val *= factor;});

@@ -149,15 +149,19 @@
         afterEach(function () {
             cash = null;
         });
-        it('should populate the register with the exchange rates', function () {
+        it('should validate and populate the register with provided exchange rates', function () {
             cash.exchange({
                 "USD": 1,
                 "EUR": 0.92,
-                "JPY": 120.83
+                "JPY": "120.83",
+                "INR": "not a valid input",
+                "NOPE": "nopenopenope"
             });
             expect(cash.register.currencies.USD.value).toBe(1);
             expect(cash.register.currencies.EUR.value).toBe(0.92);
             expect(cash.register.currencies.JPY.value).toBe(120.83);
+            expect(cash.register.currencies.INR.value).toBeUndefined();
+            expect(cash.register.currencies.NOPE).toBeUndefined();
         });
     });
 })();

@@ -53,8 +53,8 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 writable: true,
                 configurable: true
             },
-            compute: {
-                value: function compute(hash) {
+            computeExactValue: {
+                value: function computeExactValue(hash) {
                     hash.exactValue = (function () {
                         var val = hash.coefficient;
                         hash.magnitude.forEach(function (factor) {
@@ -105,7 +105,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         if (_this.constructor.isValid(figure, _this.register)) {
                             var guid = _this.constructor.generateGuid(),
                                 hash = _this.constructor.formHash(figure, _this.register);
-                            _this.register.cache = [guid, _this.constructor.compute(hash)];
+                            _this.register.cache = [guid, _this.constructor.computeExactValue(hash)];
                             figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }
                         return figure;
@@ -136,7 +136,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                     for (var currency in hash) {
                         var value = +hash[currency];
                         if (!isNaN(value)) {
-                            this.register.currencies[currency].value = hash[currency];
+                            this.register.currencies[currency].value = value;
                         }
                     }
                 },

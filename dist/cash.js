@@ -427,7 +427,10 @@ cash_dom = function (exports, _cashMain) {
           for (var _iterator = nodes[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
             var node = _step.value;
             $(node).each(function (i, el) {
-              var $el = $(el).not('.cash-node'), html = $el.html() || '';
+              var $el = $(el), html = $el.html() || '';
+              html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                return text;
+              });
               if (html) {
                 $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'tag', _this).call(_this, html));
               }

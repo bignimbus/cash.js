@@ -32,8 +32,11 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         var node = _step.value;
 
                         $(node).each(function (i, el) {
-                            var $el = $(el).not(".cash-node"),
+                            var $el = $(el),
                                 html = $el.html() || "";
+                            html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                                return text;
+                            });
                             if (html) {
                                 $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", _this).call(_this, html));
                             }

@@ -9,8 +9,9 @@ export default class CashDom extends Cash {
         nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
         for (let node of nodes) {
             $(node).each((i, el) => {
-                let $el = $(el).not('.cash-node'),
+                let $el = $(el),
                     html = $el.html() || '';
+                html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, (m, text) => text);
                 if (html) {
                     $el.html(super.tag(html));
                 }

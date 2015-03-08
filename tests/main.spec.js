@@ -150,7 +150,7 @@
             cash = null;
         });
         it('should validate and populate the register with provided exchange rates', function () {
-            cash.exchange({
+            cash.setValues({
                 "USD": 1,
                 "EUR": 0.92,
                 "JPY": "120.83",

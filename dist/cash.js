@@ -2,6 +2,7 @@
 var polyfills, settings, cash_main, cash_dom, cash_domamdjs;
 polyfills = function (exports) {
   
+  // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
   if (!Object.assign) {
     Object.defineProperty(Object, 'assign', {
       enumerable: false,
@@ -417,12 +418,11 @@ cash_main = function (exports, _settings) {
         writable: true,
         configurable: true
       },
-      exchange: {
-        value: function exchange(hash) {
+      setValues: {
+        value: function setValues(hash) {
           // always make the default currency worth 1
           if (!(hash instanceof Object)) {
             throw new Error('exchange rates must be passed as an object, e.g.{"USD": 1, "EUR": 0.92}');
-            return;
           }
           for (var currency in hash) {
             var value = +hash[currency];

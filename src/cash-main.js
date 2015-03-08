@@ -48,6 +48,7 @@ export default class Cash {
                 + ')+', 'gi');
 
         return {
+            "currency": keywords.current,
             "str": figure,
             "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
             "magnitude": (figure.match(multipliers) || []).map((mul) => {

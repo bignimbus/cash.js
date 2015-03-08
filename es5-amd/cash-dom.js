@@ -25,8 +25,8 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         _inherits(CashDom, Cash);
 
         _prototypeProperties(CashDom, null, {
-            grab: {
-                value: function grab(nodes) {
+            wrap: {
+                value: function wrap(nodes) {
                     var _this = this;
 
                     nodes = (typeof nodes === "string" ? [nodes] : nodes) || [];
@@ -34,24 +34,15 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         var node = _step.value;
 
                         $(node).each(function (i, el) {
-                            _this.wrap($(el));
+                            var $el = $(el),
+                                html = $el.html() || "";
+                            html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                                return text;
+                            });
+                            if (html) {
+                                $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", _this).call(_this, html));
+                            }
                         });
-                    }
-                },
-                writable: true,
-                configurable: true
-            },
-            wrap: {
-                value: function wrap($el) {
-                    if (!$el) {
-                        throw new Error("please specify a jQuery object");
-                    }
-                    var html = $el.html() || null;
-                    html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
-                        return text;
-                    });
-                    if (html) {
-                        $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", this).call(this, html));
                     }
                 },
                 writable: true,
@@ -61,8 +52,6 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
 
                 /*
                 what is needed?
-                first, adding a check on wrap() or grab() that makes sure we're not double-
-                counting any nodes.
                 second, a way for the user to manage the current currency on display. need
                 to know whether storing the current currency in the cache register is necessary.
                 My instinct is that it is not necessary, since we will keep the dom updated with

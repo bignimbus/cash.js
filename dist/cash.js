@@ -275,6 +275,7 @@ cash_main = function (exports, _settings) {
               return keywords.numberWords[num] || -1;
             }, nums = new RegExp('(?:\\d|' + keywords.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + keywords.magnitudeStrings.join('|') + ')+', 'gi');
           return {
+            currency: keywords.current,
             str: figure,
             coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
             magnitude: (figure.match(multipliers) || []).map(function (mul) {
@@ -434,31 +435,21 @@ cash_dom = function (exports, _cashMain) {
     }
     _inherits(CashDom, Cash);
     _prototypeProperties(CashDom, null, {
-      grab: {
-        value: function grab(nodes) {
+      wrap: {
+        value: function wrap(nodes) {
           var _this = this;
           nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
           for (var _iterator = nodes[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
             var node = _step.value;
             $(node).each(function (i, el) {
-              _this.wrap($(el));
+              var $el = $(el), html = $el.html() || '';
+              html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                return text;
+              });
+              if (html) {
+                $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'tag', _this).call(_this, html));
+              }
             });
-          }
-        },
-        writable: true,
-        configurable: true
-      },
-      wrap: {
-        value: function wrap($el) {
-          if (!$el) {
-            throw new Error('please specify a jQuery object');
-          }
-          var html = $el.html() || null;
-          html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
-            return text;
-          });
-          if (html) {
-            $el.html(_get(Object.getPrototypeOf(CashDom.prototype), 'tag', this).call(this, html));
           }
         },
         writable: true,
@@ -467,8 +458,6 @@ cash_dom = function (exports, _cashMain) {
       update: {
         /*
         what is needed?
-        first, adding a check on wrap() or grab() that makes sure we're not double-
-        counting any nodes.
         second, a way for the user to manage the current currency on display. need
         to know whether storing the current currency in the cache register is necessary.
         My instinct is that it is not necessary, since we will keep the dom updated with

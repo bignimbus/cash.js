@@ -5,30 +5,22 @@ export default class CashDom extends Cash {
         super(options);
     }
 
-    grab (nodes) {
+    wrap (nodes) {
         nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
         for (let node of nodes) {
             $(node).each((i, el) => {
-                this.wrap($(el));
+                let $el = $(el),
+                    html = $el.html() || '';
+                html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, (m, text) => text);
+                if (html) {
+                    $el.html(super.tag(html));
+                }
             });
-        }
-    }
-
-    wrap ($el) {
-        if (!$el) {
-            throw new Error('please specify a jQuery object');
-        }
-        let html = $el.html() || null;
-        html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, (m, text) => text);
-        if (html) {
-            $el.html(super.tag(html));
         }
     }
 
     /*
 what is needed?
-first, adding a check on wrap() or grab() that makes sure we're not double-
-counting any nodes.
 second, a way for the user to manage the current currency on display. need
 to know whether storing the current currency in the cache register is necessary.
 My instinct is that it is not necessary, since we will keep the dom updated with

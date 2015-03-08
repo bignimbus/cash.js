@@ -38,6 +38,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         multipliers = new RegExp("(?:" + keywords.magnitudeStrings.join("|") + ")+", "gi");
 
                     return {
+                        currency: keywords.current,
                         str: figure,
                         coefficient: parseNums(figure.match(nums)[0].replace(",", "").trim()),
                         magnitude: (figure.match(multipliers) || []).map(function (mul) {

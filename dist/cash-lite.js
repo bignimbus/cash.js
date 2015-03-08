@@ -275,6 +275,7 @@ cash_main = function (exports, _settings) {
               return keywords.numberWords[num] || -1;
             }, nums = new RegExp('(?:\\d|' + keywords.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + keywords.magnitudeStrings.join('|') + ')+', 'gi');
           return {
+            currency: keywords.current,
             str: figure,
             coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
             magnitude: (figure.match(multipliers) || []).map(function (mul) {

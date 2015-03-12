@@ -17,10 +17,11 @@
     "grunt-git": "^0.3.4",
     "grunt-githooks": "^0.3.1",
     "grunt-template-jasmine-requirejs": "^0.2.0",
-    "requirejs": "^2.1.16"
+    "requirejs": "^2.1.16",
   },
   "dependencies": {
-    "jquery": "1.11.2"
+    "jquery": "1.11.2",
+    "object.observe": "^0.2.3" // for non-chrome & non-opera browsers
   },
   "scripts": {
     "test": "grunt precommit"

@@ -28,7 +28,12 @@ export default class CashDom extends Cash {
         this.constructor.exchange.call(this, currency);
     }
 
+    update () {
+        this.constructor.exchange.call(this);
+    }
+
     static exchange (currency) {
+        currency = currency || this.register.current;
         let obj,
             rate,
             cache = this.register.metadata

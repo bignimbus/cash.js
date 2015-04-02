@@ -43,8 +43,7 @@
             $('body').append('<p id="testing">I have $100 in my pocket.</p>');
             cash.wrap('#testing');
 
-            var timer,
-                $node = $('#testing .cash-node').first(),
+            var $node = $('#testing .cash-node').first(),
                 id = $node.attr('id');
             cash.setValues({
                 "USD": 1,
@@ -63,6 +62,32 @@
 
             // jquery not playing nice with jasmine, will add spec.  Observed
             // working changes in DOM in browser.
+        });
+
+        describe('update', function () {
+            beforeEach(function () {
+                cash = new Cash();
+            });
+
+            afterEach(function () {
+                cash = null;
+            });
+
+            it('should update the dom with current values when called', function () {
+
+                $('body').append('<p id="testing-two">I have USD 30 in my pocket.</p>');
+                cash.wrap('#testing-two');
+
+                var $node = $('#testing-two .cash-node').first(),
+                    id = $node.attr('id');
+                cash.setValues({
+                    "USD": 0.5,
+                });
+                cash.update();
+
+                // jquery not playing nice with jasmine, will add spec.  Observed
+                // working changes in DOM in browser.
+            });
         });
     });
 })();

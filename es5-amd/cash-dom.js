@@ -25,6 +25,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         _prototypeProperties(CashDom, {
             exchange: {
                 value: function exchange(currency) {
+                    currency = currency || this.register.current;
                     var obj = undefined,
                         rate = undefined,
                         cache = this.register.metadata;
@@ -72,6 +73,13 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                     }
                     this.register.current = currency;
                     this.constructor.exchange.call(this, currency);
+                },
+                writable: true,
+                configurable: true
+            },
+            update: {
+                value: function update() {
+                    this.constructor.exchange.call(this);
                 },
                 writable: true,
                 configurable: true

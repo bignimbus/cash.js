@@ -1,6 +1,5 @@
 /* global Cash, cash */
 (function () {
-    'use strict';
     var cash;
     describe('Cash', function () {
         it('should instantiate', function () {
@@ -74,6 +73,14 @@
                     )
                 )
             ).toBe(1);
+
+            expect(
+                cashCount(
+                    cash.tag(
+                        filler.concat(' ', dollarSign, nums, ' ', filler).join('')
+                    )
+                )
+            ).toBe(1);
         });
 
         it('should detect all default permutations of USD', function () {
@@ -125,6 +132,7 @@
                 key = Object.keys(obj)[0];
             expect(obj[key].exactValue).toBe(1000000);
         });
+
         it('should filter all caught currency strings through functions defined by the dev',
         function () {
             var count = 0;
@@ -142,13 +150,16 @@
         });
     });
 
-    describe('exchange', function () {
+    describe('setValues', function () {
+
         beforeEach(function () {
             cash = new Cash();
         });
+
         afterEach(function () {
             cash = null;
         });
+
         it('should validate and populate the register with provided exchange rates', function () {
             cash.setValues({
                 "USD": 1,

@@ -7,7 +7,7 @@ module.exports = function (grunt) {
                     "specs": 'tests/*.spec.js',
                     "version": '2.1.4',
                     "vendor": 'bower_components/jquery/dist/jquery.js',
-                    "template": require('grunt-template-jasmine-requirejs')
+                    "keepRunner": true
                 }
             }
         },

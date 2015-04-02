@@ -1,6 +1,6 @@
 import 'polyfills';
 
-export default function Settings (overrides) {
+export default function Settings (overrides, isDom) {
     Object.assign(this, {
         "default": "USD",
         "current": "USD",
@@ -8,7 +8,8 @@ export default function Settings (overrides) {
             "USD": {
                 "prefixes": ["USD", "\\$"],
                 "suffixes": ["USD", "\\$", "bucks", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
-                "magnitudes": ["cent[s]?"]
+                "magnitudes": ["cent[s]?"],
+                "value": 1
             },
             "GBP": {
                 "prefixes": ["GBP", "£"],
@@ -157,8 +158,17 @@ export default function Settings (overrides) {
                 return this.metadata;
             },
             "set": function (arr) {
-                // [guid, hash]
-                this.metadata[arr[0]] = arr[1];
+                let guid = arr[0],
+                    hash = arr[1];
+                
+                hash.id = guid;
+                this.metadata[guid] = hash;
+                if (isDom) {
+                    Object.observe(this.metadata[guid], (obj) => {
+                        obj = obj[0].object;
+                        $(`#${obj.id}`).html(`${obj.currency} ${obj.exactValue}`);
+                    });
+                }
             }
         }
     });

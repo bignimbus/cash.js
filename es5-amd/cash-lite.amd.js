@@ -1,4 +1,7 @@
-require(['cash-main'], function (Cash) {
+require([
+    'cash-main',
+    '../bower_components/object.observe/dist/object-observe.min'
+], function (Cash) {
     'use strict';
     window.Cash = Cash;
 });

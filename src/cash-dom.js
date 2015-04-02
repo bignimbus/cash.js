@@ -2,12 +2,13 @@ import Cash from 'cash-main';
 
 export default class CashDom extends Cash {
     constructor (options) {
-        super(options);
+        super(options, true);
     }
 
     wrap (nodes) {
         nodes = (typeof nodes === 'string' ? [nodes] : nodes) || [];
-        for (let node of nodes) {
+        for (let node in nodes) {
+            node = nodes[node];
             $(node).each((i, el) => {
                 let $el = $(el),
                     html = $el.html() || '';
@@ -19,16 +20,27 @@ export default class CashDom extends Cash {
         }
     }
 
-/*
-update -> redraws the cash nodes in the dom
-    dying to write a generator function called on an interval for this.
-    should probably configure it to run in realtime if dev desires.
-    use Object.observe on register - bind to the dom element!
-setCurrency -> sets register.current; triggers update?
-    
-*/
+    setCurrency (currency) {
+        if (this.register.supportedCurrencies.indexOf(currency) === -1) {
+            throw new Error('currency not supported.');
+        }
+        this.register.current = currency;
+        this.constructor.exchange.call(this, currency);
+    }
 
-    update () {
+    static exchange (currency) {
+        let obj,
+            rate,
+            cache = this.register.metadata
 
+        for (id in cache) {
+            obj = {};
+            rate = this.register.currencies[currency].value;
+            Object.assign(cache[id], {
+                "currency": currency,
+                "rate": rate,
+                "exactValue": cache[id].exactValue * rate
+            });
+        }
     }
 }

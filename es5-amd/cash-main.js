@@ -10,11 +10,11 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
     var Settings = _interopRequire(_settings);
 
     var Cash = (function () {
-        function Cash(options) {
+        function Cash(options, isDom) {
             _classCallCheck(this, Cash);
 
             options = options || {};
-            this.register = new Settings(options.overrides || {});
+            this.register = new Settings(options.overrides || {}, isDom || false);
         }
 
         _prototypeProperties(Cash, {
@@ -27,41 +27,35 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             },
             formHash: {
-                value: function formHash(figure, keywords) {
+                value: function formHash(figure, register) {
                     var parseNums = function (num) {
                         if (!isNaN(+num)) {
                             return +num;
                         }
-                        return keywords.numberWords[num] || -1;
+                        return register.numberWords[num] || -1;
                     },
-                        nums = new RegExp("(?:\\d|" + keywords.numberStrings.join("|") + "|\\.|,)+", "gi"),
-                        multipliers = new RegExp("(?:" + keywords.magnitudeStrings.join("|") + ")+", "gi");
-
-                    return {
-                        currency: keywords.current,
+                        nums = new RegExp("(?:\\d|" + register.numberStrings.join("|") + "|\\.|,)+", "gi"),
+                        multipliers = new RegExp("(?:" + register.magnitudeStrings.join("|") + ")+", "gi"),
+                        hash = {
+                        currency: register.current,
+                        rate: register.currencies[register.current].value || 1,
                         str: figure,
                         coefficient: parseNums(figure.match(nums)[0].replace(",", "").trim()),
                         magnitude: (figure.match(multipliers) || []).map(function (mul) {
                             mul = mul.trim();
-                            if (keywords.magnitudeAbbreviations[mul]) {
-                                mul = keywords.magnitudeAbbreviations[mul];
+                            if (register.magnitudeAbbreviations[mul]) {
+                                mul = register.magnitudeAbbreviations[mul];
                             }
-                            return keywords.magnitudes[mul] || 1;
-                        })
-                    };
-                },
-                writable: true,
-                configurable: true
-            },
-            computeExactValue: {
-                value: function computeExactValue(hash) {
+                            return register.magnitudes[mul] || 1;
+                        }) };
                     hash.exactValue = (function () {
-                        var val = hash.coefficient;
+                        var val = hash.coefficient * hash.rate;
                         hash.magnitude.forEach(function (factor) {
                             val *= factor;
                         });
                         return val;
                     })();
+
                     return hash;
                 },
                 writable: true,
@@ -70,7 +64,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
             isValid: {
                 value: function isValid(figure, register) {
                     var currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes),
-                        hasCurrencySpec = new RegExp("(?:" + currencyStr.join(")|(?:") + ")", "i"),
+                        hasCurrencySpec = new RegExp("(?:" + currencyStr.join("|") + ")", "i"),
                         isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
                         return filter(figure);
                     });
@@ -105,7 +99,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         if (_this.constructor.isValid(figure, _this.register)) {
                             var guid = _this.constructor.generateGuid(),
                                 hash = _this.constructor.formHash(figure, _this.register);
-                            _this.register.cache = [guid, _this.constructor.computeExactValue(hash)];
+                            _this.register.cache = [guid, hash];
                             figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }
                         return figure;

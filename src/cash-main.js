@@ -1,9 +1,9 @@
 import Settings from 'settings';
 
 export default class Cash {
-    constructor (options) {
+    constructor (options, isDom) {
         options = options || {};
-        this.register = new Settings(options.overrides || {});
+        this.register = new Settings(options.overrides || {}, isDom || false);
     }
 
     tag (html) {
@@ -13,7 +13,7 @@ export default class Cash {
                 if (this.constructor.isValid(figure, this.register)) {
                     let guid = this.constructor.generateGuid(),
                         hash = this.constructor.formHash(figure, this.register);
-                    this.register.cache = [guid, this.constructor.computeExactValue(hash)];
+                    this.register.cache = [guid, hash];
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }
                 return figure;
@@ -47,45 +47,43 @@ export default class Cash {
         return (Math.random() + 1).toString(36).substring(7);
     }
 
-    static formHash (figure, keywords) {
+    static formHash (figure, register) {
         let parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
                 }
-                return keywords.numberWords[num] || -1;
+                return register.numberWords[num] || -1;
             },
             nums = new RegExp('(?:\\d|'
-                + keywords.numberStrings.join('|')
+                + register.numberStrings.join('|')
                 + '|\\.|,)+', 'gi'),
-            multipliers = new RegExp('(?:' + keywords.magnitudeStrings.join('|')
-                + ')+', 'gi');
+            multipliers = new RegExp('(?:' + register.magnitudeStrings.join('|')
+                + ')+', 'gi'),
+            hash = {
+                "currency": register.current,
+                "rate": register.currencies[register.current].value || 1,
+                "str": figure,
+                "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
+                "magnitude": (figure.match(multipliers) || []).map((mul) => {
+                    mul = mul.trim();
+                    if (register.magnitudeAbbreviations[mul]) {
+                        mul = register.magnitudeAbbreviations[mul];
+                    }
+                    return register.magnitudes[mul] || 1;
+                }),
+            };
+            hash.exactValue = () => {
+                let val = hash.coefficient * hash.rate;
+                hash.magnitude.forEach((factor) => {val *= factor});
+                return val;
+            }();
 
-        return {
-            "currency": keywords.current,
-            "str": figure,
-            "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
-            "magnitude": (figure.match(multipliers) || []).map((mul) => {
-                mul = mul.trim();
-                if (keywords.magnitudeAbbreviations[mul]) {
-                    mul = keywords.magnitudeAbbreviations[mul];
-                }
-                return keywords.magnitudes[mul] || 1;
-            })
-        };
-    }
-
-    static computeExactValue (hash) {
-        hash.exactValue = () => {
-            let val = hash.coefficient;
-            hash.magnitude.forEach((factor) => {val *= factor;});
-            return val;
-        }();
-        return hash;
+            return hash;
     }
 
     static isValid (figure, register) {
         let currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes),
-            hasCurrencySpec = new RegExp(`(?:${currencyStr.join(')|(?:')})`, 'i'),
+            hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
             isValidStr = hasCurrencySpec.test(figure)
                 && register.filters.every(function (filter) {
                     return filter(figure);

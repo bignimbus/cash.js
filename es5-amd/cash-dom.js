@@ -17,20 +17,39 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         function CashDom(options) {
             _classCallCheck(this, CashDom);
 
-            _get(Object.getPrototypeOf(CashDom.prototype), "constructor", this).call(this, options);
+            _get(Object.getPrototypeOf(CashDom.prototype), "constructor", this).call(this, options, true);
         }
 
         _inherits(CashDom, Cash);
 
-        _prototypeProperties(CashDom, null, {
+        _prototypeProperties(CashDom, {
+            exchange: {
+                value: function exchange(currency) {
+                    var obj = undefined,
+                        rate = undefined,
+                        cache = this.register.metadata;
+
+                    for (id in cache) {
+                        obj = {};
+                        rate = this.register.currencies[currency].value;
+                        Object.assign(cache[id], {
+                            currency: currency,
+                            rate: rate,
+                            exactValue: cache[id].exactValue * rate
+                        });
+                    }
+                },
+                writable: true,
+                configurable: true
+            }
+        }, {
             wrap: {
                 value: function wrap(nodes) {
                     var _this = this;
 
                     nodes = (typeof nodes === "string" ? [nodes] : nodes) || [];
-                    for (var _iterator = nodes[Symbol.iterator](), _step; !(_step = _iterator.next()).done;) {
-                        var node = _step.value;
-
+                    for (var node in nodes) {
+                        node = nodes[node];
                         $(node).each(function (i, el) {
                             var $el = $(el),
                                 html = $el.html() || "";
@@ -46,18 +65,14 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                 writable: true,
                 configurable: true
             },
-            update: {
-
-                /*
-                update -> redraws the cash nodes in the dom
-                    dying to write a generator function called on an interval for this.
-                    should probably configure it to run in realtime if dev desires.
-                    use Object.observe on register - bind to the dom element!
-                setCurrency -> sets register.current; triggers update?
-                    
-                */
-
-                value: function update() {},
+            setCurrency: {
+                value: function setCurrency(currency) {
+                    if (this.register.supportedCurrencies.indexOf(currency) === -1) {
+                        throw new Error("currency not supported.");
+                    }
+                    this.register.current = currency;
+                    this.constructor.exchange.call(this, currency);
+                },
                 writable: true,
                 configurable: true
             }

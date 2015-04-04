@@ -29,65 +29,68 @@
         });
     });
 
-    describe('exchange', function () {
+    describe('update', function () {
+        var $node;
 
-        beforeEach(function () {
+        beforeEach(function (done) {
             cash = new Cash();
+            $('body').append('<p id="testing">I have $100 in my pocket.</p>');
+            cash.wrap('#testing');
+            $node = $('#testing .cash-node').first();
+
+            cash.setValues({
+                "USD": 1,
+                "GBP": 2
+            });
+            cash.setCurrency("GBP");
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
         });
 
         afterEach(function () {
             cash = null;
+            $node = null;
         });
 
-        it('should update the DOM with the stored exchange rate values', function () {
-            $('body').append('<p id="testing">I have $100 in my pocket.</p>');
-            cash.wrap('#testing');
+        it('should update the DOM with the stored exchange rate values', function (done) {
+            expect($node.html()).toBe('GBP 200');
+            done();
+        });
+    });
 
-            var $node = $('#testing .cash-node').first(),
-                id = $node.attr('id');
+    describe('update',function () {
+        var $node;
+
+        beforeEach(function (done) {
+            cash = new Cash();
+            $('body').append('<p id="testing-two">I have USD 30 in my pocket.</p>');
+            cash.wrap('#testing-two');
+            $node = $('#testing-two .cash-node').first();
+
             cash.setValues({
-                "USD": 1,
-                "GBP": 2,
-                "EUR": 3,
-                "JPY": 4,
-                "CNY": 5,
-                "RUB": 6,
-                "CAD": 7,
-                "AUD": 8,
-                "INR": 9,
-                "MXN": 10,
-                "BRL": 11
+                "USD": 0.5
             });
-            cash.setCurrency("GBP");
 
-            // jquery not playing nice with jasmine, will add spec.  Observed
-            // working changes in DOM in browser.
+            cash.update();
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
+
         });
 
-        describe('update', function () {
-            beforeEach(function () {
-                cash = new Cash();
-            });
+        afterEach(function () {
+            cash = null;
+            $node = null;
+        });
 
-            afterEach(function () {
-                cash = null;
-            });
-
-            it('should update the dom with current values when called', function () {
-
-                $('body').append('<p id="testing-two">I have USD 30 in my pocket.</p>');
-                cash.wrap('#testing-two');
-
-                var $node = $('#testing-two .cash-node').first(),
-                    id = $node.attr('id');
-                cash.setValues({
-                    "USD": 0.5,
-                });
-                cash.update();
-
-                // jquery not playing nice with jasmine, will add spec.  Observed
-                // working changes in DOM in browser.
-            });
+        it('should update the dom with current values when called', function (done) {
+            expect($node.html()).toBe('USD 15');
+            done();
         });
     });
 })();

@@ -1,0 +1,40 @@
+{
+  "name": "cash.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/bignimbus/cash.js",
+  "authors": [
+    "Jeff Auriemma"
+  ],
+  "description": "modules for processing, parsing, and computing money strings. Easily hook into exchange-rate apis and update values on the fly. Works as a templating solution on the client or sever, also updates the DOM if you so desire.",
+  "main": "dist/cash.js",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "cash",
+    "money",
+    "templating",
+    "natural",
+    "language",
+    "exchange",
+    "exchange",
+    "rate",
+    "currency",
+    "internationalization",
+    "localization"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.11.2",
+    "object.observe": "~0.2.3"
+  }
+}

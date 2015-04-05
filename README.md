@@ -154,4 +154,6 @@ $.ajax({
 ```
 
 ## Contributing
-cash.js is written using ES6 syntax, transpiled using [babel](!https://babeljs.io/docs/using-babel/).  The DOM module also makes use of [Object.observe](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe) and [Object.assign](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), so there are some polyfill dependencies.  Want to help? Clone and `npm install --save-dev`.  I will try to keep track of current issues once the repo approaches stability.  There is a precommit hook that builds the app and runs the tests.  No need to run the build task unless you feel like it.
+cash.js is written using ES6 syntax, transpiled to AMD modules using [babel](!https://babeljs.io/docs/using-babel/).  AMD modules are compiled into one global module via [AMDClean](https://github.com/gfranko/amdclean).  The DOM module also makes use of [Object.observe](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe) and [Object.assign](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), so there are some polyfill dependencies.
+
+Want to help? Clone and `npm install --save-dev`.  I will try to keep track of current issues once the repo approaches stability.  There is a precommit hook that builds the app and runs the tests.  No need to run the build task unless you feel like it.

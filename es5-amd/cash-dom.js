@@ -17,7 +17,14 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         function CashDom(options) {
             _classCallCheck(this, CashDom);
 
+            options = options || {};
             _get(Object.getPrototypeOf(CashDom.prototype), "constructor", this).call(this, options, true);
+            this.register.metadata = {};
+            if (options.metadata) {
+                for (var id in options.metadata) {
+                    this.register.cache = options.metadata[id];
+                }
+            }
         }
 
         _inherits(CashDom, Cash);

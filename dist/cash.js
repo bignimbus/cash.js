@@ -39,10 +39,18 @@ settings = function (exports, _polyfills) {
   exports = Settings;
   function Settings(overrides, isDom) {
     Object.assign(this, {
+      // this tells the regex engine what currency to look for when tagging a string/DOM node.
       'default': 'USD',
-      current: 'USD',
+      // hash of all supported currencies.  Add or change these values at will.
       currencies: {
+        // these are the standard abbrevations for these currencies.  If you are
+        // adding currencies, it is highly recommended to use standard abbreviations.
         USD: {
+          // in order for a money string to pass the regex engine and filters,
+          // it must contain one of these prefixes or suffixes.
+          // new RegExp() will be called on these strings, so feel free to
+          // use your awesome regex skills and don't forget to escape
+          // special characters.
           prefixes: [
             'USD',
             '\\$'
@@ -53,8 +61,9 @@ settings = function (exports, _polyfills) {
             'bucks',
             '(?:(?:US[A]?|American)\\s)?dollar[s]?'
           ],
-          magnitudes: ['cent[s]?'],
-          value: 1
+          // some multipliers imply a certain currency and also change the value.
+          // list those, as well.
+          magnitudes: ['cent[s]?']
         },
         GBP: {
           prefixes: [
@@ -191,6 +200,7 @@ settings = function (exports, _polyfills) {
           ]
         }
       },
+      // should be self explanatory.
       magnitudes: {
         pence: 0.01,
         paise: 0.01,
@@ -204,11 +214,13 @@ settings = function (exports, _polyfills) {
         billion: 1000000000,
         trillion: 1000000000000
       },
+      // hash of abbreviations for magnitudes
       magnitudeAbbreviations: {
         mil: 'million',
         bil: 'billion',
         tril: 'trillion'
       },
+      // hash of values indexed to their English equivalents
       numberWords: {
         a: 1,
         one: 1,
@@ -228,8 +240,9 @@ settings = function (exports, _polyfills) {
         fifteen: 15,
         sixteen: 16
       },
-      metadata: {},
-      filters: []  // "mustHaveCurrencyCode": false, // TODO IMPLEMENT THIS
+      // array of functions added with the addFilters method.  You can pass these
+      // in as a setting as well.
+      filters: []
     }, overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
@@ -325,6 +338,8 @@ cash_main = function (exports, _settings) {
       _classCallCheck(this, Cash);
       options = options || {};
       this.register = new Settings(options.overrides || {}, isDom || false);
+      this.register.current = this.register['default'];
+      this.register.currencies[this.register.current].value = 1;
     }
     _prototypeProperties(Cash, {
       generateGuid: {
@@ -497,7 +512,14 @@ cash_dom = function (exports, _cashMain) {
   var CashDom = function (Cash) {
     function CashDom(options) {
       _classCallCheck(this, CashDom);
+      options = options || {};
       _get(Object.getPrototypeOf(CashDom.prototype), 'constructor', this).call(this, options, true);
+      this.register.metadata = {};
+      if (options.metadata) {
+        for (var id in options.metadata) {
+          this.register.cache = options.metadata[id];
+        }
+      }
     }
     _inherits(CashDom, Cash);
     _prototypeProperties(CashDom, {

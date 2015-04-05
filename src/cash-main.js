@@ -4,6 +4,8 @@ export default class Cash {
     constructor (options, isDom) {
         options = options || {};
         this.register = new Settings(options.overrides || {}, isDom || false);
+        this.register.current = this.register.default;
+        this.register.currencies[this.register.current].value = 1;
     }
 
     tag (html) {

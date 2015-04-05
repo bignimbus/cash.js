@@ -2,7 +2,14 @@ import Cash from 'cash-main';
 
 export default class CashDom extends Cash {
     constructor (options) {
+        options = options || {};
         super(options, true);
+        this.register.metadata = {};
+        if (options.metadata) {
+            for (var id in options.metadata) {
+                this.register.cache = options.metadata[id];
+            }
+        }
     }
 
     wrap (nodes) {

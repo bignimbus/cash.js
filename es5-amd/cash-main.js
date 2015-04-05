@@ -15,6 +15,8 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
 
             options = options || {};
             this.register = new Settings(options.overrides || {}, isDom || false);
+            this.register.current = this.register["default"];
+            this.register.currencies[this.register.current].value = 1;
         }
 
         _prototypeProperties(Cash, {

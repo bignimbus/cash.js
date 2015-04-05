@@ -61,8 +61,8 @@ cash.tag(sample);
 // output:
 'I got <span id="asdf3456" class="cash-node">five bucks</span> the other day.  That\'s <span id="3457gby3" class="cash-node">five dollars</span>, or <span id="urmng731" class="cash-node">$5.00</span>!'
 
-cash.addFilters(noBucks, noDollars);
-cash.tag(sample);
+cash.addFilters(noBucks, noDollars)
+    .tag(sample);
 
 // output with filters:
 'I got five bucks the other day.  That\'s five dollars, or <span id="efgh5678" class="cash-node">$5.00</span>!'
@@ -114,10 +114,10 @@ The best part: change the displayed currency and update all the cash-nodes in th
 ```js
 // main.js
 cash.setValues({
-    "USD": 1,
-    "MXN": 15
-});
-cash.setCurrency("MXN");
+        "USD": 1,
+        "MXN": 15
+    })
+    .setCurrency("MXN");
 ```
 
 ```html
@@ -139,11 +139,11 @@ $.ajax({
     "url": "www.fakeapi.com/stock-prices?symbol=GOOG",
     "success": function () {
         cash.setValues({
-            // this is possible, but you need to explicitly configure this
-            // in the settings object
-            "GOOG": 540
-        });
-        cash.update();
+                // this is possible, but you need to explicitly configure this
+                // in the settings object
+                "GOOG": 540
+            })
+            .update();
     }
 });
 ```

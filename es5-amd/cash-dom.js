@@ -62,6 +62,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                             }
                         });
                     }
+                    return this;
                 },
                 writable: true,
                 configurable: true
@@ -73,6 +74,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                     }
                     this.register.current = currency;
                     this.constructor.exchange.call(this, currency);
+                    return this;
                 },
                 writable: true,
                 configurable: true
@@ -80,6 +82,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
             update: {
                 value: function update() {
                     this.constructor.exchange.call(this);
+                    return this;
                 },
                 writable: true,
                 configurable: true

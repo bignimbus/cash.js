@@ -18,6 +18,7 @@ export default class CashDom extends Cash {
                 }
             });
         }
+        return this;
     }
 
     setCurrency (currency) {
@@ -26,10 +27,12 @@ export default class CashDom extends Cash {
         }
         this.register.current = currency;
         this.constructor.exchange.call(this, currency);
+        return this;
     }
 
     update () {
         this.constructor.exchange.call(this);
+        return this;
     }
 
     static exchange (currency) {

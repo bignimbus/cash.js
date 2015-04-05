@@ -15,10 +15,11 @@
         function () {
             var error;
             cash.setValues({
-                "USD": 1,
-                "JPY": 100
-            });
-            cash.setCurrency("JPY");
+                    "USD": 1,
+                    "JPY": 100
+                })
+                .setCurrency("JPY");
+
             expect(cash.register.current).toBe("JPY");
             try {
                 cash.setCurrency("INVALID");
@@ -39,10 +40,10 @@
             $node = $('#testing .cash-node').first();
 
             cash.setValues({
-                "USD": 1,
-                "GBP": 2
-            });
-            cash.setCurrency("GBP");
+                    "USD": 1,
+                    "GBP": 2
+                })
+                .setCurrency("GBP");
 
             var timer = window.setTimeout(function () {
                     done();
@@ -71,10 +72,9 @@
             $node = $('#testing-two .cash-node').first();
 
             cash.setValues({
-                "USD": 0.5
-            });
-
-            cash.update();
+                    "USD": 0.5
+                })
+                .update();
 
             var timer = window.setTimeout(function () {
                     done();

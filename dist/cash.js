@@ -415,6 +415,7 @@ cash_main = function (exports, _settings) {
             return typeof filter === 'function';
           });
           this.register.filters = this.register.filters.concat(filters);
+          return this;
         },
         writable: true,
         configurable: true
@@ -431,6 +432,7 @@ cash_main = function (exports, _settings) {
               this.register.currencies[currency].value = value;
             }
           }
+          return this;
         },
         writable: true,
         configurable: true
@@ -533,6 +535,7 @@ cash_dom = function (exports, _cashMain) {
               }
             });
           }
+          return this;
         },
         writable: true,
         configurable: true
@@ -544,6 +547,7 @@ cash_dom = function (exports, _cashMain) {
           }
           this.register.current = currency;
           this.constructor.exchange.call(this, currency);
+          return this;
         },
         writable: true,
         configurable: true
@@ -551,6 +555,7 @@ cash_dom = function (exports, _cashMain) {
       update: {
         value: function update() {
           this.constructor.exchange.call(this);
+          return this;
         },
         writable: true,
         configurable: true

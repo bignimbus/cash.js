@@ -27,6 +27,7 @@ export default class Cash {
             return typeof filter === "function";
         });
         this.register.filters = this.register.filters.concat(filters);
+        return this;
     }
 
     setValues (hash) {
@@ -40,6 +41,7 @@ export default class Cash {
                 this.register.currencies[currency].value = value;
             }
         }
+        return this;
     }
 
     static generateGuid () {

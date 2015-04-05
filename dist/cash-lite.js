@@ -415,6 +415,7 @@ cash_main = function (exports, _settings) {
             return typeof filter === 'function';
           });
           this.register.filters = this.register.filters.concat(filters);
+          return this;
         },
         writable: true,
         configurable: true
@@ -431,6 +432,7 @@ cash_main = function (exports, _settings) {
               this.register.currencies[currency].value = value;
             }
           }
+          return this;
         },
         writable: true,
         configurable: true

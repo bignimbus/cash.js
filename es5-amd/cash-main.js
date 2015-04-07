@@ -34,7 +34,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                         if (!isNaN(+num)) {
                             return +num;
                         }
-                        return register.numberWords[num] || -1;
+                        return register.numberWords[num] || 1;
                     },
                         nums = new RegExp("(?:\\d|" + register.numberStrings.join("|") + "|\\.|,)+", "gi"),
                         multipliers = new RegExp("(?:" + register.magnitudeStrings.join("|") + ")+", "gi"),
@@ -79,7 +79,7 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 value: function buildRegex(keywords) {
                     var magnitudes = keywords.magnitudeStrings.join("|"),
                         prefixes = keywords.prefixes.join("|"),
-                        suffixes = keywords.suffixes.join("|"),
+                        suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join("|"),
                         numberStr = keywords.numberStrings.join("|"),
 
                     // work in progress; needs TLC:

@@ -6,7 +6,7 @@ export default function Settings (overrides, isDom) {
         "default": "USD",
         // hash of all supported currencies.  Add or change these values at will.
         "currencies": {
-            // these are the standard abbrevations for these currencies.  If you are
+            // these areg the standard abbrevations for these currencies.  If you are
             // adding currencies, it is highly recommended to use standard abbreviations.
             "USD": {
                 // in order for a money string to pass the regex engine and filters,
@@ -15,14 +15,14 @@ export default function Settings (overrides, isDom) {
                 // use your awesome regex skills and don't forget to escape
                 // special characters.
                 "prefixes": ["USD", "\\$"],
-                "suffixes": ["USD", "\\$", "bucks", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
+                "suffixes": ["USD", "\\$", "buck[s]?", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
                 // some multipliers imply a certain currency and also change the value.
                 // list those, as well.
                 "magnitudes": ["cent[s]?"]
             },
             "GBP": {
                 "prefixes": ["GBP", "£"],
-                "suffixes": ["GBP", "£", "quid", "pound[s]?"],
+                "suffixes": ["GBP", "£", "quid", "(?:English\\s)?pound[s]?"],
                 "magnitudes": ["pence"]
             },
             "EUR": {
@@ -35,7 +35,7 @@ export default function Settings (overrides, isDom) {
             },
             "CNY": {
                 "prefixes": ["CNY", "yuan", "¥"],
-                "suffixes": ["CNY", "yuan", "¥", "(?:Chin(?:a|ese)\\s)?renminbi"]
+                "suffixes": ["CNY", "yuan", "¥", "(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)"]
             },
             "RUB": {
                 "prefixes": ["RUB", "руб"],
@@ -52,19 +52,19 @@ export default function Settings (overrides, isDom) {
                 "magnitudes": ["cent[s]?"]
             },
             "INR": {
-                "prefixes": ["INR", "Rs\\.?"],
-                "suffixes": ["INR", "Rs\\.?", "(?:India(?:n)\\s)?rupee[s]?"],
+                "prefixes": ["INR", "Rs\\.*?"],
+                "suffixes": ["INR", "Rs\\.*?", "(?:India(?:n)\\s)?rupee[s]?"],
                 "magnitudes": ["paise", "lakh", "crore"]
             },
             "MXN": {
-                "prefixes": ["MXN", "Mgex\\$", "\\$"],
+                "prefixes": ["MXN", "Mex\\$", "\\$"],
                 "suffixes": ["MXN", "Mex\\$", "\\$", "(?:Mexic(?:o|an)\\s)?peso[s]?"],
-                "magnitudes": ["centavo", "cent[s]?"]
+                "magnitudes": ["centavo[s]?", "cent[s]?"]
             },
             "BRL": {
                 "prefixes": ["BRL", "R\\$"],
-                "suffixes": ["BRL", "Real(?:es)?", "R\\$", "(?:Brazil(?:ian)?\\s)?real(?:es)?"],
-                "magnitudes": ["centavo", "cent[s]?"]
+                "suffixes": ["BRL", "Real(?:es)?", "R\\$", "(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?"],
+                "magnitudes": ["centavo[s]?", "cent[s]?"]
             }
         },
         // should be self explanatory.
@@ -89,7 +89,7 @@ export default function Settings (overrides, isDom) {
         },
         // hash of values indexed to their English equivalents
         "numberWords": {
-            "a": 1,
+            "a\\s": 1,
             "one": 1,
             "two": 2,
             "three": 3,
@@ -128,11 +128,11 @@ export default function Settings (overrides, isDom) {
         },
         "prefixes": {
             "get": function () {
-                return this.currencies[this.default].prefixes;
+                return this.currencies[this.current].prefixes || [];
             },
             "set": function (prefixes) {
                 if (prefixes instanceof Array) {
-                    this.currencies[this.default].prefixes = prefixes;
+                    this.currencies[this.current].prefixes = prefixes;
                 } else {
                     throw new Error('prefixes must be expressed as an array of strings');
                 }
@@ -140,11 +140,11 @@ export default function Settings (overrides, isDom) {
         },
         "suffixes": {
             "get": function () {
-                return this.currencies[this.default].suffixes;
+                return this.currencies[this.current].suffixes || [];
             },
             "set": function (suffixes) {
                 if (suffixes instanceof Array) {
-                    this.currencies[this.default].suffixes = suffixes;
+                    this.currencies[this.current].suffixes = suffixes;
                 } else {
                     throw new Error('suffixes must be expressed as an array of strings');
                 }
@@ -152,7 +152,7 @@ export default function Settings (overrides, isDom) {
         },
         "specialMagnitudes": {
             "get": function () {
-                return this.currencies[this.default].magnitudes;
+                return this.currencies[this.current].magnitudes || [];
             }
         },
         "magnitudeStrings": {

@@ -46,6 +46,7 @@ export default class CashDom extends Cash {
         currency = currency || this.register.current;
         let obj,
             rate,
+            oldRate,
             cache = this.register.metadata
 
         for (id in cache) {

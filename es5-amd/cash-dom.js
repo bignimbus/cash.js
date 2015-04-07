@@ -35,6 +35,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                     currency = currency || this.register.current;
                     var obj = undefined,
                         rate = undefined,
+                        oldRate = undefined,
                         cache = this.register.metadata;
 
                     for (id in cache) {

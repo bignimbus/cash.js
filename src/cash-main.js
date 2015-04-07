@@ -56,7 +56,7 @@ export default class Cash {
                 if (!isNaN(+num)) {
                     return +num;
                 }
-                return register.numberWords[num] || -1;
+                return register.numberWords[num] || 1;
             },
             nums = new RegExp('(?:\\d|'
                 + register.numberStrings.join('|')
@@ -98,7 +98,7 @@ export default class Cash {
     static buildRegex (keywords) {
         let magnitudes = keywords.magnitudeStrings.join('|'),
             prefixes = keywords.prefixes.join('|'),
-            suffixes = keywords.suffixes.join('|'),
+            suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'),
             numberStr = keywords.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+'

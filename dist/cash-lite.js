@@ -43,7 +43,7 @@ settings = function (exports, _polyfills) {
       'default': 'USD',
       // hash of all supported currencies.  Add or change these values at will.
       currencies: {
-        // these are the standard abbrevations for these currencies.  If you are
+        // these areg the standard abbrevations for these currencies.  If you are
         // adding currencies, it is highly recommended to use standard abbreviations.
         USD: {
           // in order for a money string to pass the regex engine and filters,
@@ -58,7 +58,7 @@ settings = function (exports, _polyfills) {
           suffixes: [
             'USD',
             '\\$',
-            'bucks',
+            'buck[s]?',
             '(?:(?:US[A]?|American)\\s)?dollar[s]?'
           ],
           // some multipliers imply a certain currency and also change the value.
@@ -74,7 +74,7 @@ settings = function (exports, _polyfills) {
             'GBP',
             '\xA3',
             'quid',
-            'pound[s]?'
+            '(?:English\\s)?pound[s]?'
           ],
           magnitudes: ['pence']
         },
@@ -110,7 +110,7 @@ settings = function (exports, _polyfills) {
             'CNY',
             'yuan',
             '\xA5',
-            '(?:Chin(?:a|ese)\\s)?renminbi'
+            '(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)'
           ]
         },
         RUB: {
@@ -153,11 +153,11 @@ settings = function (exports, _polyfills) {
         INR: {
           prefixes: [
             'INR',
-            'Rs\\.?'
+            'Rs\\.*?'
           ],
           suffixes: [
             'INR',
-            'Rs\\.?',
+            'Rs\\.*?',
             '(?:India(?:n)\\s)?rupee[s]?'
           ],
           magnitudes: [
@@ -169,7 +169,7 @@ settings = function (exports, _polyfills) {
         MXN: {
           prefixes: [
             'MXN',
-            'Mgex\\$',
+            'Mex\\$',
             '\\$'
           ],
           suffixes: [
@@ -179,7 +179,7 @@ settings = function (exports, _polyfills) {
             '(?:Mexic(?:o|an)\\s)?peso[s]?'
           ],
           magnitudes: [
-            'centavo',
+            'centavo[s]?',
             'cent[s]?'
           ]
         },
@@ -192,10 +192,10 @@ settings = function (exports, _polyfills) {
             'BRL',
             'Real(?:es)?',
             'R\\$',
-            '(?:Brazil(?:ian)?\\s)?real(?:es)?'
+            '(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?'
           ],
           magnitudes: [
-            'centavo',
+            'centavo[s]?',
             'cent[s]?'
           ]
         }
@@ -222,7 +222,7 @@ settings = function (exports, _polyfills) {
       },
       // hash of values indexed to their English equivalents
       numberWords: {
-        a: 1,
+        'a\\s': 1,
         one: 1,
         two: 2,
         three: 3,
@@ -258,11 +258,11 @@ settings = function (exports, _polyfills) {
       },
       prefixes: {
         get: function () {
-          return this.currencies[this['default']].prefixes;
+          return this.currencies[this.current].prefixes || [];
         },
         set: function (prefixes) {
           if (prefixes instanceof Array) {
-            this.currencies[this['default']].prefixes = prefixes;
+            this.currencies[this.current].prefixes = prefixes;
           } else {
             throw new Error('prefixes must be expressed as an array of strings');
           }
@@ -270,11 +270,11 @@ settings = function (exports, _polyfills) {
       },
       suffixes: {
         get: function () {
-          return this.currencies[this['default']].suffixes;
+          return this.currencies[this.current].suffixes || [];
         },
         set: function (suffixes) {
           if (suffixes instanceof Array) {
-            this.currencies[this['default']].suffixes = suffixes;
+            this.currencies[this.current].suffixes = suffixes;
           } else {
             throw new Error('suffixes must be expressed as an array of strings');
           }
@@ -282,7 +282,7 @@ settings = function (exports, _polyfills) {
       },
       specialMagnitudes: {
         get: function () {
-          return this.currencies[this['default']].magnitudes;
+          return this.currencies[this.current].magnitudes || [];
         }
       },
       magnitudeStrings: {
@@ -356,7 +356,7 @@ cash_main = function (exports, _settings) {
               if (!isNaN(+num)) {
                 return +num;
               }
-              return register.numberWords[num] || -1;
+              return register.numberWords[num] || 1;
             }, nums = new RegExp('(?:\\d|' + register.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
               currency: register.current,
               rate: register.currencies[register.current].value || 1,
@@ -394,7 +394,7 @@ cash_main = function (exports, _settings) {
       },
       buildRegex: {
         value: function buildRegex(keywords) {
-          var magnitudes = keywords.magnitudeStrings.join('|'), prefixes = keywords.prefixes.join('|'), suffixes = keywords.suffixes.join('|'), numberStr = keywords.numberStrings.join('|'),
+          var magnitudes = keywords.magnitudeStrings.join('|'), prefixes = keywords.prefixes.join('|'), suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'), numberStr = keywords.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+' + '[\\.\\b\\s]?' + ')?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)' + '+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*' + '(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
           return regex;

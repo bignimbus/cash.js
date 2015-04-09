@@ -6,7 +6,10 @@ module.exports = function (grunt) {
                 "options": {
                     "specs": 'tests/*.spec.js',
                     "version": '2.1.4',
-                    "vendor": 'bower_components/jquery/dist/jquery.js',
+                    "vendor": [
+                        'bower_components/jquery/dist/jquery.js',
+                        'bower_components/object.observe/dist/object-observe.min.js'
+                    ],
                     "keepRunner": true
                 }
             }

@@ -108,7 +108,7 @@
         });
 
         it('should detect all default permutations of GBP', function () {
-            cash.setCurrency("GBP");
+            cash.lookFor("GBP");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -128,7 +128,7 @@
         });
 
         it('should detect all default permutations of EUR', function () {
-            cash.setCurrency("EUR");
+            cash.lookFor("EUR");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -148,7 +148,7 @@
         });
 
         it('should detect all default permutations of JPY', function () {
-            cash.setCurrency("JPY");
+            cash.lookFor("JPY");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -168,7 +168,7 @@
         });
 
         it('should detect all default permutations of CNY', function () {
-            cash.setCurrency("CNY");
+            cash.lookFor("CNY");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -188,7 +188,7 @@
         });
 
         it('should detect all default permutations of RUB', function () {
-            cash.setCurrency("RUB");
+            cash.lookFor("RUB");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -208,7 +208,7 @@
         });
 
         it('should detect all default permutations of CAD', function () {
-            cash.setCurrency("CAD");
+            cash.lookFor("CAD");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -228,7 +228,7 @@
         });
 
         it('should detect all default permutations of AUD', function () {
-            cash.setCurrency("AUD");
+            cash.lookFor("AUD");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -248,7 +248,7 @@
         });
 
         it('should detect all default permutations of INR', function () {
-            cash.setCurrency("INR");
+            cash.lookFor("INR");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -268,7 +268,7 @@
         });
 
         it('should detect all default permutations of MXN', function () {
-            cash.setCurrency("MXN");
+            cash.lookFor("MXN");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',
@@ -288,7 +288,7 @@
         });
 
         it('should detect all default permutations of BRL', function () {
-            cash.setCurrency("BRL");
+            cash.lookFor("BRL");
             var samplehtml = [
                     '<p>',
                     'My name is Sheldon.',

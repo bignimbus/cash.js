@@ -15,8 +15,6 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
 
             options = options || {};
             this.register = new Settings(options.overrides || {}, isDom || false);
-            this.register.current = this.register["default"];
-            this.register.currencies[this.register.current].value = 1;
         }
 
         _prototypeProperties(Cash, {
@@ -29,26 +27,29 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             },
             formHash: {
-                value: function formHash(figure, register) {
-                    var parseNums = function (num) {
+                value: function formHash(figure) {
+                    var _this = this;
+
+                    var currency = this.constructor.inferCurrency.call(this, figure),
+                        parseNums = function (num) {
                         if (!isNaN(+num)) {
                             return +num;
                         }
-                        return register.numberWords[num] || 1;
+                        return _this.register.numberWords[num] || 1;
                     },
-                        nums = new RegExp("(?:\\d|" + register.numberStrings.join("|") + "|\\.|,)+", "gi"),
-                        multipliers = new RegExp("(?:" + register.magnitudeStrings.join("|") + ")+", "gi"),
+                        nums = new RegExp("(?:\\d|" + this.register.numberStrings.join("|") + "|\\.|,)+", "gi"),
+                        multipliers = new RegExp("(?:" + this.register.magnitudeStrings.join("|") + ")+", "gi"),
                         hash = {
-                        currency: register.current,
-                        rate: register.currencies[register.current].value || 1,
+                        currency: currency,
+                        rate: this.register.currencies[currency].value || 1,
                         str: figure,
                         coefficient: parseNums(figure.match(nums)[0].replace(",", "").trim()),
                         magnitude: (figure.match(multipliers) || []).map(function (mul) {
                             mul = mul.trim();
-                            if (register.magnitudeAbbreviations[mul]) {
-                                mul = register.magnitudeAbbreviations[mul];
+                            if (_this.register.magnitudeAbbreviations[mul]) {
+                                mul = _this.register.magnitudeAbbreviations[mul];
                             }
-                            return register.magnitudes[mul] || 1;
+                            return _this.register.magnitudes[mul] || 1;
                         }) };
                     hash.exactValue = (function () {
                         var val = hash.coefficient * hash.rate;
@@ -63,11 +64,35 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 writable: true,
                 configurable: true
             },
+            inferCurrency: {
+                value: function inferCurrency(figure) {
+                    var _this = this;
+
+                    var match = undefined,
+                        regex = undefined,
+                        found = undefined,
+                        currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+                    currencies = "(?:" + currencies.join("|") + ")";
+                    regex = new RegExp(currencies, "i");
+                    match = figure.match(regex)[0];
+                    this.register.supported.forEach(function (currency) {
+                        var current = _this.register.currencies[currency],
+                            symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
+                        symbols = new RegExp("(?:" + symbols.join("|") + ")", "i");
+                        if (symbols.test(match)) {
+                            found = currency;
+                        }
+                    });
+                    return found;
+                },
+                writable: true,
+                configurable: true
+            },
             isValid: {
-                value: function isValid(figure, register) {
-                    var currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes),
+                value: function isValid(figure) {
+                    var currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
                         hasCurrencySpec = new RegExp("(?:" + currencyStr.join("|") + ")", "i"),
-                        isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
+                        isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
                         return filter(figure);
                     });
                     return isValidStr;
@@ -91,6 +116,18 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                 configurable: true
             }
         }, {
+            lookFor: {
+                value: function lookFor() {
+                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+                        currencies[_key] = arguments[_key];
+                    }
+
+                    this.register.supported = currencies;
+                    return this;
+                },
+                writable: true,
+                configurable: true
+            },
             tag: {
                 value: function tag(html) {
                     var _this = this;
@@ -98,9 +135,9 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
                     var moneyStrings = this.constructor.buildRegex(this.register),
                         wrapped = html.replace(moneyStrings, function (figure) {
                         figure = figure.trim();
-                        if (_this.constructor.isValid(figure, _this.register)) {
+                        if (_this.constructor.isValid.call(_this, figure)) {
                             var guid = _this.constructor.generateGuid(),
-                                hash = _this.constructor.formHash(figure, _this.register);
+                                hash = _this.constructor.formHash.call(_this, figure);
                             _this.register.cache = [guid, hash];
                             figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }
@@ -125,7 +162,6 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
             },
             setValues: {
                 value: function setValues(hash) {
-                    // always make the default currency worth 1
                     if (!(hash instanceof Object)) {
                         throw new Error("exchange rates must be passed as an object, e.g.{\"USD\": 1, \"EUR\": 0.92}");
                     }

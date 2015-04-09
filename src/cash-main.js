@@ -4,17 +4,20 @@ export default class Cash {
     constructor (options, isDom) {
         options = options || {};
         this.register = new Settings(options.overrides || {}, isDom || false);
-        this.register.current = this.register.default;
-        this.register.currencies[this.register.current].value = 1;
+    }
+
+    lookFor (...currencies) {
+        this.register.supported = currencies;
+        return this;
     }
 
     tag (html) {
         let moneyStrings = this.constructor.buildRegex(this.register),
             wrapped = html.replace(moneyStrings, (figure) => {
                 figure = figure.trim();
-                if (this.constructor.isValid(figure, this.register)) {
+                if (this.constructor.isValid.call(this, figure)) {
                     let guid = this.constructor.generateGuid(),
-                        hash = this.constructor.formHash(figure, this.register);
+                        hash = this.constructor.formHash.call(this, figure);
                     this.register.cache = [guid, hash];
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }
@@ -33,7 +36,6 @@ export default class Cash {
     }
 
     setValues (hash) {
-        // always make the default currency worth 1
         if (!(hash instanceof Object)) {
             throw new Error('exchange rates must be passed as an object, e.g.{"USD": 1, "EUR": 0.92}');
         }
@@ -51,29 +53,30 @@ export default class Cash {
         return (Math.random() + 1).toString(36).substring(7);
     }
 
-    static formHash (figure, register) {
-        let parseNums = (num) => {
+    static formHash (figure) {
+        let currency = this.constructor.inferCurrency.call(this, figure),
+            parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
                 }
-                return register.numberWords[num] || 1;
+                return this.register.numberWords[num] || 1;
             },
             nums = new RegExp('(?:\\d|'
-                + register.numberStrings.join('|')
+                + this.register.numberStrings.join('|')
                 + '|\\.|,)+', 'gi'),
-            multipliers = new RegExp('(?:' + register.magnitudeStrings.join('|')
+            multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|')
                 + ')+', 'gi'),
             hash = {
-                "currency": register.current,
-                "rate": register.currencies[register.current].value || 1,
+                "currency": currency,
+                "rate": this.register.currencies[currency].value || 1,
                 "str": figure,
                 "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
                 "magnitude": (figure.match(multipliers) || []).map((mul) => {
                     mul = mul.trim();
-                    if (register.magnitudeAbbreviations[mul]) {
-                        mul = register.magnitudeAbbreviations[mul];
+                    if (this.register.magnitudeAbbreviations[mul]) {
+                        mul = this.register.magnitudeAbbreviations[mul];
                     }
-                    return register.magnitudes[mul] || 1;
+                    return this.register.magnitudes[mul] || 1;
                 }),
             };
             hash.exactValue = () => {
@@ -85,11 +88,30 @@ export default class Cash {
             return hash;
     }
 
-    static isValid (figure, register) {
-        let currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes),
+    static inferCurrency (figure) {
+        let match,
+            regex,
+            found,
+            currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+        currencies = `(?:${currencies.join('|')})`;
+        regex = new RegExp(currencies, 'i');
+        match = figure.match(regex)[0];
+        this.register.supported.forEach((currency) => {
+            let current = this.register.currencies[currency],
+                symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
+                symbols = new RegExp(`(?:${symbols.join('|')})`, 'i');
+            if (symbols.test(match)) {
+                found = currency;
+            }
+        });
+        return found;
+    }
+
+    static isValid (figure) {
+        let currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
             hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
             isValidStr = hasCurrencySpec.test(figure)
-                && register.filters.every(function (filter) {
+                && this.register.filters.every(function (filter) {
                     return filter(figure);
                 });
         return isValidStr;

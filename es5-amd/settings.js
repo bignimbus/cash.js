@@ -5,7 +5,7 @@ define(["exports", "module", "polyfills"], function (exports, module, _polyfills
     function Settings(overrides, isDom) {
         Object.assign(this, {
             // this tells the regex engine what currency to look for when tagging a string/DOM node.
-            "default": "USD",
+            supported: ["USD"],
             // hash of all supported currencies.  Add or change these values at will.
             currencies: {
                 // these areg the standard abbrevations for these currencies.  If you are
@@ -117,9 +117,11 @@ define(["exports", "module", "polyfills"], function (exports, module, _polyfills
         Object.defineProperties(this, {
             supportedCurrencies: {
                 get: function () {
+                    var _this = this;
+
                     var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
-                        return this.currencies[currency].prefixes.length && this.currencies[currency].suffixes.length && this.currencies[currency].value !== void 0;
-                    }, this);
+                        return _this.currencies[currency].prefixes.length && _this.currencies[currency].suffixes.length && _this.currencies[currency].value !== void 0;
+                    });
                     if (validCurrencies.length) {
                         return validCurrencies;
                     }
@@ -128,31 +130,35 @@ define(["exports", "module", "polyfills"], function (exports, module, _polyfills
             },
             prefixes: {
                 get: function () {
-                    return this.currencies[this.current].prefixes || [];
-                },
-                set: function (prefixes) {
-                    if (prefixes instanceof Array) {
-                        this.currencies[this.current].prefixes = prefixes;
-                    } else {
-                        throw new Error("prefixes must be expressed as an array of strings");
-                    }
+                    var _this = this;
+
+                    var prefixes = [];
+                    this.supported.forEach((function (currency) {
+                        prefixes = prefixes.concat(_this.currencies[currency].prefixes || []);
+                    }).bind(this));
+                    return prefixes;
                 }
             },
             suffixes: {
                 get: function () {
-                    return this.currencies[this.current].suffixes || [];
-                },
-                set: function (suffixes) {
-                    if (suffixes instanceof Array) {
-                        this.currencies[this.current].suffixes = suffixes;
-                    } else {
-                        throw new Error("suffixes must be expressed as an array of strings");
-                    }
+                    var _this = this;
+
+                    var suffixes = [];
+                    this.supported.forEach((function (currency) {
+                        suffixes = suffixes.concat(_this.currencies[currency].suffixes || []);
+                    }).bind(this));
+                    return suffixes;
                 }
             },
             specialMagnitudes: {
                 get: function () {
-                    return this.currencies[this.current].magnitudes || [];
+                    var _this = this;
+
+                    var magnitudes = [];
+                    this.supported.forEach((function (currency) {
+                        magnitudes = magnitudes.concat(_this.currencies[currency].magnitudes || []);
+                    }).bind(this));
+                    return magnitudes;
                 }
             },
             magnitudeStrings: {

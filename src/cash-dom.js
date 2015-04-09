@@ -43,19 +43,23 @@ export default class CashDom extends Cash {
     }
 
     static exchange (currency) {
-        currency = currency || this.register.current;
         let obj,
             rate,
+            current,
             oldRate,
-            cache = this.register.metadata
+            multiplier,
+            cache = this.register.metadata;
 
         for (id in cache) {
             obj = {};
-            rate = this.register.currencies[currency].value;
+            oldRate = currency ? this.register.currencies[cache[id].currency].value : 1;
+            current = currency || cache[id].currency;
+            rate = this.register.currencies[current].value;
+            multiplier = 1 / oldRate;
             Object.assign(cache[id], {
-                "currency": currency,
+                "currency": current,
                 "rate": rate,
-                "exactValue": cache[id].exactValue * rate
+                "exactValue": cache[id].exactValue * multiplier * rate
             });
         }
     }

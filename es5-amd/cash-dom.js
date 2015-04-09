@@ -32,19 +32,23 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         _prototypeProperties(CashDom, {
             exchange: {
                 value: function exchange(currency) {
-                    currency = currency || this.register.current;
                     var obj = undefined,
                         rate = undefined,
+                        current = undefined,
                         oldRate = undefined,
+                        multiplier = undefined,
                         cache = this.register.metadata;
 
                     for (id in cache) {
                         obj = {};
-                        rate = this.register.currencies[currency].value;
+                        oldRate = currency ? this.register.currencies[cache[id].currency].value : 1;
+                        current = currency || cache[id].currency;
+                        rate = this.register.currencies[current].value;
+                        multiplier = 1 / oldRate;
                         Object.assign(cache[id], {
-                            currency: currency,
+                            currency: current,
                             rate: rate,
-                            exactValue: cache[id].exactValue * rate
+                            exactValue: cache[id].exactValue * multiplier * rate
                         });
                     }
                 },

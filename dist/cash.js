@@ -40,7 +40,7 @@ settings = function (exports, _polyfills) {
   function Settings(overrides, isDom) {
     Object.assign(this, {
       // this tells the regex engine what currency to look for when tagging a string/DOM node.
-      'default': 'USD',
+      supported: ['USD'],
       // hash of all supported currencies.  Add or change these values at will.
       currencies: {
         // these areg the standard abbrevations for these currencies.  If you are
@@ -247,9 +247,10 @@ settings = function (exports, _polyfills) {
     Object.defineProperties(this, {
       supportedCurrencies: {
         get: function () {
+          var _this = this;
           var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
-            return this.currencies[currency].prefixes.length && this.currencies[currency].suffixes.length && this.currencies[currency].value !== void 0;
-          }, this);
+            return _this.currencies[currency].prefixes.length && _this.currencies[currency].suffixes.length && _this.currencies[currency].value !== void 0;
+          });
           if (validCurrencies.length) {
             return validCurrencies;
           }
@@ -258,31 +259,32 @@ settings = function (exports, _polyfills) {
       },
       prefixes: {
         get: function () {
-          return this.currencies[this.current].prefixes || [];
-        },
-        set: function (prefixes) {
-          if (prefixes instanceof Array) {
-            this.currencies[this.current].prefixes = prefixes;
-          } else {
-            throw new Error('prefixes must be expressed as an array of strings');
-          }
+          var _this = this;
+          var prefixes = [];
+          this.supported.forEach(function (currency) {
+            prefixes = prefixes.concat(_this.currencies[currency].prefixes || []);
+          }.bind(this));
+          return prefixes;
         }
       },
       suffixes: {
         get: function () {
-          return this.currencies[this.current].suffixes || [];
-        },
-        set: function (suffixes) {
-          if (suffixes instanceof Array) {
-            this.currencies[this.current].suffixes = suffixes;
-          } else {
-            throw new Error('suffixes must be expressed as an array of strings');
-          }
+          var _this = this;
+          var suffixes = [];
+          this.supported.forEach(function (currency) {
+            suffixes = suffixes.concat(_this.currencies[currency].suffixes || []);
+          }.bind(this));
+          return suffixes;
         }
       },
       specialMagnitudes: {
         get: function () {
-          return this.currencies[this.current].magnitudes || [];
+          var _this = this;
+          var magnitudes = [];
+          this.supported.forEach(function (currency) {
+            magnitudes = magnitudes.concat(_this.currencies[currency].magnitudes || []);
+          }.bind(this));
+          return magnitudes;
         }
       },
       magnitudeStrings: {
@@ -338,8 +340,6 @@ cash_main = function (exports, _settings) {
       _classCallCheck(this, Cash);
       options = options || {};
       this.register = new Settings(options.overrides || {}, isDom || false);
-      this.register.current = this.register['default'];
-      this.register.currencies[this.register.current].value = 1;
     }
     _prototypeProperties(Cash, {
       generateGuid: {
@@ -351,23 +351,24 @@ cash_main = function (exports, _settings) {
         configurable: true
       },
       formHash: {
-        value: function formHash(figure, register) {
-          var parseNums = function (num) {
+        value: function formHash(figure) {
+          var _this = this;
+          var currency = this.constructor.inferCurrency.call(this, figure), parseNums = function (num) {
               if (!isNaN(+num)) {
                 return +num;
               }
-              return register.numberWords[num] || 1;
-            }, nums = new RegExp('(?:\\d|' + register.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
-              currency: register.current,
-              rate: register.currencies[register.current].value || 1,
+              return _this.register.numberWords[num] || 1;
+            }, nums = new RegExp('(?:\\d|' + this.register.numberStrings.join('|') + '|\\.|,)+', 'gi'), multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
+              currency: currency,
+              rate: this.register.currencies[currency].value || 1,
               str: figure,
               coefficient: parseNums(figure.match(nums)[0].replace(',', '').trim()),
               magnitude: (figure.match(multipliers) || []).map(function (mul) {
                 mul = mul.trim();
-                if (register.magnitudeAbbreviations[mul]) {
-                  mul = register.magnitudeAbbreviations[mul];
+                if (_this.register.magnitudeAbbreviations[mul]) {
+                  mul = _this.register.magnitudeAbbreviations[mul];
                 }
-                return register.magnitudes[mul] || 1;
+                return _this.register.magnitudes[mul] || 1;
               })
             };
           hash.exactValue = function () {
@@ -382,9 +383,28 @@ cash_main = function (exports, _settings) {
         writable: true,
         configurable: true
       },
+      inferCurrency: {
+        value: function inferCurrency(figure) {
+          var _this = this;
+          var match = undefined, regex = undefined, found = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+          currencies = '(?:' + currencies.join('|') + ')';
+          regex = new RegExp(currencies, 'i');
+          match = figure.match(regex)[0];
+          this.register.supported.forEach(function (currency) {
+            var current = _this.register.currencies[currency], symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
+            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i');
+            if (symbols.test(match)) {
+              found = currency;
+            }
+          });
+          return found;
+        },
+        writable: true,
+        configurable: true
+      },
       isValid: {
-        value: function isValid(figure, register) {
-          var currencyStr = [].concat(register.prefixes, register.suffixes, register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && register.filters.every(function (filter) {
+        value: function isValid(figure) {
+          var currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
               return filter(figure);
             });
           return isValidStr;
@@ -403,13 +423,24 @@ cash_main = function (exports, _settings) {
         configurable: true
       }
     }, {
+      lookFor: {
+        value: function lookFor() {
+          for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+            currencies[_key] = arguments[_key];
+          }
+          this.register.supported = currencies;
+          return this;
+        },
+        writable: true,
+        configurable: true
+      },
       tag: {
         value: function tag(html) {
           var _this = this;
           var moneyStrings = this.constructor.buildRegex(this.register), wrapped = html.replace(moneyStrings, function (figure) {
               figure = figure.trim();
-              if (_this.constructor.isValid(figure, _this.register)) {
-                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash(figure, _this.register);
+              if (_this.constructor.isValid.call(_this, figure)) {
+                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash.call(_this, figure);
                 _this.register.cache = [
                   guid,
                   hash
@@ -437,7 +468,6 @@ cash_main = function (exports, _settings) {
       },
       setValues: {
         value: function setValues(hash) {
-          // always make the default currency worth 1
           if (!(hash instanceof Object)) {
             throw new Error('exchange rates must be passed as an object, e.g.{"USD": 1, "EUR": 0.92}');
           }
@@ -525,15 +555,17 @@ cash_dom = function (exports, _cashMain) {
     _prototypeProperties(CashDom, {
       exchange: {
         value: function exchange(currency) {
-          currency = currency || this.register.current;
-          var obj = undefined, rate = undefined, oldRate = undefined, cache = this.register.metadata;
+          var obj = undefined, rate = undefined, current = undefined, oldRate = undefined, multiplier = undefined, cache = this.register.metadata;
           for (id in cache) {
             obj = {};
-            rate = this.register.currencies[currency].value;
+            oldRate = currency ? this.register.currencies[cache[id].currency].value : 1;
+            current = currency || cache[id].currency;
+            rate = this.register.currencies[current].value;
+            multiplier = 1 / oldRate;
             Object.assign(cache[id], {
-              currency: currency,
+              currency: current,
               rate: rate,
-              exactValue: cache[id].exactValue * rate
+              exactValue: cache[id].exactValue * multiplier * rate
             });
           }
         },

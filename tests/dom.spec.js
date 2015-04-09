@@ -1,34 +1,6 @@
 /* global cash, Cash */
 (function () {
     var cash;
-    describe('setCurrency', function () {
-
-        beforeEach(function () {
-            cash = new Cash();
-        });
-
-        afterEach(function () {
-            cash = null;
-        });
-
-        it('should find the selected currency in the register and set the current property',
-        function () {
-            var error;
-            cash.setValues({
-                    "USD": 1,
-                    "JPY": 100
-                })
-                .setCurrency("JPY");
-
-            expect(cash.register.current).toBe("JPY");
-            try {
-                cash.setCurrency("INVALID");
-            } catch (e) {
-                error = e;
-            }
-            expect(error).toBeDefined();
-        });
-    });
 
     describe('update', function () {
         var $node;

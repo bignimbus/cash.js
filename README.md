@@ -88,8 +88,15 @@ cash.setValues({
 ## Client-side methods
 These methods are supported in `cash.js` and are designed for client-side use only.
 
-### wrap(string or array of strings)
-Like [tag](#tag-string-), but instead of passing a string, just pass a jQuery selector or array of jQuery selectors.  `cash.js` will crawl the DOM and wrap all money strings in those elements.
+### lookFor(string[, string, ...])
+Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  For example, try not to tell `cash` to look for USD and CAD on the same page.  You're gonna have a bad time because they share the `$` symbol.
+
+```js
+cash.lookFor('USD', 'GBP', 'MXN', 'RUB');
+```
+
+### wrap(string OR [string, string...])
+Like [tag](#tag-string-), but instead of passing a string, just pass a jQuery selector or array of jQuery selectors.  `cash.js` will crawl the DOM and wrap all money strings in those elements.  This method is often chained with `lookFor`.
 
 ```html
 <!-- index.html, before -->
@@ -100,7 +107,7 @@ Like [tag](#tag-string-), but instead of passing a string, just pass a jQuery se
 ```js
 // main.js
 var els = ['#quick-brown-fox', '.hodor'];
-cash.wrap(els);
+cash.lookFor('USD').wrap(els);
 ```
 
 ```html
@@ -109,26 +116,27 @@ cash.wrap(els);
 <p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">USD 300</span> on the ground.</p>
 ```
 
-### setCurrency(string)
-The best part: change the displayed currency and update all the cash-nodes in the DOM so that the new values are shown.
+### exchange(string[, string, ...]).for(string)
+The best part: change the displayed currencies and update the values according to the exchange rate persisted in the register.
 
 ```html
 <!-- index.html, before -->
-<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">USD 300</span> on the ground.</p>
+<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">USD 300</span> on the ground.  After celebrating, he withdrew <span id="4fdj4999sd" class="cash-node">JPY 700,000</span> from his Tokyo bank account.</p>
 ```
 
 ```js
 // main.js
 cash.setValues({
         "USD": 1,
+        "JPY": 100,
         "MXN": 15
     })
-    .setCurrency("MXN");
+    .exchange('JPY', 'USD').for('MXN');
 ```
 
 ```html
 <!-- index.html, after -->
-<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">MXN 4500</span> on the ground.</p>
+<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">MXN 4500</span> on the ground.  After celebrating, he withdrew <span id="4fdj4999sd" class="cash-node">MXN 105000</span> from his Tokyo bank account.</p>
 ```
 
 ### update()

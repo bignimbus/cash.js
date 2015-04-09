@@ -28,21 +28,24 @@ export default class CashDom extends Cash {
         return this;
     }
 
-    setCurrency (currency) {
-        if (this.register.supportedCurrencies.indexOf(currency) === -1) {
-            throw new Error('currency not supported.');
-        }
-        this.register.current = currency;
-        this.constructor.exchange.call(this, currency);
+    exchange (...currencies) {
+        currencies.forEach((currency) => {
+            if (this.register.supportedCurrencies.indexOf(currency) === -1) {
+                throw new Error(`${currency} not supported.`);
+            }
+        });
+        this.for = (targets, source) => {
+            this.constructor.recalculate.call(this, source, targets);
+        }.bind(this, currencies);
         return this;
     }
 
     update () {
-        this.constructor.exchange.call(this);
+        this.constructor.recalculate.call(this);
         return this;
     }
 
-    static exchange (currency) {
+    static recalculate (source, targets) {
         let obj,
             rate,
             current,
@@ -51,9 +54,13 @@ export default class CashDom extends Cash {
             cache = this.register.metadata;
 
         for (id in cache) {
+            debugger;
+            if (targets && targets.indexOf(cache[id].currency) === -1) {
+                continue;
+            }
             obj = {};
-            oldRate = currency ? this.register.currencies[cache[id].currency].value : 1;
-            current = currency || cache[id].currency;
+            oldRate = source ? this.register.currencies[cache[id].currency].value : 1;
+            current = source || cache[id].currency;
             rate = this.register.currencies[current].value;
             multiplier = 1 / oldRate;
             Object.assign(cache[id], {
@@ -61,6 +68,9 @@ export default class CashDom extends Cash {
                 "rate": rate,
                 "exactValue": cache[id].exactValue * multiplier * rate
             });
+        }
+        if (this.for) {
+            this.for = null;
         }
     }
 }

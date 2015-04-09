@@ -30,8 +30,8 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         _inherits(CashDom, Cash);
 
         _prototypeProperties(CashDom, {
-            exchange: {
-                value: function exchange(currency) {
+            recalculate: {
+                value: function recalculate(source, targets) {
                     var obj = undefined,
                         rate = undefined,
                         current = undefined,
@@ -40,9 +40,13 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         cache = this.register.metadata;
 
                     for (id in cache) {
+                        debugger;
+                        if (targets && targets.indexOf(cache[id].currency) === -1) {
+                            continue;
+                        }
                         obj = {};
-                        oldRate = currency ? this.register.currencies[cache[id].currency].value : 1;
-                        current = currency || cache[id].currency;
+                        oldRate = source ? this.register.currencies[cache[id].currency].value : 1;
+                        current = source || cache[id].currency;
                         rate = this.register.currencies[current].value;
                         multiplier = 1 / oldRate;
                         Object.assign(cache[id], {
@@ -50,6 +54,9 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                             rate: rate,
                             exactValue: cache[id].exactValue * multiplier * rate
                         });
+                    }
+                    if (this["for"]) {
+                        this["for"] = null;
                     }
                 },
                 writable: true,
@@ -79,13 +86,22 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                 writable: true,
                 configurable: true
             },
-            setCurrency: {
-                value: function setCurrency(currency) {
-                    if (this.register.supportedCurrencies.indexOf(currency) === -1) {
-                        throw new Error("currency not supported.");
+            exchange: {
+                value: function exchange() {
+                    var _this2 = this;
+
+                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+                        currencies[_key] = arguments[_key];
                     }
-                    this.register.current = currency;
-                    this.constructor.exchange.call(this, currency);
+
+                    currencies.forEach(function (currency) {
+                        if (_this2.register.supportedCurrencies.indexOf(currency) === -1) {
+                            throw new Error("" + currency + " not supported.");
+                        }
+                    });
+                    this["for"] = (function (targets, source) {
+                        _this2.constructor.recalculate.call(_this2, source, targets);
+                    }).bind(this, currencies);
                     return this;
                 },
                 writable: true,
@@ -93,7 +109,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
             },
             update: {
                 value: function update() {
-                    this.constructor.exchange.call(this);
+                    this.constructor.recalculate.call(this);
                     return this;
                 },
                 writable: true,

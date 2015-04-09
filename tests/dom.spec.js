@@ -2,7 +2,7 @@
 (function () {
     var cash;
 
-    describe('update', function () {
+    describe('exchange.for', function () {
         var $node;
 
         beforeEach(function (done) {
@@ -15,7 +15,8 @@
                     "USD": 1,
                     "GBP": 2
                 })
-                .setCurrency("GBP");
+                .exchange("USD")
+                .for("GBP");
 
             var timer = window.setTimeout(function () {
                     done();
@@ -34,7 +35,48 @@
         });
     });
 
-    describe('update',function () {
+    describe('exchange.for', function () {
+        var nodes;
+
+        beforeEach(function (done) {
+            cash = new Cash();
+
+            $('body').append('<p id="multi">I have $100 in my pocket, 50 euros in my Swiss bank account and 100 crore INR waiting for me in India.</p>');
+
+            cash.lookFor('INR', 'USD', 'EUR')
+                .wrap('#multi');
+
+            nodes = $('#multi .cash-node');
+
+            cash.setValues({
+                    "USD": 1,
+                    "EUR": 2,
+                    "INR": 8,
+                    "GBP": 4
+                })
+                .exchange('INR', 'USD', 'EUR')
+                .for('GBP');
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
+        });
+
+        afterEach(function () {
+            cash = null;
+            nodes = null;
+        });
+
+        it('should be able to exchange multiple currencies for another currency', function (done) {
+            expect($(nodes[0]).html()).toBe('GBP 400');
+            expect($(nodes[1]).html()).toBe('GBP 100');
+            expect($(nodes[2]).html()).toBe('GBP 500000000');
+            done();
+        });
+    });
+
+    describe('update', function () {
         var $node;
 
         beforeEach(function (done) {

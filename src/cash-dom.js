@@ -54,7 +54,6 @@ export default class CashDom extends Cash {
             cache = this.register.metadata;
 
         for (id in cache) {
-            debugger;
             if (targets && targets.indexOf(cache[id].currency) === -1) {
                 continue;
             }

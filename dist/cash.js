@@ -557,7 +557,6 @@ cash_dom = function (exports, _cashMain) {
         value: function recalculate(source, targets) {
           var obj = undefined, rate = undefined, current = undefined, oldRate = undefined, multiplier = undefined, cache = this.register.metadata;
           for (id in cache) {
-            debugger;
             if (targets && targets.indexOf(cache[id].currency) === -1) {
               continue;
             }

@@ -40,7 +40,6 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         cache = this.register.metadata;
 
                     for (id in cache) {
-                        debugger;
                         if (targets && targets.indexOf(cache[id].currency) === -1) {
                             continue;
                         }

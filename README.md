@@ -25,6 +25,12 @@ cash.js comes with [support for a handful of major currencies](https://github.co
 ## Configurations
 Cash currently has two distributions: `cash-lite`, which houses the regex engine and templating utility; and `cash`, which is dependent on jQuery and houses the DOM manipulation library and other client-side features.  I intend to make `cash-lite` into an [npm](!https://www.npmjs.com/) module in the near future.
 
+## Install
+```
+bower install cash.js
+```
+npm module coming soon!
+
 ## Instantiate
 
 ```js

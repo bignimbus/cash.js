@@ -39,12 +39,19 @@ The `Cash` object is a constructor so more than one instance can be loaded (use 
 ## Core methods
 These methods are supported in `cash-lite` and `cash`.
 
+### lookFor(string[, string, ...])
+Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  For example, try not to tell `cash` to look for USD and CAD on the same page.  You're gonna have a bad time because they share the `$` symbol.
+
+```js
+cash.lookFor('USD', 'GBP', 'MXN', 'RUB');
+```
+
 ### tag(string)
-Given a string, finds all substrings that represent a money figure, wraps them in span tags, parses their values, and stores them in memory.  Notice that there are no data-attributes or any other persistence layer in the DOM itself, just a class and a unique id.  All values are stored in the `cash.register` (lol) object in memory.  `cash` is pretty smart out of the box and understands that if your default currency is GBP, 'five quid' (for example) means £5.00.  This behavior is configurable.
+Given a string, finds all substrings that represent a money figure, wraps them in span tags, parses their values, and stores them in memory.  Notice that there are no data-attributes or any other persistence layer in the DOM itself, just a class and a unique id.  All values are stored in the `cash.register` (lol) object in memory.  `cash` is pretty smart out of the box and understands that if you have 'GBP' in your `lookFor` method, 'five quid' (for example) means £5.00.  This behavior is configurable.
 
 ```js
 var demand = 'I want one million dollars in cash.';
-cash.tag(demand);
+cash.lookFor('USD').tag(demand);
 
 // output:
 'I want <span id="abcd1234" class="cash-node">one million dollars</span> in cash.'
@@ -87,13 +94,6 @@ cash.setValues({
 
 ## Client-side methods
 These methods are supported in `cash.js` and are designed for client-side use only.
-
-### lookFor(string[, string, ...])
-Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  For example, try not to tell `cash` to look for USD and CAD on the same page.  You're gonna have a bad time because they share the `$` symbol.
-
-```js
-cash.lookFor('USD', 'GBP', 'MXN', 'RUB');
-```
 
 ### wrap(string OR [string, string...])
 Like [tag](#tag-string-), but instead of passing a string, just pass a jQuery selector or array of jQuery selectors.  `cash.js` will crawl the DOM and wrap all money strings in those elements.  This method is often chained with `lookFor`.

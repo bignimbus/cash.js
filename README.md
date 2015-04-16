@@ -20,7 +20,7 @@ cash.js is a money-finder.  Give it a string or a DOM node, and its regular expr
 When delivering content, it's very easy to be currency-biased.  If your backend or API doesn't support displaying money figures in local currencies, you may be alienating your users who may not know the Ruble - Peso exchange rate (for instance).  Since cash.js is lightweight and can be deployed on the server via node, used pre-template on the client side, or applied directly to the DOM after rendering (or any combination thereof), there's no excuse for not internationalizing your money values.
 
 ## Currency support
-cash.js comes with [support for a handful of major currencies](https://github.com/bignimbus/cash.js/blob/master/src/settings.js) out of the box, but is infinitely extensible.  In addition to traditional currencies, you can set, swap and display exchange rates for cryptocurrencies, virtual currencies, stock prices, toothbrush prices, whatever!  If you have the data, cash.js will make sure that the user can see it in a performant way.
+cash.js comes with [support for a handful of major currencies](https://github.com/bignimbus/cash.js/blob/master/src/currencies.js) out of the box, but is infinitely extensible.  In addition to traditional currencies, you can set, swap and display exchange rates for cryptocurrencies, virtual currencies, stock prices, toothbrush prices, whatever!  If you have the data, cash.js will make sure that the user can see it in a performant way.
 
 ## Configurations
 Cash currently has two distributions: `cash-lite`, which houses the regex engine and templating utility; and `cash`, which is dependent on jQuery and houses the DOM manipulation library and other client-side features.  I intend to make `cash-lite` into an [npm](!https://www.npmjs.com/) module in the near future.
@@ -46,10 +46,12 @@ The `Cash` object is a constructor so more than one instance can be loaded (use 
 These methods are supported in `cash-lite` and `cash`.
 
 ### lookFor(string[, string, ...])
-Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  For example, try not to tell `cash` to look for USD and CAD on the same page.  You're gonna have a bad time because they share the `$` symbol.
+Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  In the event that a certain symbol is shared by more than one currencies listed in the arguments, `cash` will default to the last currency.
 
 ```js
 cash.lookFor('USD', 'GBP', 'MXN', 'RUB');
+// because 'MXN' is listed after 'USD' and the term 'cents' is shared between these
+// two currencies, cash will interpret 'cents' as 0.01 Mexican Pesos.
 ```
 
 ### tag(string)
@@ -142,7 +144,7 @@ cash.setValues({
 
 ```html
 <!-- index.html, after -->
-<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">MXN 4500</span> on the ground.  After celebrating, he withdrew <span id="4fdj4999sd" class="cash-node">MXN 105000</span> from his Tokyo bank account.</p>
+<p id="quick-brown-fox">The quick, brown fox jumped over the lazy dog.  And then the lazy dog found  <span id="e3swo4dkj4i" class="cash-node">MXN 4500.00</span> on the ground.  After celebrating, he withdrew <span id="4fdj4999sd" class="cash-node">MXN 105000.00</span> from his Tokyo bank account.</p>
 ```
 
 ### update()
@@ -170,7 +172,7 @@ $.ajax({
 
 ```html
 <!-- index.html, after -->
-<span class="stock-ticker">current stock prices: <span id="djen6583d" class="cash-node">GOOG-540</span></span>
+<span class="stock-ticker">current stock prices: <span id="djen6583d" class="cash-node">GOOG-540.00</span></span>
 ```
 
 ## Contributing

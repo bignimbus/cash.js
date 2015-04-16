@@ -1,5 +1,5 @@
 ;(function() {
-var polyfills, settings, cash_main, cash_dom, cash_domamdjs;
+var polyfills, currencies, settings, cash_main, cash_dom, cash_domamdjs;
 polyfills = function (exports) {
   
   // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -34,16 +34,15 @@ polyfills = function (exports) {
   }
   return exports;
 }({});
-settings = function (exports, _polyfills) {
+currencies = function (exports) {
   
-  exports = Settings;
-  function Settings(overrides, isDom) {
-    Object.assign(this, {
+  exports = function () {
+    return {
       // this tells the regex engine what currency to look for when tagging a string/DOM node.
       supported: ['USD'],
       // hash of all supported currencies.  Add or change these values at will.
       currencies: {
-        // these areg the standard abbrevations for these currencies.  If you are
+        // these are the standard abbrevations for these currencies.  If you are
         // adding currencies, it is highly recommended to use standard abbreviations.
         USD: {
           // in order for a money string to pass the regex engine and filters,
@@ -243,7 +242,19 @@ settings = function (exports, _polyfills) {
       // array of functions added with the addFilters method.  You can pass these
       // in as a setting as well.
       filters: []
-    }, overrides);
+    };
+  };
+  return exports;
+}({});
+settings = function (exports, _polyfills, _currencies) {
+  
+  var _interopRequire = function (obj) {
+    return obj && obj.__esModule ? obj['default'] : obj;
+  };
+  exports = Settings;
+  var currencies = _interopRequire(_currencies);
+  function Settings(overrides, isDom) {
+    Object.assign(this, currencies(), overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
         get: function () {
@@ -308,7 +319,8 @@ settings = function (exports, _polyfills) {
           if (isDom) {
             Object.observe(this.metadata[guid], function (obj) {
               obj = obj[0].object;
-              $('#' + obj.id).html('' + obj.currency + ' ' + obj.exactValue);
+              var display = obj.exactValue.toFixed(2);
+              $('#' + obj.id).html('' + obj.currency + ' ' + display);
             });
           }
         }
@@ -317,7 +329,7 @@ settings = function (exports, _polyfills) {
     return this;
   }
   return exports;
-}({}, polyfills);
+}({}, polyfills, currencies);
 cash_main = function (exports, _settings) {
   
   var _interopRequire = function (obj) {

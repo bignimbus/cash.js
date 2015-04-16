@@ -30,7 +30,7 @@
         });
 
         it('should update the DOM with the stored exchange rate values', function (done) {
-            expect($node.html()).toBe('GBP 200');
+            expect($node.html()).toBe('GBP 200.00');
             done();
         });
     });
@@ -69,9 +69,9 @@
         });
 
         it('should be able to exchange multiple currencies for another currency', function (done) {
-            expect($(nodes[0]).html()).toBe('GBP 400');
-            expect($(nodes[1]).html()).toBe('GBP 100');
-            expect($(nodes[2]).html()).toBe('GBP 500000000');
+            expect($(nodes[0]).html()).toBe('GBP 400.00');
+            expect($(nodes[1]).html()).toBe('GBP 100.00');
+            expect($(nodes[2]).html()).toBe('GBP 500000000.00');
             done();
         });
     });
@@ -103,7 +103,7 @@
         });
 
         it('should update the dom with current values when called', function (done) {
-            expect($node.html()).toBe('USD 15');
+            expect($node.html()).toBe('USD 15.00');
             done();
         });
     });

@@ -1,11 +1,52 @@
 /* global Cash, cash */
 (function () {
-    var cash;
+    var cash, str;
     describe('Cash', function () {
         it('should instantiate', function () {
             cash = new Cash();
             expect(cash).toBeDefined();
             cash = null;
+        });
+    });
+
+    describe('lookFor', function () {
+        beforeEach(function () {
+            cash = new Cash();
+            str = 'I have $5.00 and ¥8,000.  Hey, don\'t you owe me 25 dollars?'
+                + ' Or was it someone else?  Maybe it was 50 cents, or ¥50.';
+        });
+
+        afterEach(function () {
+            cash = null;
+            str = '';
+        });
+
+        it('should instruct the tag method to know which currencies to look for',
+        function () {
+            cash.lookFor('USD', 'JPY').tag(str);
+            var node,
+                currency,
+                currenciesDetected = {};
+            for (node in cash.register.metadata) {
+                currency = cash.register.metadata[node].currency;
+                currenciesDetected[currency] = (currenciesDetected[currency] || 0) + 1;
+            }
+            expect(currenciesDetected.USD).toBe(3);
+            expect(currenciesDetected.JPY).toBe(2);
+        });
+
+        it('should interpret symbols that are shared between multiple currencies'
+        + ' as being associated with the last listed currency', function () {
+            cash.lookFor('USD', 'AUD', 'JPY', 'CNY').tag(str);
+            var node,
+                currency,
+                currenciesDetected = {};
+            for (node in cash.register.metadata) {
+                currency = cash.register.metadata[node].currency;
+                currenciesDetected[currency] = (currenciesDetected[currency] || 0) + 1;
+            }
+            expect(currenciesDetected.AUD).toBe(3);
+            expect(currenciesDetected.CNY).toBe(2);
         });
     });
 

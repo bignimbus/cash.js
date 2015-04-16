@@ -40,7 +40,7 @@ var cash = new Cash(options);
 The `Cash` object is a constructor so more than one instance can be loaded (use this pattern with caution).
 
 ## Settings
-`cash`'s power comes from its ability to be modified and extended.  On instantiation, `cash`'s [settings](https://github.com/bignimbus/cash.js/blob/master/src/settings.js) (affectionately called the "register") hash is extended by the passed `options` hash using Object.assign (not a deep copy).  The [settings](https://github.com/bignimbus/cash.js/blob/master/src/settings.js) source annotates the configurable parameters.  If you are adding a currency, consider forking this repo and submitting a pull request with the new configurations.  You can never have too much `cash`!
+`cash`'s power comes from its ability to be modified and extended.  On instantiation, `cash`'s [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) (my cheeky name for "settings") hash is extended by the passed `options` hash using Object.assign (not a deep copy).  The [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) source annotates the configurable parameters.  If you are adding a currency, consider forking this repo and submitting a pull request with the new configurations.  You can never have too much `cash`!
 
 ## Core methods
 These methods are supported in `cash-lite` and `cash`.
@@ -162,7 +162,7 @@ $.ajax({
     "success": function () {
         cash.setValues({
                 // this is possible, but you need to explicitly configure this
-                // in the settings object
+                // in the currencies object
                 "GOOG": 540
             })
             .update();

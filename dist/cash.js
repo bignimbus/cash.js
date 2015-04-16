@@ -1,5 +1,5 @@
 ;(function() {
-var polyfills, currencies, settings, cash_main, cash_dom, cash_domamdjs;
+var polyfills, currencies, register, cash_main, cash_dom, cash_domamdjs;
 polyfills = function (exports) {
   
   // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
@@ -246,14 +246,14 @@ currencies = function (exports) {
   };
   return exports;
 }({});
-settings = function (exports, _polyfills, _currencies) {
+register = function (exports, _polyfills, _currencies) {
   
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
   };
-  exports = Settings;
+  exports = Register;
   var currencies = _interopRequire(_currencies);
-  function Settings(overrides, isDom) {
+  function Register(overrides, isDom) {
     Object.assign(this, currencies(), overrides);
     Object.defineProperties(this, {
       supportedCurrencies: {
@@ -330,7 +330,7 @@ settings = function (exports, _polyfills, _currencies) {
   }
   return exports;
 }({}, polyfills, currencies);
-cash_main = function (exports, _settings) {
+cash_main = function (exports, _register) {
   
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
@@ -346,12 +346,12 @@ cash_main = function (exports, _settings) {
       throw new TypeError('Cannot call a class as a function');
     }
   };
-  var Settings = _interopRequire(_settings);
+  var Register = _interopRequire(_register);
   var Cash = function () {
     function Cash(options, isDom) {
       _classCallCheck(this, Cash);
       options = options || {};
-      this.register = new Settings(options.overrides || {}, isDom || false);
+      this.register = new Register(options.overrides || {}, isDom || false);
     }
     _prototypeProperties(Cash, {
       generateGuid: {
@@ -499,7 +499,7 @@ cash_main = function (exports, _settings) {
   }();
   exports = Cash;
   return exports;
-}({}, settings);
+}({}, register);
 cash_dom = function (exports, _cashMain) {
   
   var _interopRequire = function (obj) {

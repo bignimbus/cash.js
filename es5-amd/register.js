@@ -3,11 +3,11 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-    module.exports = Settings;
+    module.exports = Register;
 
     var currencies = _interopRequire(_currencies);
 
-    function Settings(overrides, isDom) {
+    function Register(overrides, isDom) {
         Object.assign(this, currencies(), overrides);
 
         Object.defineProperties(this, {

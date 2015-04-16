@@ -1,9 +1,9 @@
-import Settings from 'settings';
+import Register from 'register';
 
 export default class Cash {
     constructor (options, isDom) {
         options = options || {};
-        this.register = new Settings(options.overrides || {}, isDom || false);
+        this.register = new Register(options.overrides || {}, isDom || false);
     }
 
     lookFor (...currencies) {

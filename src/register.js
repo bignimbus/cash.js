@@ -1,7 +1,7 @@
 import 'polyfills';
 import currencies from 'currencies';
 
-export default function Settings (overrides, isDom) {
+export default function Register (overrides, isDom) {
     Object.assign(this, currencies(), overrides);
 
     Object.defineProperties(this, {

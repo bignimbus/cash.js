@@ -1,4 +1,4 @@
-define(["exports", "module", "settings"], function (exports, module, _settings) {
+define(["exports", "module", "register"], function (exports, module, _register) {
     "use strict";
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
@@ -7,14 +7,14 @@ define(["exports", "module", "settings"], function (exports, module, _settings) 
 
     var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-    var Settings = _interopRequire(_settings);
+    var Register = _interopRequire(_register);
 
     var Cash = (function () {
         function Cash(options, isDom) {
             _classCallCheck(this, Cash);
 
             options = options || {};
-            this.register = new Settings(options.overrides || {}, isDom || false);
+            this.register = new Register(options.overrides || {}, isDom || false);
         }
 
         _prototypeProperties(Cash, {

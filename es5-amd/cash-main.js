@@ -134,10 +134,10 @@ define(["exports", "module", "register"], function (exports, module, _register) 
 
                     var moneyStrings = this.constructor.buildRegex(this.register),
                         wrapped = html.replace(moneyStrings, function (figure) {
-                        figure = figure.trim();
-                        if (_this.constructor.isValid.call(_this, figure)) {
+                        var trimmed = figure.trim();
+                        if (_this.constructor.isValid.call(_this, trimmed)) {
                             var guid = _this.constructor.generateGuid(),
-                                hash = _this.constructor.formHash.call(_this, figure);
+                                hash = _this.constructor.formHash.call(_this, trimmed);
                             _this.register.cache = [guid, hash];
                             figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
                         }

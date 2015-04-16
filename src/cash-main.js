@@ -14,10 +14,10 @@ export default class Cash {
     tag (html) {
         let moneyStrings = this.constructor.buildRegex(this.register),
             wrapped = html.replace(moneyStrings, (figure) => {
-                figure = figure.trim();
-                if (this.constructor.isValid.call(this, figure)) {
+                let trimmed = figure.trim();
+                if (this.constructor.isValid.call(this, trimmed)) {
                     let guid = this.constructor.generateGuid(),
-                        hash = this.constructor.formHash.call(this, figure);
+                        hash = this.constructor.formHash.call(this, trimmed);
                     this.register.cache = [guid, hash];
                     figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
                 }

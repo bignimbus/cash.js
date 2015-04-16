@@ -93,6 +93,9 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         currencies[_key] = arguments[_key];
                     }
 
+                    if (currencies[0] instanceof Array) {
+                        currencies = currencies[0];
+                    }
                     currencies.forEach(function (currency) {
                         if (_this2.register.supportedCurrencies.indexOf(currency) === -1) {
                             throw new Error("" + currency + " not supported.");

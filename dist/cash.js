@@ -618,6 +618,9 @@ cash_dom = function (exports, _cashMain) {
           for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
             currencies[_key] = arguments[_key];
           }
+          if (currencies[0] instanceof Array) {
+            currencies = currencies[0];
+          }
           currencies.forEach(function (currency) {
             if (_this2.register.supportedCurrencies.indexOf(currency) === -1) {
               throw new Error('' + currency + ' not supported.');

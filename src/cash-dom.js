@@ -29,6 +29,9 @@ export default class CashDom extends Cash {
     }
 
     exchange (...currencies) {
+        if (currencies[0] instanceof Array) {
+            currencies = currencies[0];
+        }
         currencies.forEach((currency) => {
             if (this.register.supportedCurrencies.indexOf(currency) === -1) {
                 throw new Error(`${currency} not supported.`);

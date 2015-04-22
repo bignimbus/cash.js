@@ -44,7 +44,7 @@
             var newHTML = $text.html() + '<p>' + cash.tag($input.val()) + '</p>';
             $text.html(newHTML);
             $output.animate({
-                scrollTop: $output[0].scrollHeight
+                "scrollTop": $output[0].scrollHeight
             }, 500);
             $input.val('');
         })
@@ -62,7 +62,9 @@
                 currency = $el.val(),
                 $button = $lookFor.children('button');
             if ($el.is(':checked')) {
-                $button.append(' ' + currency);
+                if (!new RegExp(currency).test($button.html())) {
+                    $button.append(' ' + currency);
+                }
                 cash.lookFor = cash.register.supported.push(currency);
             } else {
                 html = $button.html();

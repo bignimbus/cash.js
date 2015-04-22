@@ -89,10 +89,13 @@ body {
 }
 
 .look-for ul {
+    background: blanchedalmond;
     bottom: 67px;
     display: none;
     left: -33px;
     list-style-type: none;
+    margin-left: 33px;
+    padding: 0;
     position: absolute;
     z-index: 1;
 }

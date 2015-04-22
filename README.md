@@ -1,8 +1,10 @@
 # cash.js
 modules for processing, parsing, computing and exchange-rate-swapping money strings. Works as a templating module, also hooks into the DOM.
 
-## Under construction - do not use in production!
+## Working example
+I made a quick demonstration of how cash works.  Check it out at [this project's github page](http://bignimbus.github.io/cash.js/).
 
+## Contents
 * [What this does](#what-this-does)
 * [How this serves users and developers](#how-this-serves-users-and-developers)
 * [Currency support](#currency-support)

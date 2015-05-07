@@ -1,6 +1,7 @@
 /* global cash, Cash */
 (function () {
-    var cash;
+    var cash,
+        isPhantom = /phantomjs/i.test(window.navigator.userAgent);
 
     describe('exchange.for', function () {
         var $node;
@@ -30,7 +31,8 @@
         });
 
         it('should update the DOM with the stored exchange rate values', function (done) {
-            expect($node.html()).toBe('GBP 200.00');
+            var gbp200 = isPhantom? 'GBP 200' : 'GBP 200.00';
+            expect($node.html()).toBe(gbp200);
             done();
         });
     });
@@ -69,9 +71,12 @@
         });
 
         it('should be able to exchange multiple currencies for another currency', function (done) {
-            expect($(nodes[0]).html()).toBe('GBP 400.00');
-            expect($(nodes[1]).html()).toBe('GBP 100.00');
-            expect($(nodes[2]).html()).toBe('GBP 500000000.00');
+            var gbp400 = isPhantom ? 'GBP 400' : 'GBP 400.00',
+                gbp100 = isPhantom ? 'GBP 100' : 'GBP 100.00',
+                gbpalot = isPhantom ? 'GBP 500000000' : 'GBP 500,000,000.00';
+            expect($(nodes[0]).html()).toBe(gbp400);
+            expect($(nodes[1]).html()).toBe(gbp100);
+            expect($(nodes[2]).html()).toBe(gbpalot);
             done();
         });
     });
@@ -103,7 +108,8 @@
         });
 
         it('should update the dom with current values when called', function (done) {
-            expect($node.html()).toBe('USD 15.00');
+            var usd15 = isPhantom ? 'USD 15' : 'USD 15.00';
+            expect($node.html()).toBe(usd15);
             done();
         });
     });

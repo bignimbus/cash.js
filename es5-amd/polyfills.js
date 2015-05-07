@@ -1,7 +1,7 @@
 define(["exports"], function (exports) {
+  // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
   "use strict";
 
-  // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
   if (!Object.assign) {
     Object.defineProperty(Object, "assign", {
       enumerable: false,

@@ -1,6 +1,15 @@
 import 'polyfills';
 import currencies from 'currencies';
 
+function format (obj, opts) {
+    let cents = opts.round ? 0 : 2
+    return obj.exactValue.toLocaleString(opts.locale, {
+        "minimumFractionDigits": cents,
+        "maximumFractionDigits": cents,
+        "useGrouping": opts.useGrouping
+    });
+}
+
 export default function Register (overrides, isDom) {
     Object.assign(this, currencies(), overrides);
 
@@ -68,7 +77,7 @@ export default function Register (overrides, isDom) {
                 if (isDom) {
                     Object.observe(this.metadata[guid], (obj) => {
                         obj = obj[0].object;
-                        let display = obj.exactValue.toFixed(2);
+                        let display = format(obj, this.formatting);
                         $(`#${obj.id}`).html(`${obj.currency} ${display}`);
                     });
                 }

@@ -3,6 +3,10 @@ define(["exports", "module"], function (exports, module) {
 
     module.exports = function () {
         return {
+            formatting: {
+                locale: "en-US",
+                useGroupings: true,
+                round: false },
             // this tells the regex engine what currency to look for when tagging a string/DOM node.
             supported: ["USD"],
             // hash of all supported currencies.  Add or change these values at will.

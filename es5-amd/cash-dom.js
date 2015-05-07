@@ -3,7 +3,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-    var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+    var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
     var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
@@ -13,7 +13,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
 
     var Cash = _interopRequire(_cashMain);
 
-    var CashDom = (function (Cash) {
+    var CashDom = (function (_Cash) {
         function CashDom(options) {
             _classCallCheck(this, CashDom);
 
@@ -27,9 +27,59 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
             }
         }
 
-        _inherits(CashDom, Cash);
+        _inherits(CashDom, _Cash);
 
-        _prototypeProperties(CashDom, {
+        _createClass(CashDom, {
+            wrap: {
+                value: function wrap(nodes) {
+                    var _this = this;
+
+                    nodes = (typeof nodes === "string" ? [nodes] : nodes) || [];
+                    for (var node in nodes) {
+                        node = nodes[node];
+                        $(node).each(function (i, el) {
+                            var $el = $(el),
+                                html = $el.html() || "";
+                            html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
+                                return text;
+                            });
+                            if (html) {
+                                $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", _this).call(_this, html));
+                            }
+                        });
+                    }
+                    return this;
+                }
+            },
+            exchange: {
+                value: function exchange() {
+                    var _this2 = this;
+
+                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+                        currencies[_key] = arguments[_key];
+                    }
+
+                    if (currencies[0] instanceof Array) {
+                        currencies = currencies[0];
+                    }
+                    currencies.forEach(function (currency) {
+                        if (_this2.register.supportedCurrencies.indexOf(currency) === -1) {
+                            throw new Error("" + currency + " not supported.");
+                        }
+                    });
+                    this["for"] = (function (targets, source) {
+                        _this2.constructor.recalculate.call(_this2, source, targets);
+                    }).bind(this, currencies);
+                    return this;
+                }
+            },
+            update: {
+                value: function update() {
+                    this.constructor.recalculate.call(this);
+                    return this;
+                }
+            }
+        }, {
             recalculate: {
                 value: function recalculate(source, targets) {
                     var obj = undefined,
@@ -57,65 +107,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                     if (this["for"]) {
                         this["for"] = null;
                     }
-                },
-                writable: true,
-                configurable: true
-            }
-        }, {
-            wrap: {
-                value: function wrap(nodes) {
-                    var _this = this;
-
-                    nodes = (typeof nodes === "string" ? [nodes] : nodes) || [];
-                    for (var node in nodes) {
-                        node = nodes[node];
-                        $(node).each(function (i, el) {
-                            var $el = $(el),
-                                html = $el.html() || "";
-                            html = html.replace(/<span id="\w*?"\sclass="cash-node">([^<]*?)<\/span>/gi, function (m, text) {
-                                return text;
-                            });
-                            if (html) {
-                                $el.html(_get(Object.getPrototypeOf(CashDom.prototype), "tag", _this).call(_this, html));
-                            }
-                        });
-                    }
-                    return this;
-                },
-                writable: true,
-                configurable: true
-            },
-            exchange: {
-                value: function exchange() {
-                    var _this2 = this;
-
-                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
-                        currencies[_key] = arguments[_key];
-                    }
-
-                    if (currencies[0] instanceof Array) {
-                        currencies = currencies[0];
-                    }
-                    currencies.forEach(function (currency) {
-                        if (_this2.register.supportedCurrencies.indexOf(currency) === -1) {
-                            throw new Error("" + currency + " not supported.");
-                        }
-                    });
-                    this["for"] = (function (targets, source) {
-                        _this2.constructor.recalculate.call(_this2, source, targets);
-                    }).bind(this, currencies);
-                    return this;
-                },
-                writable: true,
-                configurable: true
-            },
-            update: {
-                value: function update() {
-                    this.constructor.recalculate.call(this);
-                    return this;
-                },
-                writable: true,
-                configurable: true
+                }
             }
         });
 

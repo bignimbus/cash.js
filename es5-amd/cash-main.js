@@ -3,7 +3,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
 
     var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-    var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+    var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
     var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
@@ -17,14 +17,65 @@ define(["exports", "module", "register"], function (exports, module, _register) 
             this.register = new Register(options.overrides || {}, isDom || false);
         }
 
-        _prototypeProperties(Cash, {
+        _createClass(Cash, {
+            lookFor: {
+                value: function lookFor() {
+                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+                        currencies[_key] = arguments[_key];
+                    }
+
+                    this.register.supported = currencies;
+                    return this;
+                }
+            },
+            tag: {
+                value: function tag(html) {
+                    var _this = this;
+
+                    var moneyStrings = this.constructor.buildRegex(this.register),
+                        wrapped = html.replace(moneyStrings, function (figure) {
+                        var trimmed = figure.trim();
+                        if (_this.constructor.isValid.call(_this, trimmed)) {
+                            var guid = _this.constructor.generateGuid(),
+                                hash = _this.constructor.formHash.call(_this, trimmed);
+                            _this.register.cache = [guid, hash];
+                            figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + trimmed + "</span> ";
+                        }
+                        return figure;
+                    });
+                    return wrapped;
+                }
+            },
+            addFilters: {
+                value: function addFilters() {
+                    var filters = Array.prototype.slice.call(arguments);
+                    filters = filters.filter(function (filter) {
+                        return typeof filter === "function";
+                    });
+                    this.register.filters = this.register.filters.concat(filters);
+                    return this;
+                }
+            },
+            setValues: {
+                value: function setValues(hash) {
+                    if (!(hash instanceof Object)) {
+                        throw new Error("exchange rates must be passed as an object, e.g.{\"USD\": 1, \"EUR\": 0.92}");
+                    }
+                    for (var currency in hash) {
+                        var value = +hash[currency];
+                        if (!isNaN(value)) {
+                            this.register.currencies[currency].value = value;
+                        }
+                    }
+                    return this;
+                }
+            }
+        }, {
             generateGuid: {
                 value: function generateGuid() {
                     // returns a string of 8 consecutive alphanumerics
                     return (Math.random() + 1).toString(36).substring(7);
-                },
-                writable: true,
-                configurable: true
+                }
             },
             formHash: {
                 value: function formHash(figure) {
@@ -60,9 +111,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                     })();
 
                     return hash;
-                },
-                writable: true,
-                configurable: true
+                }
             },
             inferCurrency: {
                 value: function inferCurrency(figure) {
@@ -84,9 +133,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                         }
                     });
                     return found;
-                },
-                writable: true,
-                configurable: true
+                }
             },
             isValid: {
                 value: function isValid(figure) {
@@ -96,9 +143,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                         return filter(figure);
                     });
                     return isValidStr;
-                },
-                writable: true,
-                configurable: true
+                }
             },
             buildRegex: {
                 value: function buildRegex(keywords) {
@@ -111,70 +156,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                     regexStr = "(?:(?:(" + prefixes + ")\\s?)+" + "[\\.\\b\\s]?" + ")?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)" + "+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*" + "(?:(?:" + suffixes + ")\\s?)*",
                         regex = new RegExp(regexStr, "ig");
                     return regex;
-                },
-                writable: true,
-                configurable: true
-            }
-        }, {
-            lookFor: {
-                value: function lookFor() {
-                    for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
-                        currencies[_key] = arguments[_key];
-                    }
-
-                    this.register.supported = currencies;
-                    return this;
-                },
-                writable: true,
-                configurable: true
-            },
-            tag: {
-                value: function tag(html) {
-                    var _this = this;
-
-                    var moneyStrings = this.constructor.buildRegex(this.register),
-                        wrapped = html.replace(moneyStrings, function (figure) {
-                        var trimmed = figure.trim();
-                        if (_this.constructor.isValid.call(_this, trimmed)) {
-                            var guid = _this.constructor.generateGuid(),
-                                hash = _this.constructor.formHash.call(_this, trimmed);
-                            _this.register.cache = [guid, hash];
-                            figure = " <span id=\"" + guid + "\" class=\"cash-node\">" + figure + "</span> ";
-                        }
-                        return figure;
-                    });
-                    return wrapped;
-                },
-                writable: true,
-                configurable: true
-            },
-            addFilters: {
-                value: function addFilters() {
-                    var filters = Array.prototype.slice.call(arguments);
-                    filters = filters.filter(function (filter) {
-                        return typeof filter === "function";
-                    });
-                    this.register.filters = this.register.filters.concat(filters);
-                    return this;
-                },
-                writable: true,
-                configurable: true
-            },
-            setValues: {
-                value: function setValues(hash) {
-                    if (!(hash instanceof Object)) {
-                        throw new Error("exchange rates must be passed as an object, e.g.{\"USD\": 1, \"EUR\": 0.92}");
-                    }
-                    for (var currency in hash) {
-                        var value = +hash[currency];
-                        if (!isNaN(value)) {
-                            this.register.currencies[currency].value = value;
-                        }
-                    }
-                    return this;
-                },
-                writable: true,
-                configurable: true
+                }
             }
         });
 

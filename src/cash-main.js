@@ -19,7 +19,7 @@ export default class Cash {
                     let guid = this.constructor.generateGuid(),
                         hash = this.constructor.formHash.call(this, trimmed);
                     this.register.cache = [guid, hash];
-                    figure = ` <span id="${guid}" class="cash-node">${figure}</span> `;
+                    figure = ` <span id="${guid}" class="cash-node">${trimmed}</span> `;
                 }
                 return figure;
             });

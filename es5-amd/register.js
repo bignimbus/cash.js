@@ -7,12 +7,21 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
 
     var currencies = _interopRequire(_currencies);
 
+    function format(obj, opts) {
+        var cents = opts.round ? 0 : 2;
+        return obj.exactValue.toLocaleString(opts.locale, {
+            minimumFractionDigits: cents,
+            maximumFractionDigits: cents,
+            useGrouping: opts.useGrouping
+        });
+    }
+
     function Register(overrides, isDom) {
         Object.assign(this, currencies(), overrides);
 
         Object.defineProperties(this, {
             supportedCurrencies: {
-                get: function () {
+                get: function get() {
                     var _this = this;
 
                     var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
@@ -25,7 +34,7 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                 }
             },
             prefixes: {
-                get: function () {
+                get: function get() {
                     var _this = this;
 
                     var prefixes = [];
@@ -36,7 +45,7 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                 }
             },
             suffixes: {
-                get: function () {
+                get: function get() {
                     var _this = this;
 
                     var suffixes = [];
@@ -47,7 +56,7 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                 }
             },
             specialMagnitudes: {
-                get: function () {
+                get: function get() {
                     var _this = this;
 
                     var magnitudes = [];
@@ -58,20 +67,22 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                 }
             },
             magnitudeStrings: {
-                get: function () {
+                get: function get() {
                     return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
                 }
             },
             numberStrings: {
-                get: function () {
+                get: function get() {
                     return Object.keys(this.numberWords);
                 }
             },
             cache: {
-                get: function () {
+                get: function get() {
                     return this.metadata;
                 },
-                set: function (arr) {
+                set: function set(arr) {
+                    var _this = this;
+
                     var guid = arr[0],
                         hash = arr[1];
 
@@ -80,7 +91,7 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                     if (isDom) {
                         Object.observe(this.metadata[guid], function (obj) {
                             obj = obj[0].object;
-                            var display = obj.exactValue.toFixed(2);
+                            var display = format(obj, _this.formatting);
                             $("#" + obj.id).html("" + obj.currency + " " + display);
                         });
                     }

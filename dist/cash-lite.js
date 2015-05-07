@@ -425,6 +425,12 @@ cash_main = function (exports, _register) {
           }
           return this;
         }
+      },
+      setLocale: {
+        value: function setLocale(locale) {
+          this.register.formatting.locale = locale;
+          return this;
+        }
       }
     }, {
       generateGuid: {

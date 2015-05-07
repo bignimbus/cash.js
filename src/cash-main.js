@@ -48,6 +48,11 @@ export default class Cash {
         return this;
     }
 
+    setLocale (locale) {
+        this.register.formatting.locale = locale;
+        return this;
+    }
+
     static generateGuid () {
         // returns a string of 8 consecutive alphanumerics
         return (Math.random() + 1).toString(36).substring(7);

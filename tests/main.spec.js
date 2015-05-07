@@ -138,4 +138,19 @@
             expect(cash.register.currencies.NOPE).toBeUndefined();
         });
     });
+
+    describe('setLocale', function () {
+        beforeEach(function () {
+            cash = new Cash();
+        });
+
+        afterEach(function () {
+            cash = null;
+        });
+
+        it('should set the locale in the register', function () {
+            cash.setLocale('en-CA');
+            expect(cash.register.formatting.locale).toBe('en-CA');
+        });
+    });
 })();

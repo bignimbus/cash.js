@@ -69,6 +69,12 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                     }
                     return this;
                 }
+            },
+            setLocale: {
+                value: function setLocale(locale) {
+                    this.register.formatting.locale = locale;
+                    return this;
+                }
             }
         }, {
             generateGuid: {

@@ -10,7 +10,7 @@ I made a quick demonstration of how cash works.  Check it out at [this project's
 * [Currency support](#currency-support)
 * [Configurations](#configurations)
 * [Instantiate](#instantiate)
-* [Settings](#settings)
+* [Register](#register)
 * [Core Methods](#core-methods)
 * [Client-Side Methods](#client-side-methods)
 * [Contributing](#contributing)
@@ -39,10 +39,10 @@ npm module coming soon!
 var cash = new Cash(options);
 ```
 
-The `Cash` object is a constructor so more than one instance can be loaded (use this pattern with caution).
+The `Cash` object is a constructor so more than one instance can be loaded (use this pattern with caution).  Passable options are detailed in the [register](#register) section.
 
-## Settings
-`cash`'s power comes from its ability to be modified and extended.  On instantiation, `cash`'s [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) (my cheeky name for "settings") hash is extended by the passed `options` hash using Object.assign (not a deep copy).  The [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) source annotates the configurable parameters.  If you are adding a currency, consider forking this repo and submitting a pull request with the new configurations.  You can never have too much `cash`!
+## Register
+`cash`'s power comes from its ability to be modified and extended.  On instantiation, `cash`'s [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) (my cheeky name for "settings") hash is extended by the passed `options` hash using Object.assign (not a deep copy).  The [register](https://github.com/bignimbus/cash.js/blob/master/src/register.js) source annotates the configurable parameters.  If you are adding a [currency](https://github.com/bignimbus/cash.js/blob/master/src/currencies.js), consider forking this repo and submitting a pull request with the new configurations.  You can never have too much `cash`!
 
 ## Core methods
 These methods are supported in `cash-lite` and `cash`.
@@ -101,6 +101,9 @@ cash.setValues({
     "JPY": 100
 });
 ```
+
+### setLocale(string)
+For the time being, this is meant to govern the output of the [exchange](#exchange-string-string-for-string-) and [update](#update-) methods.  These methods call [Number.prototype.toLocaleString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString).
 
 ## Client-side methods
 These methods are supported in `cash.js` and are designed for client-side use only.

@@ -1,11 +1,10 @@
 /* global cash, Cash */
 (function () {
     var cash,
+        $node,
         isPhantom = /phantomjs/i.test(window.navigator.userAgent);
 
     describe('exchange.for', function () {
-        var $node;
-
         beforeEach(function (done) {
             cash = new Cash();
             $('body').append('<p id="testing">I have $100 in my pocket.</p>');
@@ -82,8 +81,6 @@
     });
 
     describe('update', function () {
-        var $node;
-
         beforeEach(function (done) {
             cash = new Cash();
             $('body').append('<p id="testing-two">I have USD 30 in my pocket.</p>');
@@ -110,6 +107,40 @@
         it('should update the dom with current values when called', function (done) {
             var usd15 = isPhantom ? 'USD 15' : 'USD 15.00';
             expect($node.html()).toBe(usd15);
+            done();
+        });
+    });
+
+    describe('update', function () {
+        beforeEach(function (done) {
+            cash = new Cash({"formatting": {
+                "useGrouping": false,
+                "round": true
+            }});
+            $('body').append('<p id="testing-three">I have USD 7000000.24 in my safe.</p>');
+
+            cash.wrap('#testing-three')
+                .setValues({
+                    "USD": 1,
+                    "GBP": 1
+                })
+                .exchange('USD').for('GBP');
+
+            $node = $('#testing-three .cash-node').first();
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
+        });
+        afterEach(function () {
+            cash = null;
+            $node = null;
+        });
+
+        it('should accept params for grouping (commas) and rounding', function (done) {
+            var gbp7000000 = isPhantom ? 'GBP 7000000.24' : 'GBP 7000000';
+            expect($node.html()).toBe(gbp7000000);
             done();
         });
     });

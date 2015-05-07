@@ -3,7 +3,7 @@ import Register from 'register';
 export default class Cash {
     constructor (options, isDom) {
         options = options || {};
-        this.register = new Register(options.overrides || {}, isDom || false);
+        this.register = new Register(options || {}, isDom || false);
     }
 
     lookFor (...currencies) {

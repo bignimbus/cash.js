@@ -14,7 +14,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
             _classCallCheck(this, Cash);
 
             options = options || {};
-            this.register = new Register(options.overrides || {}, isDom || false);
+            this.register = new Register(options || {}, isDom || false);
         }
 
         _createClass(Cash, {

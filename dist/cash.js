@@ -372,7 +372,7 @@ cash_main = function (exports, _register) {
     function Cash(options, isDom) {
       _classCallCheck(this, Cash);
       options = options || {};
-      this.register = new Register(options.overrides || {}, isDom || false);
+      this.register = new Register(options || {}, isDom || false);
     }
     _createClass(Cash, {
       lookFor: {

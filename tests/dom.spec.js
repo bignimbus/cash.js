@@ -113,10 +113,12 @@
 
     describe('update', function () {
         beforeEach(function (done) {
-            cash = new Cash({"formatting": {
-                "useGrouping": false,
-                "round": true
-            }});
+            cash = new Cash({
+                    "formatting": {
+                        "useGrouping": false,
+                        "round": true
+                    }
+                });
             $('body').append('<p id="testing-three">I have USD 7000000.24 in my safe.</p>');
 
             cash.wrap('#testing-three')
@@ -141,6 +143,38 @@
         it('should accept params for grouping (commas) and rounding', function (done) {
             var gbp7000000 = isPhantom ? 'GBP 7000000.24' : 'GBP 7000000';
             expect($node.html()).toBe(gbp7000000);
+            done();
+        });
+    });
+
+    describe('update', function () {
+        beforeEach(function (done) {
+            cash = new Cash();
+            $('body').append('<p id="testing-four">I have USD 7000000.24 in my safe.</p>');
+
+            cash.setLocale('hi-IN')
+                .wrap('#testing-four')
+                .setValues({
+                    "USD": 1,
+                    "INR": 1
+                })
+                .exchange('USD').for('INR');
+
+            $node = $('#testing-four .cash-node').first();
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
+        });
+        afterEach(function () {
+            cash = null;
+            $node = null;
+        });
+
+        it('should format output according to locale', function (done) {
+            var inr7000000 = isPhantom ? 'INR 7000000.24' : 'INR 70,00,000.24';
+            expect($node.html()).toBe(inr7000000);
             done();
         });
     });

@@ -26,10 +26,13 @@
         var supportedCurrencies = Object.keys(cash.register.currencies).join(',');
         $.ajax({
             "type": "GET",
-            "url": 'http://www.getexchangerates.com/api/latest.json?currencies=' + supportedCurrencies
+            "url": 'http://www.apilayer.net/api/live?access_key=53037019af615c2e5d1a6df9f1c5470d&format=1&currencies=' + supportedCurrencies
         }).done(function (response) {
-            delete response.DateTime;
-            cash.setValues(response);
+            var obj = {}, currency;
+            for (currency in response.quotes) {
+                obj[currency.replace(/^.{3}/, '')] = response.quotes[currency];
+            }
+            cash.setValues(obj);
         }).fail(function () {
             console.log('ajax request failed');
         });

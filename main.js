@@ -72,9 +72,10 @@
             } else {
                 html = $button.html();
                 $button.html(html.replace(' ' + currency, ''));
-                cash.lookFor = cash.register.supported.filter(function (supported) {
+                cash.register.supported = cash.register.supported.filter(function (supported) {
                     return supported !== currency;
                 });
+                cash.lookFor = cash.register.supported;
             }
         })
         .on('change', '.exchange', function () {

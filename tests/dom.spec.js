@@ -80,6 +80,44 @@
         });
     });
 
+    describe('exchange.for', function () {
+        var nodes;
+
+        beforeEach(function (done) {
+            cash = new Cash();
+
+            $('body').append('<p id="cad-bug">Sorry, but I have $10 more than you, eh?</p>');
+
+            cash.lookFor('CAD')
+                .wrap('#cad-bug');
+
+            nodes = $('#cad-bug .cash-node');
+
+            cash.setValues({
+                    "USD": 1,
+                    "CAD": 1.2
+                })
+                .exchange('CAD')
+                .for('USD');
+
+            var timer = window.setTimeout(function () {
+                    done();
+                    window.clearTimeout(timer);
+                }, 300);
+        });
+
+        afterEach(function () {
+            cash = null;
+            nodes = null;
+        });
+
+        it('should be able to exchange multiple currencies for another currency', function (done) {
+            var usd8 = isPhantom ? 'USD 8.333333333333334' : 'USD 8.33';
+            expect($(nodes[0]).html()).toBe(usd8);
+            done();
+        });
+    });
+
     describe('update', function () {
         beforeEach(function (done) {
             cash = new Cash();

@@ -66,16 +66,17 @@ export default class Cash {
                 }
                 return this.register.numberWords[num] || 1;
             },
-            nums = new RegExp('(?:\\d|'
+            nums = figure.match(new RegExp('(?:\\d|'
                 + this.register.numberStrings.join('|')
-                + '|\\.|,)+', 'gi'),
+                + '|\\.|,)+', 'gi'))[0],
             multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|')
                 + ')+', 'gi'),
             hash = {
-                "currency": currency,
-                "rate": this.register.currencies[currency].value || 1,
+                "currency": currency.code,
+                "rate": this.register.currencies[currency.code].value || 1,
                 "str": figure,
-                "coefficient": parseNums(figure.match(nums)[0].replace(',', '').trim()),
+                "prefix": currency.index < figure.indexOf(nums),
+                "coefficient": parseNums(nums.replace(',', '').trim()),
                 "magnitude": (figure.match(multipliers) || []).map((mul) => {
                     mul = mul.trim();
                     if (this.register.magnitudeAbbreviations[mul]) {
@@ -85,7 +86,7 @@ export default class Cash {
                 }),
             };
             hash.exactValue = () => {
-                let val = hash.coefficient;
+                let val = hash.coefficient * hash.rate;
                 hash.magnitude.forEach((factor) => {val *= factor});
                 return val;
             }();
@@ -107,9 +108,13 @@ export default class Cash {
                 symbols = new RegExp(`(?:${symbols.join('|')})`, 'i');
             if (symbols.test(match)) {
                 found = currency;
+                index = figure.indexOf(match);
             }
         });
-        return found;
+        return {
+            "code": found,
+            "index": figure.indexOf(match)
+        };
     }
 
     static isValid (figure) {

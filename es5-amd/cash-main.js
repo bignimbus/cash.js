@@ -94,13 +94,14 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                         }
                         return _this.register.numberWords[num] || 1;
                     },
-                        nums = new RegExp("(?:\\d|" + this.register.numberStrings.join("|") + "|\\.|,)+", "gi"),
+                        nums = figure.match(new RegExp("(?:\\d|" + this.register.numberStrings.join("|") + "|\\.|,)+", "gi"))[0],
                         multipliers = new RegExp("(?:" + this.register.magnitudeStrings.join("|") + ")+", "gi"),
                         hash = {
-                        currency: currency,
-                        rate: this.register.currencies[currency].value || 1,
+                        currency: currency.code,
+                        rate: this.register.currencies[currency.code].value || 1,
                         str: figure,
-                        coefficient: parseNums(figure.match(nums)[0].replace(",", "").trim()),
+                        prefix: currency.index < figure.indexOf(nums),
+                        coefficient: parseNums(nums.replace(",", "").trim()),
                         magnitude: (figure.match(multipliers) || []).map(function (mul) {
                             mul = mul.trim();
                             if (_this.register.magnitudeAbbreviations[mul]) {
@@ -109,7 +110,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                             return _this.register.magnitudes[mul] || 1;
                         }) };
                     hash.exactValue = (function () {
-                        var val = hash.coefficient;
+                        var val = hash.coefficient * hash.rate;
                         hash.magnitude.forEach(function (factor) {
                             val *= factor;
                         });
@@ -136,9 +137,13 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                         symbols = new RegExp("(?:" + symbols.join("|") + ")", "i");
                         if (symbols.test(match)) {
                             found = currency;
+                            index = figure.indexOf(match);
                         }
                     });
-                    return found;
+                    return {
+                        code: found,
+                        index: figure.indexOf(match)
+                    };
                 }
             },
             isValid: {

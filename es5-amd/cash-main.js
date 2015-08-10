@@ -109,7 +109,7 @@ define(["exports", "module", "register"], function (exports, module, _register) 
                             return _this.register.magnitudes[mul] || 1;
                         }) };
                     hash.exactValue = (function () {
-                        var val = hash.coefficient * hash.rate;
+                        var val = hash.coefficient;
                         hash.magnitude.forEach(function (factor) {
                             val *= factor;
                         });

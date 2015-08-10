@@ -461,7 +461,7 @@ cash_main = function (exports, _register) {
               })
             };
           hash.exactValue = function () {
-            var val = hash.coefficient * hash.rate;
+            var val = hash.coefficient;
             hash.magnitude.forEach(function (factor) {
               val *= factor;
             });

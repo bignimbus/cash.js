@@ -85,7 +85,7 @@ export default class Cash {
                 }),
             };
             hash.exactValue = () => {
-                let val = hash.coefficient * hash.rate;
+                let val = hash.coefficient;
                 hash.magnitude.forEach((factor) => {val *= factor});
                 return val;
             }();

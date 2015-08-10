@@ -1,7 +1,7 @@
 grunt build
-mkdir -p ~/.temporary
-cp -f dist/cash.js ~/.temporary/
+mkdir -p ~/.cashjs-temporary
+cp -f dist/cash.js ~/.cashjs-temporary/
 git stash save 'cash-deploy'
 git checkout gh-pages
-cp -f ~/.temporary/cash.js dist/cash.js
-rm -rf ~/.temporary/
+cp -f ~/.cashjs-temporary/cash.js dist/cash.js
+rm -rf ~/.cashjs-temporary/

@@ -35,6 +35,7 @@ module.exports = function (grunt) {
                 "files": {
                     "es5-amd/cash-dom.js": "src/cash-dom.js",
                     "es5-amd/cash-main.js": "src/cash-main.js",
+                    "es5-amd/cashexp.js": "src/cashexp.js",
                     "es5-amd/register.js": "src/register.js",
                     "es5-amd/polyfills.js": "src/polyfills.js",
                     "es5-amd/currencies.js": "src/currencies.js"
@@ -104,7 +105,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-githooks');
     grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-git');
     grunt.registerTask('build', ['babel', 'requirejs:main', 'requirejs:lite', 'uglify']);
     grunt.registerTask('test', ['build', 'jasmine']);

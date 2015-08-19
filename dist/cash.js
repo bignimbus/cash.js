@@ -1,5 +1,5 @@
 ;(function() {
-var polyfills = {}, currencies = {}, register = {}, cash_main = {}, cash_dom = {}, cash_domamdjs;
+var polyfills = {}, currencies = {}, register = {}, cashex = {}, cash_main = {}, cash_dom = {}, cash_domamdjs;
 polyfills = function (exports) {
   if (!Object.assign) {
     Object.defineProperty(Object, 'assign', {
@@ -321,9 +321,9 @@ register = function (exports, _polyfills, _currencies) {
         get: function get() {
           return this.metadata;
         },
-        set: function set(arr) {
+        set: function set(cashexp) {
           var _this = this;
-          var guid = arr[0], hash = arr[1];
+          var guid = cashexp.guid, hash = cashexp;
           hash.id = guid;
           this.metadata[guid] = hash;
           if (isDom) {
@@ -340,7 +340,99 @@ register = function (exports, _polyfills, _currencies) {
   }
   return exports;
 }(register, polyfills, currencies);
-cash_main = function (exports, _register) {
+cashex = function (exports) {
+  var _createClass = function () {
+    function defineProperties(target, props) {
+      for (var key in props) {
+        var prop = props[key];
+        prop.configurable = true;
+        if (prop.value)
+          prop.writable = true;
+      }
+      Object.defineProperties(target, props);
+    }
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps)
+        defineProperties(Constructor.prototype, protoProps);
+      if (staticProps)
+        defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+  var _classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError('Cannot call a class as a function');
+    }
+  };
+  var CashEx = function () {
+    function CashEx(str, register) {
+      _classCallCheck(this, CashEx);
+      this.raw = str;
+      this.register = register;
+      this.guid = (Math.random() + 1).toString(36).substring(7);
+      this.formHash(this.raw);
+    }
+    _createClass(CashEx, {
+      formHash: {
+        value: function formHash(figure) {
+          var _this = this;
+          var currency = this.inferCurrency(figure), parseNums = function (num) {
+              if (!isNaN(+num)) {
+                return +num;
+              }
+              return _this.register.numberWords[num] || 1;
+            }, nums = figure.match(new RegExp('(?:\\d|' + this.register.numberStrings.join('|') + '|\\.|,)+', 'gi'))[0], multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
+              currency: currency.code,
+              rate: this.register.currencies[currency.code].value || 1,
+              str: figure,
+              prefix: currency.index < figure.indexOf(nums),
+              coefficient: parseNums(nums.replace(',', '').trim()),
+              magnitude: (figure.match(multipliers) || []).map(function (mul) {
+                mul = mul.trim();
+                if (_this.register.magnitudeAbbreviations[mul]) {
+                  mul = _this.register.magnitudeAbbreviations[mul];
+                }
+                return _this.register.magnitudes[mul] || 1;
+              })
+            };
+          hash.exactValue = function () {
+            var val = hash.coefficient * hash.rate;
+            hash.magnitude.forEach(function (factor) {
+              val *= factor;
+            });
+            return val;
+          }();
+          Object.assign(this, hash);
+        }
+      },
+      inferCurrency: {
+        value: function inferCurrency(figure) {
+          var _this = this;
+          var match = undefined, regex = undefined, found = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+          currencies = '(?:' + currencies.join('|') + ')';
+          regex = new RegExp(currencies, 'i');
+          match = figure.match(regex)[0];
+          this.register.supported.forEach(function (currency) {
+            var current = _this.register.currencies[currency], symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
+            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i');
+            if (symbols.test(match)) {
+              found = currency;
+              index = figure.indexOf(match);
+            }
+          });
+          return {
+            code: found,
+            index: figure.indexOf(match)
+          };
+        }
+      }
+    });
+    return CashEx;
+  }();
+  exports = CashEx;
+  return exports;
+}(cashex);
+cash_main = function (exports, _register, _cashex) {
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
   };
@@ -368,6 +460,7 @@ cash_main = function (exports, _register) {
     }
   };
   var Register = _interopRequire(_register);
+  var CashEx = _interopRequire(_cashex);
   var Cash = function () {
     function Cash(options, isDom) {
       _classCallCheck(this, Cash);
@@ -385,17 +478,16 @@ cash_main = function (exports, _register) {
         }
       },
       tag: {
+        // TODO actually implement cashex
         value: function tag(html) {
           var _this = this;
           var moneyStrings = this.constructor.buildRegex(this.register), wrapped = html.replace(moneyStrings, function (figure) {
               var trimmed = figure.trim();
               if (_this.constructor.isValid.call(_this, trimmed)) {
-                var guid = _this.constructor.generateGuid(), hash = _this.constructor.formHash.call(_this, trimmed);
-                _this.register.cache = [
-                  guid,
-                  hash
-                ];
-                figure = ' <span id="' + guid + '" class="cash-node">' + trimmed + '</span> ';
+                var cashex = new CashEx(trimmed, _this.register);
+                // console.log(JSON.stringify(cashex), null, 4);
+                _this.register.cache = cashex;
+                figure = ' <span id="' + cashex.guid + '" class="cash-node">' + trimmed + '</span> ';
               }
               return figure;
             });
@@ -433,65 +525,6 @@ cash_main = function (exports, _register) {
         }
       }
     }, {
-      generateGuid: {
-        value: function generateGuid() {
-          // returns a string of 8 consecutive alphanumerics
-          return (Math.random() + 1).toString(36).substring(7);
-        }
-      },
-      formHash: {
-        value: function formHash(figure) {
-          var _this = this;
-          var currency = this.constructor.inferCurrency.call(this, figure), parseNums = function (num) {
-              if (!isNaN(+num)) {
-                return +num;
-              }
-              return _this.register.numberWords[num] || 1;
-            }, nums = figure.match(new RegExp('(?:\\d|' + this.register.numberStrings.join('|') + '|\\.|,)+', 'gi'))[0], multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
-              currency: currency.code,
-              rate: this.register.currencies[currency.code].value || 1,
-              str: figure,
-              prefix: currency.index < figure.indexOf(nums),
-              coefficient: parseNums(nums.replace(',', '').trim()),
-              magnitude: (figure.match(multipliers) || []).map(function (mul) {
-                mul = mul.trim();
-                if (_this.register.magnitudeAbbreviations[mul]) {
-                  mul = _this.register.magnitudeAbbreviations[mul];
-                }
-                return _this.register.magnitudes[mul] || 1;
-              })
-            };
-          hash.exactValue = function () {
-            var val = hash.coefficient * hash.rate;
-            hash.magnitude.forEach(function (factor) {
-              val *= factor;
-            });
-            return val;
-          }();
-          return hash;
-        }
-      },
-      inferCurrency: {
-        value: function inferCurrency(figure) {
-          var _this = this;
-          var match = undefined, regex = undefined, found = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
-          currencies = '(?:' + currencies.join('|') + ')';
-          regex = new RegExp(currencies, 'i');
-          match = figure.match(regex)[0];
-          this.register.supported.forEach(function (currency) {
-            var current = _this.register.currencies[currency], symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i');
-            if (symbols.test(match)) {
-              found = currency;
-              index = figure.indexOf(match);
-            }
-          });
-          return {
-            code: found,
-            index: figure.indexOf(match)
-          };
-        }
-      },
       isValid: {
         value: function isValid(figure) {
           var currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
@@ -513,7 +546,7 @@ cash_main = function (exports, _register) {
   }();
   exports = Cash;
   return exports;
-}(cash_main, register);
+}(cash_main, register, cashex);
 cash_dom = function (exports, _cashMain) {
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;

@@ -35,7 +35,7 @@ module.exports = function (grunt) {
                 "files": {
                     "es5-amd/cash-dom.js": "src/cash-dom.js",
                     "es5-amd/cash-main.js": "src/cash-main.js",
-                    "es5-amd/cashexp.js": "src/cashexp.js",
+                    "es5-amd/cashex.js": "src/cashex.js",
                     "es5-amd/register.js": "src/register.js",
                     "es5-amd/polyfills.js": "src/polyfills.js",
                     "es5-amd/currencies.js": "src/currencies.js"

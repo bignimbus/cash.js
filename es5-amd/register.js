@@ -80,11 +80,11 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                 get: function get() {
                     return this.metadata;
                 },
-                set: function set(arr) {
+                set: function set(cashexp) {
                     var _this = this;
 
-                    var guid = arr[0],
-                        hash = arr[1];
+                    var guid = cashexp.guid,
+                        hash = cashexp;
 
                     hash.id = guid;
                     this.metadata[guid] = hash;

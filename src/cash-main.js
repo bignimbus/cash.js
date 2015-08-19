@@ -1,5 +1,5 @@
 import Register from 'register';
-import CashExp from 'cashexp';
+import CashEx from 'cashex';
 
 export default class Cash {
     constructor (options, isDom) {
@@ -12,16 +12,14 @@ export default class Cash {
         return this;
     }
 
-    // TODO actually implement cashex
     tag (html) {
         let moneyStrings = this.constructor.buildRegex(this.register),
             wrapped = html.replace(moneyStrings, (figure) => {
                 let trimmed = figure.trim();
                 if (this.constructor.isValid.call(this, trimmed)) {
-                    let guid = this.constructor.generateGuid(),
-                        hash = this.constructor.formHash.call(this, trimmed);
-                    this.register.cache = [guid, hash];
-                    figure = ` <span id="${guid}" class="cash-node">${trimmed}</span> `;
+                    let cashex = new CashEx(trimmed, this.register);
+                    this.register.cache = cashex;
+                    figure = ` <span id="${cashex.guid}" class="cash-node">${trimmed}</span> `;
                 }
                 return figure;
             });
@@ -53,5 +51,32 @@ export default class Cash {
     setLocale (locale) {
         this.register.formatting.locale = locale;
         return this;
+    }
+
+    static isValid (figure) {
+        let currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
+            hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
+            isValidStr = hasCurrencySpec.test(figure)
+                && this.register.filters.every(function (filter) {
+                    return filter(figure);
+                });
+        return isValidStr;
+    }
+
+    static buildRegex (keywords) {
+        let magnitudes = keywords.magnitudeStrings.join('|'),
+            prefixes = keywords.prefixes.join('|'),
+            suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'),
+            numberStr = keywords.numberStrings.join('|'),
+            // work in progress; needs TLC:
+            regexStr = '(?:(?:(' + prefixes + ')\\s?)+'
+                + '[\\.\\b\\s]?'
+                + ')?'
+                + '((\\d|' + numberStr + ')+(?:\\.|,)?)'
+                + '+\\s?'
+                + '(?:(?:' + magnitudes + ')\\s?)*'
+                + '(?:(?:' + suffixes + ')\\s?)*',
+            regex = new RegExp(regexStr, 'ig');
+        return regex;
     }
 }

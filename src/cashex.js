@@ -1,16 +1,13 @@
-function CashExp (str, register) {
-    this.raw = str;
-    this.register = register;
-    return this;
-}
+export default class CashEx {
+    constructor (str, register) {
+        this.raw = str;
+        this.register = register;
+        this.guid = (Math.random() + 1).toString(36).substring(7);
+        this.formHash(this.raw);
+    }
 
-Object.assign(CashExp.prototype, {
-    "generateGuid": function () {
-        // returns a string of 8 consecutive alphanumerics
-        return (Math.random() + 1).toString(36).substring(7);
-    },
-    "formHash": function (figure) {
-        let currency = this.constructor.inferCurrency.call(this, figure),
+    formHash (figure) {
+        let currency = this.inferCurrency(figure),
             parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
@@ -36,15 +33,16 @@ Object.assign(CashExp.prototype, {
                     return this.register.magnitudes[mul] || 1;
                 }),
             };
-            hash.exactValue = () => {
-                let val = hash.coefficient * hash.rate;
-                hash.magnitude.forEach((factor) => {val *= factor});
-                return val;
-            }();
+        hash.exactValue = () => {
+            let val = hash.coefficient * hash.rate;
+            hash.magnitude.forEach((factor) => {val *= factor});
+            return val;
+        }();
 
-            return hash;
-    },
-    "inferCurrency": function (figure) {
+        Object.assign(this, hash);
+    }
+
+    inferCurrency (figure) {
         let match,
             regex,
             found,
@@ -65,32 +63,5 @@ Object.assign(CashExp.prototype, {
             "code": found,
             "index": figure.indexOf(match)
         };
-    },
-    "isValid": function (figure) {
-        let currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
-            hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
-            isValidStr = hasCurrencySpec.test(figure)
-                && this.register.filters.every(function (filter) {
-                    return filter(figure);
-                });
-        return isValidStr;
-    },
-    "buildRegex": function (keywords) {
-        let magnitudes = keywords.magnitudeStrings.join('|'),
-            prefixes = keywords.prefixes.join('|'),
-            suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'),
-            numberStr = keywords.numberStrings.join('|'),
-            // work in progress; needs TLC:
-            regexStr = '(?:(?:(' + prefixes + ')\\s?)+'
-                + '[\\.\\b\\s]?'
-                + ')?'
-                + '((\\d|' + numberStr + ')+(?:\\.|,)?)'
-                + '+\\s?'
-                + '(?:(?:' + magnitudes + ')\\s?)*'
-                + '(?:(?:' + suffixes + ')\\s?)*',
-            regex = new RegExp(regexStr, 'ig');
-        return regex;
     }
-});
-
-export default CashExp;
+}

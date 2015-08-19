@@ -68,9 +68,9 @@ export default function Register (overrides, isDom) {
             "get": function () {
                 return this.metadata;
             },
-            "set": function (arr) {
-                let guid = arr[0],
-                    hash = arr[1];
+            "set": function (cashexp) {
+                let guid = cashexp.guid,
+                    hash = cashexp;
                 
                 hash.id = guid;
                 this.metadata[guid] = hash;

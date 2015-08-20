@@ -34,10 +34,10 @@ define(["exports", "module", "register", "cashex"], function (exports, module, _
                 value: function tag(html) {
                     var _this = this;
 
-                    var moneyStrings = this.constructor.buildRegex(this.register),
+                    var moneyStrings = this.buildRegex(),
                         wrapped = html.replace(moneyStrings, function (figure) {
                         var trimmed = figure.trim();
-                        if (_this.constructor.isValid.call(_this, trimmed)) {
+                        if (_this.isValid(trimmed)) {
                             var cashex = new CashEx(trimmed, _this.register);
                             _this.register.cache = cashex;
                             figure = " <span id=\"" + cashex.guid + "\" class=\"cash-node\">" + trimmed + "</span> ";
@@ -76,29 +76,28 @@ define(["exports", "module", "register", "cashex"], function (exports, module, _
                     this.register.formatting.locale = locale;
                     return this;
                 }
-            }
-        }, {
-            isValid: {
-                value: function isValid(figure) {
-                    var currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
-                        hasCurrencySpec = new RegExp("(?:" + currencyStr.join("|") + ")", "i"),
-                        isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
-                        return filter(figure);
-                    });
-                    return isValidStr;
-                }
             },
             buildRegex: {
-                value: function buildRegex(keywords) {
-                    var magnitudes = keywords.magnitudeStrings.join("|"),
-                        prefixes = keywords.prefixes.join("|"),
-                        suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join("|"),
-                        numberStr = keywords.numberStrings.join("|"),
+                value: function buildRegex() {
+                    var magnitudes = this.register.magnitudeStrings.join("|"),
+                        prefixes = this.register.getPrefixes().join("|"),
+                        suffixes = [].concat(this.register.getSuffixes(), this.register.specialMagnitudes).join("|"),
+                        numberStr = this.register.numberStrings.join("|"),
 
                     // work in progress; needs TLC:
                     regexStr = "(?:(?:(" + prefixes + ")\\s?)+" + "[\\.\\b\\s]?" + ")?" + "((\\d|" + numberStr + ")+(?:\\.|,)?)" + "+\\s?" + "(?:(?:" + magnitudes + ")\\s?)*" + "(?:(?:" + suffixes + ")\\s?)*",
                         regex = new RegExp(regexStr, "ig");
                     return regex;
+                }
+            },
+            isValid: {
+                value: function isValid(figure) {
+                    var currencyStr = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes),
+                        hasCurrencySpec = new RegExp("(?:" + currencyStr.join("|") + ")", "i"),
+                        isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
+                        return filter(figure);
+                    });
+                    return isValidStr;
                 }
             }
         });

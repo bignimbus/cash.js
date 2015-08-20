@@ -11,65 +11,91 @@ function format (obj, opts) {
 export default class CashEx {
     constructor (str, register) {
         this.raw = str;
+        this.data = {};
         this.register = register;
         this.guid = (Math.random() + 1).toString(36).substring(7);
-        this.analyze(this.raw);
+        this.analyze();
         if (this.register.isDom) {
             Object.observe(this, this.updateDom.bind(this));
         }
     }
 
-    analyze (figure) {
-        let currency = this.inferCurrency(figure),
+    analyze () {
+        let currency = this.inferCurrency(this.raw),
             parseNums = (num) => {
                 if (!isNaN(+num)) {
                     return +num;
                 }
                 return this.register.numberWords[num] || 1;
             },
-            nums = figure.match(new RegExp('(?:\\d|'
+            nums = this.raw.match(new RegExp('(?:\\d|'
                 + this.register.numberStrings.join('|')
                 + '|\\.|,)+', 'gi'))[0],
             multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|')
-                + ')+', 'gi'),
-            hash = {
-                "currency": currency.code,
-                "rate": this.register.currencies[currency.code].value || 1,
-                "str": figure,
-                "prefixed": currency.index < figure.indexOf(nums),
-                "coefficient": parseNums(nums.replace(',', '').trim()),
-                "magnitude": (figure.match(multipliers) || []).map((mul) => {
-                    mul = mul.trim();
-                    if (this.register.magnitudeAbbreviations[mul]) {
-                        mul = this.register.magnitudeAbbreviations[mul];
-                    }
-                    return this.register.magnitudes[mul] || 1;
-                }),
-            };
-        hash.exactValue = () => {
-            let val = hash.coefficient * hash.rate;
-            hash.magnitude.forEach((factor) => {val *= factor});
+                + ')+', 'gi');
+
+        Object.assign(this, {
+            "currency": currency.code,
+            "rate": this.register.currencies[currency.code].value || 1,
+            "str": this.raw,
+            "prefixed": currency.index < this.raw.indexOf(nums),
+            "coefficient": parseNums(nums.replace(',', '').trim()),
+            "magnitude": (this.raw.match(multipliers) || []).map((mul) => {
+                mul = mul.trim();
+                if (this.register.magnitudeAbbreviations[mul]) {
+                    mul = this.register.magnitudeAbbreviations[mul];
+                }
+                return this.register.magnitudes[mul] || 1;
+            }),
+        });
+
+        this.exactValue = () => {
+            let val = this.coefficient * this.rate;
+            this.magnitude.forEach((factor) => {val *= factor});
             return val;
         }();
 
-        Object.assign(this, hash);
+        this.voice = this.inferVoice();
     }
 
-    inferCurrency (figure) {
+    inferVoice () {
+        let obj = this.register.currencies[this.currency],
+            choices = this.prefixed ? obj.prefixes : obj.suffixes;
+        for (let i in choices) {
+            let str = `(?:${choices[i].join('|')})`,
+                regex = new RegExp(str, 'i');
+
+            if (regex.test(this.raw)) {
+                return i;
+            }
+        }
+        if (!this.prefixed) {
+            let str = obj.magnitudes.join('|'),
+                regex = new RegExp(str, 'i');
+
+            if (regex.test(this.raw)) {
+                return 'conversational';
+            }
+        }
+        return 'formal';
+    }
+
+    inferCurrency () {
         let index,
             match,
             regex,
             found,
             candidate,
             currentCandidate,
-            currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+            currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
         currencies = `(?:${currencies.join('|')})`;
         regex = new RegExp(currencies, 'i');
-        match = figure.match(regex)[0];
+        match = this.raw.match(regex)[0];
         this.register.supported.forEach((currency) => {
-            let current = this.register.currencies[currency],
-                symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-                symbols = new RegExp(`(?:${symbols.join('|')})`, 'i'),
+            let candidate,
+                current = this.register.currencies[currency],
+                symbols = [].concat(this.register.getPrefixes(currency), this.register.getSuffixes(currency), current.magnitudes || []);
+            symbols = new RegExp(`(?:${symbols.join('|')})`, 'i');
             candidate = match.match(symbols);
             candidate = candidate ? candidate[0] : candidate;
             if (candidate) {
@@ -79,7 +105,8 @@ export default class CashEx {
                     found = currency;
                 }
                 currentCandidate = candidate;
-                index = figure.indexOf(match);
+                candidate = null;
+                index = this.raw.indexOf(match);
             }
         });
         return {

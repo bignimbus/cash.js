@@ -13,10 +13,10 @@ export default class Cash {
     }
 
     tag (html) {
-        let moneyStrings = this.constructor.buildRegex(this.register),
+        let moneyStrings = this.buildRegex(),
             wrapped = html.replace(moneyStrings, (figure) => {
                 let trimmed = figure.trim();
-                if (this.constructor.isValid.call(this, trimmed)) {
+                if (this.isValid(trimmed)) {
                     let cashex = new CashEx(trimmed, this.register);
                     this.register.cache = cashex;
                     figure = ` <span id="${cashex.guid}" class="cash-node">${trimmed}</span> `;
@@ -53,21 +53,11 @@ export default class Cash {
         return this;
     }
 
-    static isValid (figure) {
-        let currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes),
-            hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
-            isValidStr = hasCurrencySpec.test(figure)
-                && this.register.filters.every(function (filter) {
-                    return filter(figure);
-                });
-        return isValidStr;
-    }
-
-    static buildRegex (keywords) {
-        let magnitudes = keywords.magnitudeStrings.join('|'),
-            prefixes = keywords.prefixes.join('|'),
-            suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'),
-            numberStr = keywords.numberStrings.join('|'),
+    buildRegex () {
+        let magnitudes = this.register.magnitudeStrings.join('|'),
+            prefixes = this.register.getPrefixes().join('|'),
+            suffixes = [].concat(this.register.getSuffixes(), this.register.specialMagnitudes).join('|'),
+            numberStr = this.register.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+'
                 + '[\\.\\b\\s]?'
@@ -78,5 +68,15 @@ export default class Cash {
                 + '(?:(?:' + suffixes + ')\\s?)*',
             regex = new RegExp(regexStr, 'ig');
         return regex;
+    }
+
+    isValid (figure) {
+        let currencyStr = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes),
+            hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'),
+            isValidStr = hasCurrencySpec.test(figure)
+                && this.register.filters.every(function (filter) {
+                    return filter(figure);
+                });
+        return isValidStr;
     }
 }

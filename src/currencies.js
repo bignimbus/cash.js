@@ -17,56 +17,137 @@ export default function () {
                 // new RegExp() will be called on these strings, so feel free to
                 // use your awesome regex skills and don't forget to escape
                 // special characters.
-                "prefixes": ["USD", "\\$"],
-                "suffixes": ["USD", "\\$", "buck[s]?", "(?:(?:US[A]?|American)\\s)?dollar[s]?"],
+                "prefixes": {
+                    "formal": ["USD"],
+                    "symbolic": ["\\$"]
+                },
+                "suffixes": {
+                    "formal": ["USD"],
+                    "symbolic": ["\\$"],
+                    "conversational": ["(?:(?:US[A]?|American)\\s)?dollar[s]?"],
+                    "casual": ["buck[s]?"]
+                },
                 // some multipliers imply a certain currency and also change the value.
                 // list those, as well.
                 "magnitudes": ["cent[s]?"]
             },
             "GBP": {
-                "prefixes": ["GBP", "£"],
-                "suffixes": ["GBP", "£", "quid", "(?:English\\s)?pound[s]?"],
+                "prefixes": {
+                    "formal": ["GBP"],
+                    "symbolic": ["£"]
+                },
+                "suffixes": {
+                    "formal": ["GBP"],
+                    "symbolic": ["£"],
+                    "casual": ["quid"],
+                    "conversational": ["(?:English\\s)?pound[s]?"]
+                },
                 "magnitudes": ["pence"]
             },
             "EUR": {
-                "prefixes": ["EUR", "€"],
-                "suffixes": ["EUR", "€", "euro[s]?"]
+                "prefixes": {
+                    "formal": ["EUR"],
+                    "symbolic": ["€"]
+                },
+                "suffixes": {
+                    "formal": ["EUR"],
+                    "symbolic": ["€"],
+                    "conversational": ["euro[s]?"]
+                }
             },
             "JPY": {
-                "prefixes": ["JPY", "¥"],
-                "suffixes": ["JPY", "¥", "(?:Japan(?:ese)?\\s)?yen"]
+                "prefixes": {
+                    "formal": ["JPY"],
+                    "symbolic": ["¥"],
+                },
+                "suffixes": {
+                    "formal": ["JPY"],
+                    "symbolic": ["¥"],
+                    "conversational": ["(?:Japan(?:ese)?\\s)?yen"]
+                }
             },
             "CNY": {
-                "prefixes": ["CNY", "yuan", "¥"],
-                "suffixes": ["CNY", "yuan", "¥", "(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)"]
+                "prefixes": {
+                    "formal": ["CNY"],
+                    "symbolic": ["¥"]
+                },
+                "suffixes": {
+                    "formal": ["CNY"],
+                    "conversational": ["yuan", "(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)"],
+                    "symbolic": ["¥"]
+                }
             },
             "RUB": {
-                "prefixes": ["RUB", "руб"],
-                "suffixes": ["RUB", "руб", "(?:Russia[n]?\\s)?ruble[s]?"]
+                "prefixes": {
+                    "formal": ["RUB"],
+                    "symbolic": ["руб"]
+                },
+                "suffixes": {
+                    "formal": ["RUB"],
+                    "symbolic": ["руб"],
+                    "conversational": ["(?:Russia[n]?\\s)?ruble[s]?"]
+                }
             },
             "CAD": {
-                "prefixes": ["CAD", "\\$"],
-                "suffixes": ["CAD", "\\$", "buck[s]?", "(?:Canad(?:a|ian)\\s)?dollar[s]?"],
+                "prefixes": {
+                    "formal": ["CAD"],
+                    "symbolic": ["\\$"]
+                },
+                "suffixes": {
+                    "formal": ["CAD"],
+                    "symbolic": ["\\$"],
+                    "casual": ["buck[s]?"],
+                    "conversational": ["(?:Canad(?:a|ian)\\s)?dollar[s]?"]
+                },
                 "magnitudes": ["cent[s]?"]
             },
             "AUD": {
-                "prefixes": ["AUD", "\\$"],
-                "suffixes": ["AUD", "\\$", "buck[s]?", "(?:Australia[n]?\\s)?dollar[s]?"],
+                "prefixes": {
+                    "formal": ["AUD"],
+                    "symbolic": ["\\$"]
+                },
+                "suffixes": {
+                    "formal": ["AUD"],
+                    "symbolic": ["\\$"],
+                    "casual": ["buck[s]?"],
+                    "conversational": ["(?:Australia[n]?\\s)?dollar[s]?"]
+                },
                 "magnitudes": ["cent[s]?"]
             },
             "INR": {
-                "prefixes": ["INR", "Rs\\.*?"],
-                "suffixes": ["INR", "Rs\\.*?", "(?:India(?:n)\\s)?rupee[s]?"],
+                "prefixes": {
+                    "formal": ["INR"],
+                    "symbolic": ["Rs\\.*?"]
+                },
+                "suffixes": {
+                    "formal": ["INR"],
+                    "symbolic": ["Rs\\.*?"],
+                    "conversational": ["(?:India(?:n)\\s)?rupee[s]?"]
+                },
                 "magnitudes": ["paise", "lakh", "crore"]
             },
             "MXN": {
-                "prefixes": ["MXN", "Mex\\$", "\\$"],
-                "suffixes": ["MXN", "Mex\\$", "\\$", "(?:Mexic(?:o|an)\\s)?peso[s]?"],
+                "prefixes": {
+                    "formal": ["MXN"],
+                    "symbolic": ["Mex\\$", "\\$"]
+                },
+                "suffixes": {
+                    "formal": ["MXN"],
+                    "symbolic": ["Mex\\$", "\\$"],
+                    "conversational": ["(?:Mexic(?:o|an)\\s)?peso[s]?"]
+                },
                 "magnitudes": ["centavo[s]?", "cent[s]?"]
             },
             "BRL": {
-                "prefixes": ["BRL", "R\\$"],
-                "suffixes": ["BRL", "Real(?:es)?", "R\\$", "(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?"],
+                "prefixes": {
+                    "formal": ["BRL"],
+                    "symbolic": ["R\\$"]
+                },
+                "suffixes": {
+                    "formal": ["BRL"],
+                    "conversational": ["(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?"],
+                    "symbolic": ["R\\$"]
+                },
                 "magnitudes": ["centavo[s]?", "cent[s]?"]
             }
         },

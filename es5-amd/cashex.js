@@ -20,9 +20,10 @@ define(["exports", "module"], function (exports, module) {
             _classCallCheck(this, CashEx);
 
             this.raw = str;
+            this.data = {};
             this.register = register;
             this.guid = (Math.random() + 1).toString(36).substring(7);
-            this.analyze(this.raw);
+            this.analyze();
             if (this.register.isDom) {
                 Object.observe(this, this.updateDom.bind(this));
             }
@@ -30,44 +31,72 @@ define(["exports", "module"], function (exports, module) {
 
         _createClass(CashEx, {
             analyze: {
-                value: function analyze(figure) {
+                value: function analyze() {
                     var _this = this;
 
-                    var currency = this.inferCurrency(figure),
+                    var currency = this.inferCurrency(this.raw),
                         parseNums = function (num) {
                         if (!isNaN(+num)) {
                             return +num;
                         }
                         return _this.register.numberWords[num] || 1;
                     },
-                        nums = figure.match(new RegExp("(?:\\d|" + this.register.numberStrings.join("|") + "|\\.|,)+", "gi"))[0],
-                        multipliers = new RegExp("(?:" + this.register.magnitudeStrings.join("|") + ")+", "gi"),
-                        hash = {
+                        nums = this.raw.match(new RegExp("(?:\\d|" + this.register.numberStrings.join("|") + "|\\.|,)+", "gi"))[0],
+                        multipliers = new RegExp("(?:" + this.register.magnitudeStrings.join("|") + ")+", "gi");
+
+                    Object.assign(this, {
                         currency: currency.code,
                         rate: this.register.currencies[currency.code].value || 1,
-                        str: figure,
-                        prefixed: currency.index < figure.indexOf(nums),
+                        str: this.raw,
+                        prefixed: currency.index < this.raw.indexOf(nums),
                         coefficient: parseNums(nums.replace(",", "").trim()),
-                        magnitude: (figure.match(multipliers) || []).map(function (mul) {
+                        magnitude: (this.raw.match(multipliers) || []).map(function (mul) {
                             mul = mul.trim();
                             if (_this.register.magnitudeAbbreviations[mul]) {
                                 mul = _this.register.magnitudeAbbreviations[mul];
                             }
                             return _this.register.magnitudes[mul] || 1;
-                        }) };
-                    hash.exactValue = (function () {
-                        var val = hash.coefficient * hash.rate;
-                        hash.magnitude.forEach(function (factor) {
+                        }) });
+
+                    this.exactValue = (function () {
+                        var val = _this.coefficient * _this.rate;
+                        _this.magnitude.forEach(function (factor) {
                             val *= factor;
                         });
                         return val;
                     })();
 
-                    Object.assign(this, hash);
+                    this.voice = this.inferVoice();
+                }
+            },
+            inferVoice: {
+                value: function inferVoice() {
+                    var obj = this.register.currencies[this.currency],
+                        choices = this.prefixed ? obj.prefixes : obj.suffixes;
+
+                    for (var i in choices) {
+                        var str = "(?:" + choices[i].join("|") + ")",
+                            regex = new RegExp(str, "i");
+
+                        if (regex.test(this.raw)) {
+                            return i;
+                        }
+                    }
+
+                    if (!this.prefixed) {
+                        var str = obj.magnitudes.join("|"),
+                            regex = new RegExp(str, "i");
+
+                        if (regex.test(this.raw)) {
+                            return "conversational";
+                        }
+                    }
+
+                    return "formal";
                 }
             },
             inferCurrency: {
-                value: function inferCurrency(figure) {
+                value: function inferCurrency() {
                     var _this = this;
 
                     var index = undefined,
@@ -76,14 +105,16 @@ define(["exports", "module"], function (exports, module) {
                         found = undefined,
                         candidate = undefined,
                         currentCandidate = undefined,
-                        currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+                        currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
                     currencies = "(?:" + currencies.join("|") + ")";
                     regex = new RegExp(currencies, "i");
-                    match = figure.match(regex)[0];
+                    match = this.raw.match(regex)[0];
                     this.register.supported.forEach(function (currency) {
-                        var current = _this.register.currencies[currency],
-                            symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-                        symbols = new RegExp("(?:" + symbols.join("|") + ")", "i"), candidate = match.match(symbols);
+                        var candidate = undefined,
+                            current = _this.register.currencies[currency],
+                            symbols = [].concat(_this.register.getPrefixes(currency), _this.register.getSuffixes(currency), current.magnitudes || []);
+                        symbols = new RegExp("(?:" + symbols.join("|") + ")", "i");
+                        candidate = match.match(symbols);
                         candidate = candidate ? candidate[0] : candidate;
                         if (candidate) {
                             if (currentCandidate) {
@@ -92,7 +123,8 @@ define(["exports", "module"], function (exports, module) {
                                 found = currency;
                             }
                             currentCandidate = candidate;
-                            index = figure.indexOf(match);
+                            candidate = null;
+                            index = _this.raw.indexOf(match);
                         }
                     });
                     return {

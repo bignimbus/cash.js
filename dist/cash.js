@@ -52,115 +52,116 @@ currencies = function (exports) {
           // new RegExp() will be called on these strings, so feel free to
           // use your awesome regex skills and don't forget to escape
           // special characters.
-          prefixes: [
-            'USD',
-            '\\$'
-          ],
-          suffixes: [
-            'USD',
-            '\\$',
-            'buck[s]?',
-            '(?:(?:US[A]?|American)\\s)?dollar[s]?'
-          ],
+          prefixes: {
+            formal: ['USD'],
+            symbolic: ['\\$']
+          },
+          suffixes: {
+            formal: ['USD'],
+            symbolic: ['\\$'],
+            conversational: ['(?:(?:US[A]?|American)\\s)?dollar[s]?'],
+            casual: ['buck[s]?']
+          },
           // some multipliers imply a certain currency and also change the value.
           // list those, as well.
           magnitudes: ['cent[s]?']
         },
         GBP: {
-          prefixes: [
-            'GBP',
-            '\xA3'
-          ],
-          suffixes: [
-            'GBP',
-            '\xA3',
-            'quid',
-            '(?:English\\s)?pound[s]?'
-          ],
+          prefixes: {
+            formal: ['GBP'],
+            symbolic: ['\xA3']
+          },
+          suffixes: {
+            formal: ['GBP'],
+            symbolic: ['\xA3'],
+            casual: ['quid'],
+            conversational: ['(?:English\\s)?pound[s]?']
+          },
           magnitudes: ['pence']
         },
         EUR: {
-          prefixes: [
-            'EUR',
-            '\u20AC'
-          ],
-          suffixes: [
-            'EUR',
-            '\u20AC',
-            'euro[s]?'
-          ]
+          prefixes: {
+            formal: ['EUR'],
+            symbolic: ['\u20AC']
+          },
+          suffixes: {
+            formal: ['EUR'],
+            symbolic: ['\u20AC'],
+            conversational: ['euro[s]?']
+          }
         },
         JPY: {
-          prefixes: [
-            'JPY',
-            '\xA5'
-          ],
-          suffixes: [
-            'JPY',
-            '\xA5',
-            '(?:Japan(?:ese)?\\s)?yen'
-          ]
+          prefixes: {
+            formal: ['JPY'],
+            symbolic: ['\xA5']
+          },
+          suffixes: {
+            formal: ['JPY'],
+            symbolic: ['\xA5'],
+            conversational: ['(?:Japan(?:ese)?\\s)?yen']
+          }
         },
         CNY: {
-          prefixes: [
-            'CNY',
-            'yuan',
-            '\xA5'
-          ],
-          suffixes: [
-            'CNY',
-            'yuan',
-            '\xA5',
-            '(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)'
-          ]
+          prefixes: {
+            formal: ['CNY'],
+            symbolic: ['\xA5']
+          },
+          suffixes: {
+            formal: ['CNY'],
+            conversational: [
+              'yuan',
+              '(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)'
+            ],
+            symbolic: ['\xA5']
+          }
         },
         RUB: {
-          prefixes: [
-            'RUB',
-            '\u0440\u0443\u0431'
-          ],
-          suffixes: [
-            'RUB',
-            '\u0440\u0443\u0431',
-            '(?:Russia[n]?\\s)?ruble[s]?'
-          ]
+          prefixes: {
+            formal: ['RUB'],
+            symbolic: ['\u0440\u0443\u0431']
+          },
+          suffixes: {
+            formal: ['RUB'],
+            symbolic: ['\u0440\u0443\u0431'],
+            conversational: ['(?:Russia[n]?\\s)?ruble[s]?']
+          }
         },
         CAD: {
-          prefixes: [
-            'CAD',
-            '\\$'
-          ],
-          suffixes: [
-            'CAD',
-            '\\$',
-            'buck[s]?',
-            '(?:Canad(?:a|ian)\\s)?dollar[s]?'
-          ],
+          prefixes: {
+            formal: ['CAD'],
+            symbolic: ['\\$']
+          },
+          suffixes: {
+            formal: ['CAD'],
+            symbolic: ['\\$'],
+            casual: ['buck[s]?'],
+            conversational: ['(?:Canad(?:a|ian)\\s)?dollar[s]?']
+          },
           magnitudes: ['cent[s]?']
         },
         AUD: {
-          prefixes: [
-            'AUD',
-            '\\$'
-          ],
-          suffixes: [
-            'AUD',
-            '\\$',
-            'buck[s]?',
-            '(?:Australia[n]?\\s)?dollar[s]?'
-          ],
+          prefixes: {
+            formal: ['AUD'],
+            symbolic: ['\\$']
+          },
+          suffixes: {
+            formal: ['AUD'],
+            symbolic: ['\\$'],
+            casual: ['buck[s]?'],
+            conversational: ['(?:Australia[n]?\\s)?dollar[s]?']
+          },
           magnitudes: ['cent[s]?']
         },
         INR: {
-          prefixes: [
-            'INR',
-            'Rs\\.*?'
-          ],
-          suffixes: [
-            'INR',
-            'Rs\\.*?',
-            '(?:India(?:n)\\s)?rupee[s]?'
-          ],
+          prefixes: {
+            formal: ['INR'],
+            symbolic: ['Rs\\.*?']
+          },
+          suffixes: {
+            formal: ['INR'],
+            symbolic: ['Rs\\.*?'],
+            conversational: ['(?:India(?:n)\\s)?rupee[s]?']
+          },
           magnitudes: [
             'paise',
             'lakh',
@@ -168,33 +169,36 @@ currencies = function (exports) {
           ]
         },
         MXN: {
-          prefixes: [
-            'MXN',
-            'Mex\\$',
-            '\\$'
-          ],
-          suffixes: [
-            'MXN',
-            'Mex\\$',
-            '\\$',
-            '(?:Mexic(?:o|an)\\s)?peso[s]?'
-          ],
+          prefixes: {
+            formal: ['MXN'],
+            symbolic: [
+              'Mex\\$',
+              '\\$'
+            ]
+          },
+          suffixes: {
+            formal: ['MXN'],
+            symbolic: [
+              'Mex\\$',
+              '\\$'
+            ],
+            conversational: ['(?:Mexic(?:o|an)\\s)?peso[s]?']
+          },
           magnitudes: [
             'centavo[s]?',
             'cent[s]?'
           ]
         },
         BRL: {
-          prefixes: [
-            'BRL',
-            'R\\$'
-          ],
-          suffixes: [
-            'BRL',
-            'Real(?:es)?',
-            'R\\$',
-            '(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?'
-          ],
+          prefixes: {
+            formal: ['BRL'],
+            symbolic: ['R\\$']
+          },
+          suffixes: {
+            formal: ['BRL'],
+            conversational: ['(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?'],
+            symbolic: ['R\\$']
+          },
           magnitudes: [
             'centavo[s]?',
             'cent[s]?'
@@ -252,76 +256,127 @@ register = function (exports, _polyfills, _currencies) {
   var _interopRequire = function (obj) {
     return obj && obj.__esModule ? obj['default'] : obj;
   };
-  exports = Register;
+  var _createClass = function () {
+    function defineProperties(target, props) {
+      for (var key in props) {
+        var prop = props[key];
+        prop.configurable = true;
+        if (prop.value)
+          prop.writable = true;
+      }
+      Object.defineProperties(target, props);
+    }
+    return function (Constructor, protoProps, staticProps) {
+      if (protoProps)
+        defineProperties(Constructor.prototype, protoProps);
+      if (staticProps)
+        defineProperties(Constructor, staticProps);
+      return Constructor;
+    };
+  }();
+  var _classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError('Cannot call a class as a function');
+    }
+  };
   var currencies = _interopRequire(_currencies);
-  function Register(overrides, isDom) {
-    Object.assign(this, currencies(), overrides, { isDom: true });
-    Object.defineProperties(this, {
-      supportedCurrencies: {
-        get: function get() {
-          var _this = this;
-          var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
-            return _this.currencies[currency].prefixes.length && _this.currencies[currency].suffixes.length && _this.currencies[currency].value !== void 0;
-          });
-          if (validCurrencies.length) {
-            return validCurrencies;
+  var Register = function () {
+    function Register(overrides, isDom) {
+      _classCallCheck(this, Register);
+      Object.assign(this, currencies(), overrides, { isDom: isDom });
+      Object.defineProperties(this, {
+        supportedCurrencies: {
+          get: function get() {
+            var _this = this;
+            var validCurrencies = Object.keys(this.currencies).filter(function (currency) {
+              return Object.keys(_this.currencies[currency].prefixes).length && Object.keys(_this.currencies[currency].suffixes).length && _this.currencies[currency].value !== void 0;
+            });
+            if (validCurrencies.length) {
+              return validCurrencies;
+            }
+            throw new Error('no valid currencies detected!');
           }
-          throw new Error('no valid currencies detected!');
+        },
+        specialMagnitudes: {
+          get: function get() {
+            var _this = this;
+            var magnitudes = [];
+            this.supported.forEach(function (currency) {
+              magnitudes = magnitudes.concat(_this.currencies[currency].magnitudes || []);
+            }, this);
+            return magnitudes;
+          }
+        },
+        magnitudeStrings: {
+          get: function get() {
+            return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
+          }
+        },
+        numberStrings: {
+          get: function get() {
+            return Object.keys(this.numberWords);
+          }
+        },
+        cache: {
+          get: function get() {
+            return this.metadata;
+          },
+          set: function set(cashexp) {
+            var guid = cashexp.guid, hash = cashexp;
+            hash.guid = guid;
+            this.metadata[guid] = hash;
+          }
         }
-      },
-      prefixes: {
-        get: function get() {
+      });
+    }
+    _createClass(Register, {
+      getPrefixes: {
+        value: function getPrefixes() {
           var _this = this;
+          for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+            currencies[_key] = arguments[_key];
+          }
+          if (!currencies.length) {
+            currencies = this.supported;
+          }
           var prefixes = [];
-          this.supported.forEach(function (currency) {
-            prefixes = prefixes.concat(_this.currencies[currency].prefixes || []);
-          }.bind(this));
+          currencies.forEach(function (currency) {
+            if (!_this.currencies[currency]) {
+              return;
+            }
+            for (var i in _this.currencies[currency].prefixes) {
+              var thing = _this.currencies[currency].prefixes[i];
+              prefixes = [].concat(prefixes, thing || []);
+            }
+          });
           return prefixes;
         }
       },
-      suffixes: {
-        get: function get() {
+      getSuffixes: {
+        value: function getSuffixes() {
           var _this = this;
+          for (var _len = arguments.length, currencies = Array(_len), _key = 0; _key < _len; _key++) {
+            currencies[_key] = arguments[_key];
+          }
+          if (!currencies.length) {
+            currencies = this.supported;
+          }
           var suffixes = [];
-          this.supported.forEach(function (currency) {
-            suffixes = suffixes.concat(_this.currencies[currency].suffixes || []);
-          }.bind(this));
+          currencies.forEach(function (currency) {
+            if (!_this.currencies[currency]) {
+              return;
+            }
+            for (var i in _this.currencies[currency].suffixes) {
+              suffixes = suffixes.concat(_this.currencies[currency].suffixes[i] || []);
+            }
+          });
           return suffixes;
-        }
-      },
-      specialMagnitudes: {
-        get: function get() {
-          var _this = this;
-          var magnitudes = [];
-          this.supported.forEach(function (currency) {
-            magnitudes = magnitudes.concat(_this.currencies[currency].magnitudes || []);
-          }.bind(this));
-          return magnitudes;
-        }
-      },
-      magnitudeStrings: {
-        get: function get() {
-          return Object.keys(this.magnitudes).concat(Object.keys(this.magnitudeAbbreviations));
-        }
-      },
-      numberStrings: {
-        get: function get() {
-          return Object.keys(this.numberWords);
-        }
-      },
-      cache: {
-        get: function get() {
-          return this.metadata;
-        },
-        set: function set(cashexp) {
-          var guid = cashexp.guid, hash = cashexp;
-          hash.guid = guid;
-          this.metadata[guid] = hash;
         }
       }
     });
-    return this;
-  }
+    return Register;
+  }();
+  exports = Register;
   return exports;
 }(register, polyfills, currencies);
 cashex = function (exports) {
@@ -361,56 +416,77 @@ cashex = function (exports) {
     function CashEx(str, register) {
       _classCallCheck(this, CashEx);
       this.raw = str;
+      this.data = {};
       this.register = register;
       this.guid = (Math.random() + 1).toString(36).substring(7);
-      this.analyze(this.raw);
+      this.analyze();
       if (this.register.isDom) {
         Object.observe(this, this.updateDom.bind(this));
       }
     }
     _createClass(CashEx, {
       analyze: {
-        value: function analyze(figure) {
+        value: function analyze() {
           var _this = this;
-          var currency = this.inferCurrency(figure), parseNums = function (num) {
+          var currency = this.inferCurrency(this.raw), parseNums = function (num) {
               if (!isNaN(+num)) {
                 return +num;
               }
               return _this.register.numberWords[num] || 1;
-            }, nums = figure.match(new RegExp('(?:\\d|' + this.register.numberStrings.join('|') + '|\\.|,)+', 'gi'))[0], multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|') + ')+', 'gi'), hash = {
-              currency: currency.code,
-              rate: this.register.currencies[currency.code].value || 1,
-              str: figure,
-              prefixed: currency.index < figure.indexOf(nums),
-              coefficient: parseNums(nums.replace(',', '').trim()),
-              magnitude: (figure.match(multipliers) || []).map(function (mul) {
-                mul = mul.trim();
-                if (_this.register.magnitudeAbbreviations[mul]) {
-                  mul = _this.register.magnitudeAbbreviations[mul];
-                }
-                return _this.register.magnitudes[mul] || 1;
-              })
-            };
-          hash.exactValue = function () {
-            var val = hash.coefficient * hash.rate;
-            hash.magnitude.forEach(function (factor) {
+            }, nums = this.raw.match(new RegExp('(?:\\d|' + this.register.numberStrings.join('|') + '|\\.|,)+', 'gi'))[0], multipliers = new RegExp('(?:' + this.register.magnitudeStrings.join('|') + ')+', 'gi');
+          Object.assign(this, {
+            currency: currency.code,
+            rate: this.register.currencies[currency.code].value || 1,
+            str: this.raw,
+            prefixed: currency.index < this.raw.indexOf(nums),
+            coefficient: parseNums(nums.replace(',', '').trim()),
+            magnitude: (this.raw.match(multipliers) || []).map(function (mul) {
+              mul = mul.trim();
+              if (_this.register.magnitudeAbbreviations[mul]) {
+                mul = _this.register.magnitudeAbbreviations[mul];
+              }
+              return _this.register.magnitudes[mul] || 1;
+            })
+          });
+          this.exactValue = function () {
+            var val = _this.coefficient * _this.rate;
+            _this.magnitude.forEach(function (factor) {
               val *= factor;
             });
             return val;
           }();
-          Object.assign(this, hash);
+          this.voice = this.inferVoice();
+        }
+      },
+      inferVoice: {
+        value: function inferVoice() {
+          var obj = this.register.currencies[this.currency], choices = this.prefixed ? obj.prefixes : obj.suffixes;
+          for (var i in choices) {
+            var str = '(?:' + choices[i].join('|') + ')', regex = new RegExp(str, 'i');
+            if (regex.test(this.raw)) {
+              return i;
+            }
+          }
+          if (!this.prefixed) {
+            var str = obj.magnitudes.join('|'), regex = new RegExp(str, 'i');
+            if (regex.test(this.raw)) {
+              return 'conversational';
+            }
+          }
+          return 'formal';
         }
       },
       inferCurrency: {
-        value: function inferCurrency(figure) {
+        value: function inferCurrency() {
           var _this = this;
-          var index = undefined, match = undefined, regex = undefined, found = undefined, candidate = undefined, currentCandidate = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+          var index = undefined, match = undefined, regex = undefined, found = undefined, candidate = undefined, currentCandidate = undefined, currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
           currencies = '(?:' + currencies.join('|') + ')';
           regex = new RegExp(currencies, 'i');
-          match = figure.match(regex)[0];
+          match = this.raw.match(regex)[0];
           this.register.supported.forEach(function (currency) {
-            var current = _this.register.currencies[currency], symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i'), candidate = match.match(symbols);
+            var candidate = undefined, current = _this.register.currencies[currency], symbols = [].concat(_this.register.getPrefixes(currency), _this.register.getSuffixes(currency), current.magnitudes || []);
+            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i');
+            candidate = match.match(symbols);
             candidate = candidate ? candidate[0] : candidate;
             if (candidate) {
               if (currentCandidate) {
@@ -419,7 +495,8 @@ cashex = function (exports) {
                 found = currency;
               }
               currentCandidate = candidate;
-              index = figure.indexOf(match);
+              candidate = null;
+              index = _this.raw.indexOf(match);
             }
           });
           return {
@@ -499,9 +576,9 @@ cash_main = function (exports, _register, _cashex) {
       tag: {
         value: function tag(html) {
           var _this = this;
-          var moneyStrings = this.constructor.buildRegex(this.register), wrapped = html.replace(moneyStrings, function (figure) {
+          var moneyStrings = this.buildRegex(), wrapped = html.replace(moneyStrings, function (figure) {
               var trimmed = figure.trim();
-              if (_this.constructor.isValid.call(_this, trimmed)) {
+              if (_this.isValid(trimmed)) {
                 var cashex = new CashEx(trimmed, _this.register);
                 _this.register.cache = cashex;
                 figure = ' <span id="' + cashex.guid + '" class="cash-node">' + trimmed + '</span> ';
@@ -540,22 +617,21 @@ cash_main = function (exports, _register, _cashex) {
           this.register.formatting.locale = locale;
           return this;
         }
-      }
-    }, {
-      isValid: {
-        value: function isValid(figure) {
-          var currencyStr = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
-              return filter(figure);
-            });
-          return isValidStr;
-        }
       },
       buildRegex: {
-        value: function buildRegex(keywords) {
-          var magnitudes = keywords.magnitudeStrings.join('|'), prefixes = keywords.prefixes.join('|'), suffixes = [].concat(keywords.suffixes, keywords.specialMagnitudes).join('|'), numberStr = keywords.numberStrings.join('|'),
+        value: function buildRegex() {
+          var magnitudes = this.register.magnitudeStrings.join('|'), prefixes = this.register.getPrefixes().join('|'), suffixes = [].concat(this.register.getSuffixes(), this.register.specialMagnitudes).join('|'), numberStr = this.register.numberStrings.join('|'),
             // work in progress; needs TLC:
             regexStr = '(?:(?:(' + prefixes + ')\\s?)+' + '[\\.\\b\\s]?' + ')?' + '((\\d|' + numberStr + ')+(?:\\.|,)?)' + '+\\s?' + '(?:(?:' + magnitudes + ')\\s?)*' + '(?:(?:' + suffixes + ')\\s?)*', regex = new RegExp(regexStr, 'ig');
           return regex;
+        }
+      },
+      isValid: {
+        value: function isValid(figure) {
+          var currencyStr = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes), hasCurrencySpec = new RegExp('(?:' + currencyStr.join('|') + ')', 'i'), isValidStr = hasCurrencySpec.test(figure) && this.register.filters.every(function (filter) {
+              return filter(figure);
+            });
+          return isValidStr;
         }
       }
     });

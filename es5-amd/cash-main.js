@@ -31,9 +31,6 @@ define(["exports", "module", "register", "cashex"], function (exports, module, _
                 }
             },
             tag: {
-
-                // TODO actually implement cashex
-
                 value: function tag(html) {
                     var _this = this;
 
@@ -42,7 +39,6 @@ define(["exports", "module", "register", "cashex"], function (exports, module, _
                         var trimmed = figure.trim();
                         if (_this.constructor.isValid.call(_this, trimmed)) {
                             var cashex = new CashEx(trimmed, _this.register);
-                            // console.log(JSON.stringify(cashex), null, 4);
                             _this.register.cache = cashex;
                             figure = " <span id=\"" + cashex.guid + "\" class=\"cash-node\">" + trimmed + "</span> ";
                         }

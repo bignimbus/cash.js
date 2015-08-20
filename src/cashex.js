@@ -43,9 +43,12 @@ export default class CashEx {
     }
 
     inferCurrency (figure) {
-        let match,
+        let index,
+            match,
             regex,
             found,
+            candidate,
+            currentCandidate,
             currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
         currencies = `(?:${currencies.join('|')})`;
         regex = new RegExp(currencies, 'i');
@@ -53,15 +56,22 @@ export default class CashEx {
         this.register.supported.forEach((currency) => {
             let current = this.register.currencies[currency],
                 symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-                symbols = new RegExp(`(?:${symbols.join('|')})`, 'i');
-            if (symbols.test(match)) {
-                found = currency;
+                symbols = new RegExp(`(?:${symbols.join('|')})`, 'i'),
+            candidate = match.match(symbols);
+            candidate = candidate ? candidate[0] : candidate;
+            if (candidate) {
+                if (currentCandidate) {
+                    found = candidate.length > currentCandidate.length ? currency : found;
+                } else {
+                    found = currency;
+                }
+                currentCandidate = candidate;
                 index = figure.indexOf(match);
             }
         });
         return {
             "code": found,
-            "index": figure.indexOf(match)
+            "index": index
         };
     }
 }

@@ -57,9 +57,12 @@ define(["exports", "module"], function (exports, module) {
                 value: function inferCurrency(figure) {
                     var _this = this;
 
-                    var match = undefined,
+                    var index = undefined,
+                        match = undefined,
                         regex = undefined,
                         found = undefined,
+                        candidate = undefined,
+                        currentCandidate = undefined,
                         currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
                     currencies = "(?:" + currencies.join("|") + ")";
                     regex = new RegExp(currencies, "i");
@@ -67,15 +70,21 @@ define(["exports", "module"], function (exports, module) {
                     this.register.supported.forEach(function (currency) {
                         var current = _this.register.currencies[currency],
                             symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-                        symbols = new RegExp("(?:" + symbols.join("|") + ")", "i");
-                        if (symbols.test(match)) {
-                            found = currency;
+                        symbols = new RegExp("(?:" + symbols.join("|") + ")", "i"), candidate = match.match(symbols);
+                        candidate = candidate ? candidate[0] : candidate;
+                        if (candidate) {
+                            if (currentCandidate) {
+                                found = candidate.length > currentCandidate.length ? currency : found;
+                            } else {
+                                found = currency;
+                            }
+                            currentCandidate = candidate;
                             index = figure.indexOf(match);
                         }
                     });
                     return {
                         code: found,
-                        index: figure.indexOf(match)
+                        index: index
                     };
                 }
             }

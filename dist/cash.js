@@ -408,21 +408,27 @@ cashex = function (exports) {
       inferCurrency: {
         value: function inferCurrency(figure) {
           var _this = this;
-          var match = undefined, regex = undefined, found = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
+          var index = undefined, match = undefined, regex = undefined, found = undefined, candidate = undefined, currentCandidate = undefined, currencies = [].concat(this.register.prefixes, this.register.suffixes, this.register.specialMagnitudes);
           currencies = '(?:' + currencies.join('|') + ')';
           regex = new RegExp(currencies, 'i');
           match = figure.match(regex)[0];
           this.register.supported.forEach(function (currency) {
             var current = _this.register.currencies[currency], symbols = [].concat(current.prefixes, current.suffixes, current.magnitudes || []);
-            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i');
-            if (symbols.test(match)) {
-              found = currency;
+            symbols = new RegExp('(?:' + symbols.join('|') + ')', 'i'), candidate = match.match(symbols);
+            candidate = candidate ? candidate[0] : candidate;
+            if (candidate) {
+              if (currentCandidate) {
+                found = candidate.length > currentCandidate.length ? currency : found;
+              } else {
+                found = currency;
+              }
+              currentCandidate = candidate;
               index = figure.indexOf(match);
             }
           });
           return {
             code: found,
-            index: figure.indexOf(match)
+            index: index
           };
         }
       }
@@ -478,14 +484,12 @@ cash_main = function (exports, _register, _cashex) {
         }
       },
       tag: {
-        // TODO actually implement cashex
         value: function tag(html) {
           var _this = this;
           var moneyStrings = this.constructor.buildRegex(this.register), wrapped = html.replace(moneyStrings, function (figure) {
               var trimmed = figure.trim();
               if (_this.constructor.isValid.call(_this, trimmed)) {
                 var cashex = new CashEx(trimmed, _this.register);
-                // console.log(JSON.stringify(cashex), null, 4);
                 _this.register.cache = cashex;
                 figure = ' <span id="' + cashex.guid + '" class="cash-node">' + trimmed + '</span> ';
               }

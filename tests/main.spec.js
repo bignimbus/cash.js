@@ -13,7 +13,8 @@
         beforeEach(function () {
             cash = new Cash();
             str = 'I have $5.00 and ¥8,000.  Hey, don\'t you owe me 25 dollars?'
-                + ' Or was it someone else?  Maybe it was 50 cents, or ¥50.';
+                + ' Or was it someone else?  Maybe it was 50 cents, or ¥50.'
+                + ' Five Australian Dollars.';
         });
 
         afterEach(function () {
@@ -36,7 +37,7 @@
         });
 
         it('should interpret symbols that are shared between multiple currencies'
-        + ' as being associated with the last listed currency', function () {
+        + ' as being associated with the first listed currency and/or the most specific selector', function () {
             cash.lookFor('USD', 'AUD', 'JPY', 'CNY').tag(str);
             var node,
                 currency,
@@ -45,8 +46,9 @@
                 currency = cash.register.metadata[node].currency;
                 currenciesDetected[currency] = (currenciesDetected[currency] || 0) + 1;
             }
-            expect(currenciesDetected.AUD).toBe(3);
-            expect(currenciesDetected.CNY).toBe(2);
+            expect(currenciesDetected.USD).toBe(3);
+            expect(currenciesDetected.JPY).toBe(2);
+            expect(currenciesDetected.AUD).toBe(1);
         });
     });
 

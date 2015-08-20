@@ -48,7 +48,7 @@ The `Cash` object is a constructor so more than one instance can be loaded (use 
 These methods are supported in `cash-lite` and `cash`.
 
 ### lookFor(string[, string, ...])
-Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  In the event that a certain symbol is shared by more than one currencies listed in the arguments, `cash` will default to the last currency.
+Tells `cash` what currencies you expect to be rendered in the DOM.  This helps make sure `cash` isn't confused by currencies that share symbols (like Japanese Yen and Chinese Yuan).  In the event that a certain symbol is shared by more than one currencies listed in the arguments, `cash` will default to the first listed currency.  In the event that one currency string is more specific than the other, the more specific string will take precedence (e.g. if we're looking for USD first and AUD second, "dollars" will be interpreted as USD while "Austrialian dollars" will be interpreted as AUD).
 
 ```js
 cash.lookFor('USD', 'GBP', 'MXN', 'RUB');

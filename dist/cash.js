@@ -254,16 +254,8 @@ register = function (exports, _polyfills, _currencies) {
   };
   exports = Register;
   var currencies = _interopRequire(_currencies);
-  function format(obj, opts) {
-    var cents = opts.round ? 0 : 2;
-    return obj.exactValue.toLocaleString(opts.locale, {
-      minimumFractionDigits: cents,
-      maximumFractionDigits: cents,
-      useGrouping: opts.useGrouping
-    });
-  }
   function Register(overrides, isDom) {
-    Object.assign(this, currencies(), overrides);
+    Object.assign(this, currencies(), overrides, { isDom: true });
     Object.defineProperties(this, {
       supportedCurrencies: {
         get: function get() {
@@ -322,17 +314,9 @@ register = function (exports, _polyfills, _currencies) {
           return this.metadata;
         },
         set: function set(cashexp) {
-          var _this = this;
           var guid = cashexp.guid, hash = cashexp;
-          hash.id = guid;
+          hash.guid = guid;
           this.metadata[guid] = hash;
-          if (isDom) {
-            Object.observe(this.metadata[guid], function (obj) {
-              obj = obj[0].object;
-              var display = format(obj, _this.formatting);
-              $('#' + obj.id).html('' + obj.currency + ' ' + display);
-            });
-          }
         }
       }
     });
@@ -364,17 +348,29 @@ cashex = function (exports) {
       throw new TypeError('Cannot call a class as a function');
     }
   };
+  function format(obj, opts) {
+    'use strict';
+    var cents = opts.round ? 0 : 2;
+    return obj.exactValue.toLocaleString(opts.locale, {
+      minimumFractionDigits: cents,
+      maximumFractionDigits: cents,
+      useGrouping: opts.useGrouping
+    });
+  }
   var CashEx = function () {
     function CashEx(str, register) {
       _classCallCheck(this, CashEx);
       this.raw = str;
       this.register = register;
       this.guid = (Math.random() + 1).toString(36).substring(7);
-      this.formHash(this.raw);
+      this.analyze(this.raw);
+      if (this.register.isDom) {
+        Object.observe(this, this.updateDom.bind(this));
+      }
     }
     _createClass(CashEx, {
-      formHash: {
-        value: function formHash(figure) {
+      analyze: {
+        value: function analyze(figure) {
           var _this = this;
           var currency = this.inferCurrency(figure), parseNums = function (num) {
               if (!isNaN(+num)) {
@@ -385,7 +381,7 @@ cashex = function (exports) {
               currency: currency.code,
               rate: this.register.currencies[currency.code].value || 1,
               str: figure,
-              prefix: currency.index < figure.indexOf(nums),
+              prefixed: currency.index < figure.indexOf(nums),
               coefficient: parseNums(nums.replace(',', '').trim()),
               magnitude: (figure.match(multipliers) || []).map(function (mul) {
                 mul = mul.trim();
@@ -430,6 +426,23 @@ cashex = function (exports) {
             code: found,
             index: index
           };
+        }
+      },
+      recalculate: {
+        value: function recalculate(currency) {
+          var oldRate = currency ? this.register.currencies[this.currency].value : 1, current = currency || this.currency, rate = this.register.currencies[current].value, multiplier = 1 / oldRate;
+          Object.assign(this, {
+            currency: current,
+            rate: rate,
+            exactValue: this.exactValue * multiplier * rate
+          });
+        }
+      },
+      updateDom: {
+        value: function updateDom(obj) {
+          obj = obj[0].object;
+          var display = format(obj, this.register.formatting);
+          $('#' + obj.guid).html('' + obj.currency + ' ' + display);
         }
       }
     });
@@ -680,16 +693,7 @@ cash_dom = function (exports, _cashMain) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
               continue;
             }
-            obj = {};
-            oldRate = source ? this.register.currencies[cache[id].currency].value : 1;
-            current = source || cache[id].currency;
-            rate = this.register.currencies[current].value;
-            multiplier = 1 / oldRate;
-            Object.assign(cache[id], {
-              currency: current,
-              rate: rate,
-              exactValue: cache[id].exactValue * multiplier * rate
-            });
+            cache[id].recalculate(source);
           }
           if (this['for']) {
             this['for'] = null;

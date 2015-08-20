@@ -1,17 +1,10 @@
 import 'polyfills';
 import currencies from 'currencies';
 
-function format (obj, opts) {
-    let cents = opts.round ? 0 : 2
-    return obj.exactValue.toLocaleString(opts.locale, {
-        "minimumFractionDigits": cents,
-        "maximumFractionDigits": cents,
-        "useGrouping": opts.useGrouping
-    });
-}
-
 export default function Register (overrides, isDom) {
-    Object.assign(this, currencies(), overrides);
+    Object.assign(this, currencies(), overrides, {
+        isDom: true
+    });
 
     Object.defineProperties(this, {
         "supportedCurrencies": {
@@ -72,15 +65,8 @@ export default function Register (overrides, isDom) {
                 let guid = cashexp.guid,
                     hash = cashexp;
                 
-                hash.id = guid;
+                hash.guid = guid;
                 this.metadata[guid] = hash;
-                if (isDom) {
-                    Object.observe(this.metadata[guid], (obj) => {
-                        obj = obj[0].object;
-                        let display = format(obj, this.formatting);
-                        $(`#${obj.id}`).html(`${obj.currency} ${display}`);
-                    });
-                }
             }
         }
     });

@@ -7,17 +7,10 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
 
     var currencies = _interopRequire(_currencies);
 
-    function format(obj, opts) {
-        var cents = opts.round ? 0 : 2;
-        return obj.exactValue.toLocaleString(opts.locale, {
-            minimumFractionDigits: cents,
-            maximumFractionDigits: cents,
-            useGrouping: opts.useGrouping
-        });
-    }
-
     function Register(overrides, isDom) {
-        Object.assign(this, currencies(), overrides);
+        Object.assign(this, currencies(), overrides, {
+            isDom: true
+        });
 
         Object.defineProperties(this, {
             supportedCurrencies: {
@@ -81,20 +74,11 @@ define(["exports", "module", "polyfills", "currencies"], function (exports, modu
                     return this.metadata;
                 },
                 set: function set(cashexp) {
-                    var _this = this;
-
                     var guid = cashexp.guid,
                         hash = cashexp;
 
-                    hash.id = guid;
+                    hash.guid = guid;
                     this.metadata[guid] = hash;
-                    if (isDom) {
-                        Object.observe(this.metadata[guid], function (obj) {
-                            obj = obj[0].object;
-                            var display = format(obj, _this.formatting);
-                            $("#" + obj.id).html("" + obj.currency + " " + display);
-                        });
-                    }
                 }
             }
         });

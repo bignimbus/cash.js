@@ -60,16 +60,7 @@ export default class CashDom extends Cash {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
                 continue;
             }
-            obj = {};
-            oldRate = source ? this.register.currencies[cache[id].currency].value : 1;
-            current = source || cache[id].currency;
-            rate = this.register.currencies[current].value;
-            multiplier = 1 / oldRate;
-            Object.assign(cache[id], {
-                "currency": current,
-                "rate": rate,
-                "exactValue": cache[id].exactValue * multiplier * rate
-            });
+            cache[id].recalculate(source);
         }
         if (this.for) {
             this.for = null;

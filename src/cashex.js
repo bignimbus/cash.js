@@ -1,12 +1,25 @@
+function format (obj, opts) {
+    'use strict';
+    let cents = opts.round ? 0 : 2
+    return obj.exactValue.toLocaleString(opts.locale, {
+        "minimumFractionDigits": cents,
+        "maximumFractionDigits": cents,
+        "useGrouping": opts.useGrouping
+    });
+}
+
 export default class CashEx {
     constructor (str, register) {
         this.raw = str;
         this.register = register;
         this.guid = (Math.random() + 1).toString(36).substring(7);
-        this.formHash(this.raw);
+        this.analyze(this.raw);
+        if (this.register.isDom) {
+            Object.observe(this, this.updateDom.bind(this));
+        }
     }
 
-    formHash (figure) {
+    analyze (figure) {
         let currency = this.inferCurrency(figure),
             parseNums = (num) => {
                 if (!isNaN(+num)) {
@@ -23,7 +36,7 @@ export default class CashEx {
                 "currency": currency.code,
                 "rate": this.register.currencies[currency.code].value || 1,
                 "str": figure,
-                "prefix": currency.index < figure.indexOf(nums),
+                "prefixed": currency.index < figure.indexOf(nums),
                 "coefficient": parseNums(nums.replace(',', '').trim()),
                 "magnitude": (figure.match(multipliers) || []).map((mul) => {
                     mul = mul.trim();
@@ -73,5 +86,23 @@ export default class CashEx {
             "code": found,
             "index": index
         };
+    }
+
+    recalculate (currency) {
+        let oldRate = currency ? this.register.currencies[this.currency].value : 1,
+            current = currency || this.currency,
+            rate = this.register.currencies[current].value,
+            multiplier = 1 / oldRate;
+        Object.assign(this, {
+            "currency": current,
+            "rate": rate,
+            "exactValue": this.exactValue * multiplier * rate
+        });
+    }
+
+    updateDom (obj) {
+        obj = obj[0].object;
+        let display = format(obj, this.register.formatting);
+        $(`#${obj.guid}`).html(`${obj.currency} ${display}`);
     }
 }

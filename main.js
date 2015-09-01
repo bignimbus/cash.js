@@ -84,7 +84,7 @@
             cash.exchange(cash.register.supported).for(currency);
             window.setTimeout(function () {
                 $('#' + currency).attr('checked', 'checked').trigger('change');
-            }, 2000);
+            }, 500);
             $el.val('exchange for...');
         });
     }

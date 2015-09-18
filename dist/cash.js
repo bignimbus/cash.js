@@ -29,7 +29,7 @@ polyfills = function (exports) {
         return to;
       }
     });
-  }
+  }  /* eslint-enable */
   return exports;
 }(polyfills);
 currencies = function (exports) {
@@ -53,156 +53,217 @@ currencies = function (exports) {
           // use your awesome regex skills and don't forget to escape
           // special characters.
           prefixes: {
-            formal: ['USD'],
-            symbolic: ['\\$']
+            symbolic: ['\\$'],
+            formal: ['USD']
           },
           suffixes: {
-            formal: ['USD'],
             symbolic: ['\\$'],
             conversational: ['(?:(?:US[A]?|American)\\s)?dollar[s]?'],
-            casual: ['buck[s]?']
+            casual: [
+              'buck[s]?',
+              'bucks'
+            ],
+            formal: ['USD']
           },
           // some multipliers imply a certain currency and also change the value.
           // list those, as well.
-          magnitudes: ['cent[s]?']
+          magnitudes: ['cent[s]?'],
+          translations: {
+            casual: 'bucks',
+            conversational: 'dollars',
+            symbolic: '$'
+          }
         },
         GBP: {
           prefixes: {
-            formal: ['GBP'],
-            symbolic: ['\xA3']
+            symbolic: ['\xA3'],
+            formal: ['GBP']
           },
           suffixes: {
-            formal: ['GBP'],
             symbolic: ['\xA3'],
             casual: ['quid'],
-            conversational: ['(?:English\\s)?pound[s]?']
+            conversational: ['(?:English\\s)?pound[s]?'],
+            formal: ['GBP']
           },
-          magnitudes: ['pence']
+          magnitudes: ['pence'],
+          translations: {
+            casual: 'quid',
+            conversational: 'pounds',
+            symbolic: '\xA3'
+          }
         },
         EUR: {
           prefixes: {
-            formal: ['EUR'],
-            symbolic: ['\u20AC']
+            symbolic: ['\u20AC'],
+            formal: ['EUR']
           },
           suffixes: {
-            formal: ['EUR'],
             symbolic: ['\u20AC'],
-            conversational: ['euro[s]?']
+            conversational: ['euro[s]?'],
+            formal: ['EUR']
+          },
+          translations: {
+            formal: 'EUR',
+            conversational: 'euro',
+            symbolic: '\u20AC'
           }
         },
         JPY: {
           prefixes: {
-            formal: ['JPY'],
-            symbolic: ['\xA5']
+            symbolic: ['\xA5'],
+            formal: ['JPY']
           },
           suffixes: {
-            formal: ['JPY'],
             symbolic: ['\xA5'],
-            conversational: ['(?:Japan(?:ese)?\\s)?yen']
+            conversational: ['(?:Japan(?:ese)?\\s)?yen'],
+            formal: ['JPY']
+          },
+          translations: {
+            conversational: 'yen',
+            symbolic: '\xA5'
           }
         },
         CNY: {
           prefixes: {
-            formal: ['CNY'],
-            symbolic: ['\xA5']
+            symbolic: ['\xA5'],
+            formal: ['CNY']
           },
           suffixes: {
-            formal: ['CNY'],
             conversational: [
               'yuan',
               '(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)'
             ],
-            symbolic: ['\xA5']
+            symbolic: ['\xA5'],
+            formal: ['CNY']
+          },
+          translations: {
+            conversational: 'yuan',
+            symbolic: '\xA5'
           }
         },
         RUB: {
           prefixes: {
-            formal: ['RUB'],
-            symbolic: ['\u0440\u0443\u0431']
+            symbolic: ['\u0440\u0443\u0431'],
+            formal: ['RUB']
           },
           suffixes: {
-            formal: ['RUB'],
             symbolic: ['\u0440\u0443\u0431'],
-            conversational: ['(?:Russia[n]?\\s)?ruble[s]?']
+            conversational: ['(?:Russia[n]?\\s)?ruble[s]?'],
+            formal: ['RUB']
+          },
+          translations: {
+            conversational: 'rubles',
+            symbolic: '\u0440\u0443\u0431'
           }
         },
         CAD: {
           prefixes: {
-            formal: ['CAD'],
-            symbolic: ['\\$']
+            symbolic: ['\\$'],
+            formal: ['CAD']
           },
           suffixes: {
-            formal: ['CAD'],
             symbolic: ['\\$'],
             casual: ['buck[s]?'],
-            conversational: ['(?:Canad(?:a|ian)\\s)?dollar[s]?']
+            conversational: ['(?:Canad(?:a|ian)\\s)?dollar[s]?'],
+            formal: ['CAD']
           },
-          magnitudes: ['cent[s]?']
+          magnitudes: [
+            'cent[s]?',
+            'cents'
+          ],
+          translations: {
+            symbolic: '$',
+            casual: 'bucks',
+            conversational: 'dollars'
+          }
         },
         AUD: {
           prefixes: {
-            formal: ['AUD'],
-            symbolic: ['\\$']
+            symbolic: ['\\$'],
+            formal: ['AUD']
           },
           suffixes: {
-            formal: ['AUD'],
             symbolic: ['\\$'],
-            casual: ['buck[s]?'],
-            conversational: ['(?:Australia[n]?\\s)?dollar[s]?']
+            casual: [
+              'buck[s]?',
+              'bucks'
+            ],
+            conversational: ['(?:Australia[n]?\\s)?dollar[s]?'],
+            formal: ['AUD']
           },
-          magnitudes: ['cent[s]?']
+          magnitudes: ['cent[s]?'],
+          translations: {
+            casual: 'bucks',
+            symbolic: '$',
+            conversational: 'dollars'
+          }
         },
         INR: {
           prefixes: {
-            formal: ['INR'],
-            symbolic: ['Rs\\.*?']
+            symbolic: [
+              'Rs\\.*?',
+              'Rs\\.'
+            ],
+            formal: ['INR']
           },
           suffixes: {
-            formal: ['INR'],
             symbolic: ['Rs\\.*?'],
-            conversational: ['(?:India(?:n)\\s)?rupee[s]?']
+            conversational: ['(?:India(?:n)\\s)?rupee[s]?'],
+            formal: ['INR']
           },
           magnitudes: [
             'paise',
             'lakh',
             'crore'
-          ]
+          ],
+          translations: {
+            conversational: 'rupees',
+            symbolic: 'Rs'
+          }
         },
         MXN: {
           prefixes: {
-            formal: ['MXN'],
             symbolic: [
-              'Mex\\$',
-              '\\$'
-            ]
+              '\\$',
+              'Mex\\$'
+            ],
+            formal: ['MXN']
           },
           suffixes: {
-            formal: ['MXN'],
             symbolic: [
-              'Mex\\$',
-              '\\$'
+              '\\$',
+              'Mex\\$'
             ],
-            conversational: ['(?:Mexic(?:o|an)\\s)?peso[s]?']
+            conversational: ['(?:Mexic(?:o|an)\\s)?peso[s]?'],
+            formal: ['MXN']
           },
           magnitudes: [
             'centavo[s]?',
             'cent[s]?'
-          ]
+          ],
+          translations: {
+            conversational: 'pesos',
+            symbolic: 'Mex$'
+          }
         },
         BRL: {
           prefixes: {
-            formal: ['BRL'],
-            symbolic: ['R\\$']
+            symbolic: ['R\\$'],
+            formal: ['BRL']
           },
           suffixes: {
-            formal: ['BRL'],
             conversational: ['(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?'],
-            symbolic: ['R\\$']
+            symbolic: ['R\\$'],
+            formal: ['BRL']
           },
           magnitudes: [
             'centavo[s]?',
             'cent[s]?'
-          ]
+          ],
+          translations: {
+            symbolic: 'R$',
+            conversational: 'reales'
+          }
         }
       },
       // should be self explanatory.
@@ -403,15 +464,6 @@ cashex = function (exports) {
       throw new TypeError('Cannot call a class as a function');
     }
   };
-  function format(obj, opts) {
-    'use strict';
-    var cents = opts.round ? 0 : 2;
-    return obj.exactValue.toLocaleString(opts.locale, {
-      minimumFractionDigits: cents,
-      maximumFractionDigits: cents,
-      useGrouping: opts.useGrouping
-    });
-  }
   var CashEx = function () {
     function CashEx(str, register) {
       _classCallCheck(this, CashEx);
@@ -420,9 +472,6 @@ cashex = function (exports) {
       this.register = register;
       this.guid = (Math.random() + 1).toString(36).substring(7);
       this.analyze();
-      if (this.register.isDom) {
-        Object.observe(this, this.updateDom.bind(this));
-      }
     }
     _createClass(CashEx, {
       analyze: {
@@ -449,7 +498,7 @@ cashex = function (exports) {
             })
           });
           this.exactValue = function () {
-            var val = _this.coefficient * _this.rate;
+            var val = _this.coefficient;
             _this.magnitude.forEach(function (factor) {
               val *= factor;
             });
@@ -479,7 +528,7 @@ cashex = function (exports) {
       inferCurrency: {
         value: function inferCurrency() {
           var _this = this;
-          var index = undefined, match = undefined, regex = undefined, found = undefined, candidate = undefined, currentCandidate = undefined, currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
+          var index = undefined, match = undefined, regex = undefined, found = undefined, currentCandidate = undefined, currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
           currencies = '(?:' + currencies.join('|') + ')';
           regex = new RegExp(currencies, 'i');
           match = this.raw.match(regex)[0];
@@ -513,13 +562,33 @@ cashex = function (exports) {
             rate: rate,
             exactValue: this.exactValue * multiplier * rate
           });
+          if (this.register.isDom) {
+            this.updateDom();
+          }
         }
       },
       updateDom: {
         value: function updateDom(obj) {
-          obj = obj[0].object;
-          var display = format(obj, this.register.formatting);
-          $('#' + obj.guid).html('' + obj.currency + ' ' + display);
+          var obj = this.register.currencies[this.currency].translations, str = obj[this.voice] || this.currency, order = [
+              this.format(),
+              str
+            ];
+          if (this.prefixed) {
+            order.reverse();
+          }
+          str = order.join(this.voice === 'symbolic' ? '' : ' ').replace(/\\/g, '');
+          $('#' + this.guid).html(str);
+        }
+      },
+      format: {
+        value: function format() {
+          'use strict';
+          var cents = this.register.formatting.round ? 0 : 2;
+          return this.exactValue.toLocaleString(this.register.formatting.locale, {
+            minimumFractionDigits: cents,
+            maximumFractionDigits: cents,
+            useGrouping: this.register.formatting.useGrouping
+          });
         }
       }
     });
@@ -764,8 +833,8 @@ cash_dom = function (exports, _cashMain) {
     }, {
       recalculate: {
         value: function recalculate(source, targets) {
-          var obj = undefined, rate = undefined, current = undefined, oldRate = undefined, multiplier = undefined, cache = this.register.metadata;
-          for (id in cache) {
+          var cache = this.register.metadata;
+          for (var id in cache) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
               continue;
             }

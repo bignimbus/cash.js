@@ -22,7 +22,7 @@
     "object.observe": "^0.2.3"
   },
   "scripts": {
-    "test": "grunt precommit"
+    "test": "bower install && grunt test"
   },
   "repository": {
     "type": "git",

@@ -3,20 +3,21 @@
     'use strict';
     var cash;
     describe('cashex', function () {
-        var prefixed, magnitude, suffixed, casual, formal, conversational, symbolic;
+        var prefixed, conversationalE, magnitude, suffixed, casual, formal, conversational, symbolic;
         beforeEach(function () {
             cash = new Cash();
-            cash.setValues({"USD": 1}).lookFor(["USD"]);
+            cash.setValues({"USD": 1}).lookFor("USD", "EUR");
             prefixed = '$5';
             suffixed = '5 dollars';
             casual = 'five bucks';
             formal = 'USD 5.00';
             conversational = 'five American dollars';
+            conversationalE = '5 euros';
             magnitude = 'five cents';
             symbolic = 'five $';
         });
         afterEach(function () {
-            cash = magnitude = prefixed = suffixed = casual = formal = conversational = symbolic = null;
+            cash = conversationalE = magnitude = prefixed = suffixed = casual = formal = conversational = symbolic = null;
         });
 
         it('should capture whether a cash expression is prefixed with the currency type', function () {
@@ -40,6 +41,10 @@
             delete cache[Object.keys(cache)[0]];
 
             cash.tag(conversational);
+            expect(cache[Object.keys(cache)[0]].voice).toBe('conversational');
+            delete cache[Object.keys(cache)[0]];
+
+            cash.tag(conversationalE);
             expect(cache[Object.keys(cache)[0]].voice).toBe('conversational');
             delete cache[Object.keys(cache)[0]];
 

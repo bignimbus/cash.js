@@ -20,136 +20,186 @@ define(["exports", "module"], function (exports, module) {
                     // use your awesome regex skills and don't forget to escape
                     // special characters.
                     prefixes: {
-                        formal: ["USD"],
-                        symbolic: ["\\$"]
+                        symbolic: ["\\$"],
+                        formal: ["USD"]
                     },
                     suffixes: {
-                        formal: ["USD"],
                         symbolic: ["\\$"],
                         conversational: ["(?:(?:US[A]?|American)\\s)?dollar[s]?"],
-                        casual: ["buck[s]?"]
+                        casual: ["buck[s]?", "bucks"],
+                        formal: ["USD"]
                     },
                     // some multipliers imply a certain currency and also change the value.
                     // list those, as well.
-                    magnitudes: ["cent[s]?"]
+                    magnitudes: ["cent[s]?"],
+                    translations: {
+                        casual: "bucks",
+                        conversational: "dollars",
+                        symbolic: "$"
+                    }
                 },
                 GBP: {
                     prefixes: {
-                        formal: ["GBP"],
-                        symbolic: ["£"]
+                        symbolic: ["£"],
+                        formal: ["GBP"]
                     },
                     suffixes: {
-                        formal: ["GBP"],
                         symbolic: ["£"],
                         casual: ["quid"],
-                        conversational: ["(?:English\\s)?pound[s]?"]
+                        conversational: ["(?:English\\s)?pound[s]?"],
+                        formal: ["GBP"]
                     },
-                    magnitudes: ["pence"]
+                    magnitudes: ["pence"],
+                    translations: {
+                        casual: "quid",
+                        conversational: "pounds",
+                        symbolic: "£"
+                    }
                 },
                 EUR: {
                     prefixes: {
-                        formal: ["EUR"],
-                        symbolic: ["€"]
+                        symbolic: ["€"],
+                        formal: ["EUR"]
                     },
                     suffixes: {
-                        formal: ["EUR"],
                         symbolic: ["€"],
-                        conversational: ["euro[s]?"]
+                        conversational: ["euro[s]?"],
+                        formal: ["EUR"]
+                    },
+                    translations: {
+                        formal: "EUR",
+                        conversational: "euro",
+                        symbolic: "€"
                     }
                 },
                 JPY: {
                     prefixes: {
-                        formal: ["JPY"],
-                        symbolic: ["¥"] },
-                    suffixes: {
-                        formal: ["JPY"],
                         symbolic: ["¥"],
-                        conversational: ["(?:Japan(?:ese)?\\s)?yen"]
+                        formal: ["JPY"]
+                    },
+                    suffixes: {
+                        symbolic: ["¥"],
+                        conversational: ["(?:Japan(?:ese)?\\s)?yen"],
+                        formal: ["JPY"]
+                    },
+                    translations: {
+                        conversational: "yen",
+                        symbolic: "¥"
                     }
                 },
                 CNY: {
                     prefixes: {
-                        formal: ["CNY"],
-                        symbolic: ["¥"]
+                        symbolic: ["¥"],
+                        formal: ["CNY"]
                     },
                     suffixes: {
-                        formal: ["CNY"],
                         conversational: ["yuan", "(?:Chin(?:a|ese)\\s)?(?:renminbi|yuan)"],
-                        symbolic: ["¥"]
+                        symbolic: ["¥"],
+                        formal: ["CNY"]
+                    },
+                    translations: {
+                        conversational: "yuan",
+                        symbolic: "¥"
                     }
                 },
                 RUB: {
                     prefixes: {
-                        formal: ["RUB"],
-                        symbolic: ["руб"]
+                        symbolic: ["руб"],
+                        formal: ["RUB"]
                     },
                     suffixes: {
-                        formal: ["RUB"],
                         symbolic: ["руб"],
-                        conversational: ["(?:Russia[n]?\\s)?ruble[s]?"]
+                        conversational: ["(?:Russia[n]?\\s)?ruble[s]?"],
+                        formal: ["RUB"]
+                    },
+                    translations: {
+                        conversational: "rubles",
+                        symbolic: "руб"
                     }
                 },
                 CAD: {
                     prefixes: {
-                        formal: ["CAD"],
-                        symbolic: ["\\$"]
+                        symbolic: ["\\$"],
+                        formal: ["CAD"]
                     },
                     suffixes: {
-                        formal: ["CAD"],
                         symbolic: ["\\$"],
                         casual: ["buck[s]?"],
-                        conversational: ["(?:Canad(?:a|ian)\\s)?dollar[s]?"]
+                        conversational: ["(?:Canad(?:a|ian)\\s)?dollar[s]?"],
+                        formal: ["CAD"]
                     },
-                    magnitudes: ["cent[s]?"]
+                    magnitudes: ["cent[s]?", "cents"],
+                    translations: {
+                        symbolic: "$",
+                        casual: "bucks",
+                        conversational: "dollars"
+                    }
                 },
                 AUD: {
                     prefixes: {
-                        formal: ["AUD"],
-                        symbolic: ["\\$"]
+                        symbolic: ["\\$"],
+                        formal: ["AUD"]
                     },
                     suffixes: {
-                        formal: ["AUD"],
                         symbolic: ["\\$"],
-                        casual: ["buck[s]?"],
-                        conversational: ["(?:Australia[n]?\\s)?dollar[s]?"]
+                        casual: ["buck[s]?", "bucks"],
+                        conversational: ["(?:Australia[n]?\\s)?dollar[s]?"],
+                        formal: ["AUD"]
                     },
-                    magnitudes: ["cent[s]?"]
+                    magnitudes: ["cent[s]?"],
+                    translations: {
+                        casual: "bucks",
+                        symbolic: "$",
+                        conversational: "dollars"
+                    }
                 },
                 INR: {
                     prefixes: {
-                        formal: ["INR"],
-                        symbolic: ["Rs\\.*?"]
+                        symbolic: ["Rs\\.*?", "Rs\\."],
+                        formal: ["INR"]
                     },
                     suffixes: {
-                        formal: ["INR"],
                         symbolic: ["Rs\\.*?"],
-                        conversational: ["(?:India(?:n)\\s)?rupee[s]?"]
+                        conversational: ["(?:India(?:n)\\s)?rupee[s]?"],
+                        formal: ["INR"]
                     },
-                    magnitudes: ["paise", "lakh", "crore"]
+                    magnitudes: ["paise", "lakh", "crore"],
+                    translations: {
+                        conversational: "rupees",
+                        symbolic: "Rs"
+                    }
                 },
                 MXN: {
                     prefixes: {
-                        formal: ["MXN"],
-                        symbolic: ["Mex\\$", "\\$"]
+                        symbolic: ["\\$", "Mex\\$"],
+                        formal: ["MXN"]
                     },
                     suffixes: {
-                        formal: ["MXN"],
-                        symbolic: ["Mex\\$", "\\$"],
-                        conversational: ["(?:Mexic(?:o|an)\\s)?peso[s]?"]
+                        symbolic: ["\\$", "Mex\\$"],
+                        conversational: ["(?:Mexic(?:o|an)\\s)?peso[s]?"],
+                        formal: ["MXN"]
                     },
-                    magnitudes: ["centavo[s]?", "cent[s]?"]
+                    magnitudes: ["centavo[s]?", "cent[s]?"],
+                    translations: {
+                        conversational: "pesos",
+                        symbolic: "Mex$"
+                    }
                 },
                 BRL: {
                     prefixes: {
-                        formal: ["BRL"],
-                        symbolic: ["R\\$"]
+                        symbolic: ["R\\$"],
+                        formal: ["BRL"]
                     },
                     suffixes: {
-                        formal: ["BRL"],
                         conversational: ["(?:Bra[zs]il(?:ian)?\\s)?real(?:es)?"],
-                        symbolic: ["R\\$"]
+                        symbolic: ["R\\$"],
+                        formal: ["BRL"]
                     },
-                    magnitudes: ["centavo[s]?", "cent[s]?"]
+                    magnitudes: ["centavo[s]?", "cent[s]?"],
+                    translations: {
+                        symbolic: "R$",
+                        conversational: "reales"
+                    }
                 }
             },
             // should be self explanatory.

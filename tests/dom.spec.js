@@ -30,7 +30,7 @@
         });
 
         it('should update the DOM with the stored exchange rate values', function (done) {
-            var gbp200 = isPhantom? 'GBP 200' : 'GBP 200.00';
+            var gbp200 = isPhantom? '£200' : '£200.00';
             expect($node.html()).toBe(gbp200);
             done();
         });
@@ -70,9 +70,9 @@
         });
 
         it('should be able to exchange multiple currencies for another currency', function (done) {
-            var gbp400 = isPhantom ? 'GBP 400' : 'GBP 400.00',
-                gbp100 = isPhantom ? 'GBP 100' : 'GBP 100.00',
-                gbpalot = isPhantom ? 'GBP 500000000' : 'GBP 500,000,000.00';
+            var gbp400 = isPhantom ? '£400' : '£400.00',
+                gbp100 = isPhantom ? '100 pounds' : '100.00 pounds',
+                gbpalot = isPhantom ? '500000000 GBP' : '500,000,000.00 GBP';
             expect($(nodes[0]).html()).toBe(gbp400);
             expect($(nodes[1]).html()).toBe(gbp100);
             expect($(nodes[2]).html()).toBe(gbpalot);
@@ -112,7 +112,7 @@
         });
 
         it('should be able to exchange multiple currencies for another currency', function (done) {
-            var usd8 = isPhantom ? 'USD 8.333333333333334' : 'USD 8.33';
+            var usd8 = isPhantom ? '$8.333333333333334' : '$8.33';
             expect($(nodes[0]).html()).toBe(usd8);
             done();
         });

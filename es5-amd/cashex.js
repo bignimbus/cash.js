@@ -5,16 +5,6 @@ define(["exports", "module"], function (exports, module) {
 
     var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-    function format(obj, opts) {
-        "use strict";
-        var cents = opts.round ? 0 : 2;
-        return obj.exactValue.toLocaleString(opts.locale, {
-            minimumFractionDigits: cents,
-            maximumFractionDigits: cents,
-            useGrouping: opts.useGrouping
-        });
-    }
-
     var CashEx = (function () {
         function CashEx(str, register) {
             _classCallCheck(this, CashEx);
@@ -82,7 +72,6 @@ define(["exports", "module"], function (exports, module) {
                             return i;
                         }
                     }
-
                     if (!this.prefixed) {
                         var str = obj.magnitudes.join("|"),
                             regex = new RegExp(str, "i");
@@ -91,7 +80,6 @@ define(["exports", "module"], function (exports, module) {
                             return "conversational";
                         }
                     }
-
                     return "formal";
                 }
             },
@@ -148,9 +136,25 @@ define(["exports", "module"], function (exports, module) {
             },
             updateDom: {
                 value: function updateDom(obj) {
-                    obj = obj[0].object;
-                    var display = format(obj, this.register.formatting);
-                    $("#" + obj.guid).html("" + obj.currency + " " + display);
+                    var obj = this.register.currencies[this.currency].translations,
+                        str = obj[this.voice] || this.currency,
+                        order = [this.format(), str];
+                    if (this.prefixed) {
+                        order.reverse();
+                    }
+                    str = order.join(this.voice === "symbolic" ? "" : " ").replace(/\\/g, "");
+                    $("#" + this.guid).html(str);
+                }
+            },
+            format: {
+                value: function format() {
+                    "use strict";
+                    var cents = this.register.formatting.round ? 0 : 2;
+                    return this.exactValue.toLocaleString(this.register.formatting.locale, {
+                        minimumFractionDigits: cents,
+                        maximumFractionDigits: cents,
+                        useGrouping: this.register.formatting.useGrouping
+                    });
                 }
             }
         });

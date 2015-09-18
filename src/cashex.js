@@ -1,13 +1,3 @@
-function format (obj, opts) {
-    'use strict';
-    let cents = opts.round ? 0 : 2
-    return obj.exactValue.toLocaleString(opts.locale, {
-        "minimumFractionDigits": cents,
-        "maximumFractionDigits": cents,
-        "useGrouping": opts.useGrouping
-    });
-}
-
 export default class CashEx {
     constructor (str, register) {
         this.raw = str;
@@ -61,6 +51,7 @@ export default class CashEx {
     inferVoice () {
         let obj = this.register.currencies[this.currency],
             choices = this.prefixed ? obj.prefixes : obj.suffixes;
+
         for (let i in choices) {
             let str = `(?:${choices[i].join('|')})`,
                 regex = new RegExp(str, 'i');
@@ -128,8 +119,23 @@ export default class CashEx {
     }
 
     updateDom (obj) {
-        obj = obj[0].object;
-        let display = format(obj, this.register.formatting);
-        $(`#${obj.guid}`).html(`${obj.currency} ${display}`);
+        let obj = this.register.currencies[this.currency].translations,
+            str = obj[this.voice] || this.currency,
+            order = [this.format(), str];
+        if (this.prefixed) {
+            order.reverse();
+        }
+        str = order.join(this.voice === 'symbolic' ? '' : ' ').replace(/\\/g, '');
+        $(`#${this.guid}`).html(str);
+    }
+
+    format () {
+        'use strict';
+        let cents = this.register.formatting.round ? 0 : 2
+        return this.exactValue.toLocaleString(this.register.formatting.locale, {
+            "minimumFractionDigits": cents,
+            "maximumFractionDigits": cents,
+            "useGrouping": this.register.formatting.useGrouping
+        });
     }
 }

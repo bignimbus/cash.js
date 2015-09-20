@@ -501,7 +501,7 @@ cashex = function (exports) {
             })
           });
           this.exactValue = function () {
-            var val = _this.coefficient * _this.rate;
+            var val = _this.coefficient;
             _this.magnitude.forEach(function (factor) {
               val *= factor;
             });
@@ -834,7 +834,7 @@ cash_dom = function (exports, _cashMain) {
       recalculate: {
         value: function recalculate(source, targets) {
           var obj = undefined, rate = undefined, current = undefined, oldRate = undefined, multiplier = undefined, cache = this.register.metadata;
-          for (id in cache) {
+          for (var id in cache) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
               continue;
             }

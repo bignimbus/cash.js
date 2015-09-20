@@ -89,7 +89,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
                         multiplier = undefined,
                         cache = this.register.metadata;
 
-                    for (id in cache) {
+                    for (var id in cache) {
                         if (targets && targets.indexOf(cache[id].currency) === -1) {
                             continue;
                         }

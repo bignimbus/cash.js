@@ -49,7 +49,7 @@ define(["exports", "module"], function (exports, module) {
                         }) });
 
                     this.exactValue = (function () {
-                        var val = _this.coefficient * _this.rate;
+                        var val = _this.coefficient;
                         _this.magnitude.forEach(function (factor) {
                             val *= factor;
                         });

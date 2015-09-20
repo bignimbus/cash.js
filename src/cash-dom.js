@@ -56,7 +56,7 @@ export default class CashDom extends Cash {
             multiplier,
             cache = this.register.metadata;
 
-        for (id in cache) {
+        for (let id in cache) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
                 continue;
             }

@@ -40,7 +40,7 @@ export default class CashEx {
         });
 
         this.exactValue = () => {
-            let val = this.coefficient * this.rate;
+            let val = this.coefficient;
             this.magnitude.forEach((factor) => {val *= factor});
             return val;
         }();

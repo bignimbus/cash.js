@@ -501,7 +501,7 @@ cashex = function (exports) {
             })
           });
           this.exactValue = function () {
-            var val = _this.coefficient * _this.rate;
+            var val = _this.coefficient;
             _this.magnitude.forEach(function (factor) {
               val *= factor;
             });

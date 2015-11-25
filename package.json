@@ -1,6 +1,6 @@
 {
   "name": "cash.js",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "detects currencies displayed on a webpage and injects a UI that calculates exchange rates. Configurable, lightweight and modern-looking.",
   "main": "Gruntfile.js",
   "directories": {

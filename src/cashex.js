@@ -39,11 +39,11 @@ export default class CashEx {
             }),
         });
 
-        this.exactValue = () => {
+        this.exactValue = (() => {
             let val = this.coefficient;
             this.magnitude.forEach((factor) => {val *= factor});
             return val;
-        }();
+        })();
 
         this.voice = this.inferVoice();
     }

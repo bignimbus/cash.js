@@ -1,13 +1,14 @@
 {
-    "parser": "babel-eslint",
     "env": {
         "browser": true,
         "amd": true,
-        "jasmine": true
+        "jasmine": true,
+        "es6": true
     },
     "ecmaFeatures": {
         "arrowFunctions": true,
-        "blockBindings": true
+        "blockBindings": true,
+        "modules": true
     },
     "globals": {
         "$": false,
@@ -40,7 +41,6 @@
         "quote-props": 2,
         "radix": 2,
         "space-after-keywords": [2, "always"],
-        "space-in-brackets": [1, "never"],
         "space-in-parens": [1, "never"],
         "space-unary-ops": 2,
         "strict": 0

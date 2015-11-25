@@ -46,7 +46,7 @@ export default class Register {
                 "set": function (cashexp) {
                     let guid = cashexp.guid,
                         hash = cashexp;
-                    
+
                     hash.guid = guid;
                     this.metadata[guid] = hash;
                 }
@@ -87,3 +87,4 @@ export default class Register {
         return suffixes;
     }
 }
+

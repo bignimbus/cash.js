@@ -34,7 +34,6 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "1.11.2",
-    "object.observe": "~0.2.3"
+    "jquery": "1.11.2"
   }
 }

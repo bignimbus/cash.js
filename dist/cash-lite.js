@@ -472,9 +472,6 @@ cashex = function (exports) {
       this.register = register;
       this.guid = (Math.random() + 1).toString(36).substring(7);
       this.analyze();
-      if (this.register.isDom) {
-        Object.observe(this, this.updateDom.bind(this));
-      }
     }
     _createClass(CashEx, {
       analyze: {
@@ -565,6 +562,9 @@ cashex = function (exports) {
             rate: rate,
             exactValue: this.exactValue * multiplier * rate
           });
+          if (this.register.isDom) {
+            this.updateDom();
+          }
         }
       },
       updateDom: {

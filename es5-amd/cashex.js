@@ -14,9 +14,6 @@ define(["exports", "module"], function (exports, module) {
             this.register = register;
             this.guid = (Math.random() + 1).toString(36).substring(7);
             this.analyze();
-            if (this.register.isDom) {
-                Object.observe(this, this.updateDom.bind(this));
-            }
         }
 
         _createClass(CashEx, {
@@ -132,6 +129,9 @@ define(["exports", "module"], function (exports, module) {
                         rate: rate,
                         exactValue: this.exactValue * multiplier * rate
                     });
+                    if (this.register.isDom) {
+                        this.updateDom();
+                    }
                 }
             },
             updateDom: {

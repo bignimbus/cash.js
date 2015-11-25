@@ -34,8 +34,6 @@
                 dollarSign = ['$'],
                 usd = ['USD'],
                 bucks = ['bucks'],
-                one = ['one'],
-                a = ['a'],
                 dollars = ['dollars'],
                 nums = ['12345'],
                 decimals = ['.50'];

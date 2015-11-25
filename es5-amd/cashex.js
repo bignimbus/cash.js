@@ -88,7 +88,6 @@ define(["exports", "module"], function (exports, module) {
                         match = undefined,
                         regex = undefined,
                         found = undefined,
-                        candidate = undefined,
                         currentCandidate = undefined,
                         currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
                     currencies = "(?:" + currencies.join("|") + ")";

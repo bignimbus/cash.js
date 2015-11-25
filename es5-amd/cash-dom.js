@@ -82,12 +82,7 @@ define(["exports", "module", "cash-main"], function (exports, module, _cashMain)
         }, {
             recalculate: {
                 value: function recalculate(source, targets) {
-                    var obj = undefined,
-                        rate = undefined,
-                        current = undefined,
-                        oldRate = undefined,
-                        multiplier = undefined,
-                        cache = this.register.metadata;
+                    var cache = this.register.metadata;
 
                     for (var id in cache) {
                         if (targets && targets.indexOf(cache[id].currency) === -1) {

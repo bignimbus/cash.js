@@ -107,5 +107,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-git');
     grunt.registerTask('build', ['babel', 'requirejs:main', 'requirejs:lite', 'uglify']);
     grunt.registerTask('test', ['build', 'jasmine']);
-    grunt.registerTask('precommit', [/*'eslint', */ 'test', 'gitadd']);
+    grunt.registerTask('precommit', ['eslint', 'test', 'gitadd']);
 };

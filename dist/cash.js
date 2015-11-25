@@ -29,7 +29,7 @@ polyfills = function (exports) {
         return to;
       }
     });
-  }
+  }  /* eslint-enable */
   return exports;
 }(polyfills);
 currencies = function (exports) {
@@ -528,7 +528,7 @@ cashex = function (exports) {
       inferCurrency: {
         value: function inferCurrency() {
           var _this = this;
-          var index = undefined, match = undefined, regex = undefined, found = undefined, candidate = undefined, currentCandidate = undefined, currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
+          var index = undefined, match = undefined, regex = undefined, found = undefined, currentCandidate = undefined, currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
           currencies = '(?:' + currencies.join('|') + ')';
           regex = new RegExp(currencies, 'i');
           match = this.raw.match(regex)[0];
@@ -833,7 +833,7 @@ cash_dom = function (exports, _cashMain) {
     }, {
       recalculate: {
         value: function recalculate(source, targets) {
-          var obj = undefined, rate = undefined, current = undefined, oldRate = undefined, multiplier = undefined, cache = this.register.metadata;
+          var cache = this.register.metadata;
           for (var id in cache) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {
               continue;

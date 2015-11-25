@@ -53,11 +53,6 @@
     });
 
     describe('tag', function () {
-        function cashCount (str) {
-            var match = str.match(/\/span/g);
-            return match ? match.length : 0;
-        }
-
         beforeEach(function () {
             cash = new Cash();
         });

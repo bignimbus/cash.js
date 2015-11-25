@@ -1,4 +1,6 @@
 // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+
+/* eslint-disable */
 if (!Object.assign) {
   Object.defineProperty(Object, 'assign', {
     enumerable: false,
@@ -30,3 +32,5 @@ if (!Object.assign) {
     }
   });
 }
+
+/* eslint-enable */

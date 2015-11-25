@@ -1,5 +1,7 @@
 define(["exports"], function (exports) {
   // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+
+  /* eslint-disable */
   "use strict";
 
   if (!Object.assign) {
@@ -33,4 +35,6 @@ define(["exports"], function (exports) {
       }
     });
   }
+
+  /* eslint-enable */
 });

@@ -37,9 +37,9 @@ export default class CashDom extends Cash {
                 throw new Error(`${currency} not supported.`);
             }
         });
-        this.for = (targets, source) => {
+        this.for = ((targets, source) => {
             this.constructor.recalculate.call(this, source, targets);
-        }.bind(this, currencies);
+        }).bind(this, currencies);
         return this;
     }
 
@@ -49,12 +49,7 @@ export default class CashDom extends Cash {
     }
 
     static recalculate (source, targets) {
-        let obj,
-            rate,
-            current,
-            oldRate,
-            multiplier,
-            cache = this.register.metadata;
+        let cache = this.register.metadata;
 
         for (let id in cache) {
             if (targets && targets.indexOf(cache[id].currency) === -1) {

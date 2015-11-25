@@ -73,7 +73,6 @@ export default class CashEx {
             match,
             regex,
             found,
-            candidate,
             currentCandidate,
             currencies = [].concat(this.register.getPrefixes(), this.register.getSuffixes(), this.register.specialMagnitudes);
         currencies = `(?:${currencies.join('|')})`;

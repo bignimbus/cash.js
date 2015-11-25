@@ -18,11 +18,13 @@ I made a quick demonstration of how cash works.  Check it out at [this project's
 ## What this does
 cash.js is a money-finder.  Give it a string or a DOM node, and its regular expression engine will find anything that looks like it's talking about a money amount and wrap it in a `span` tag with a `cash-node` class and a unique alphanumeric `id` tag which is also persisted in memory.  It also exposes a few useful methods for updating those strings post-render, including an elegant way to pass in exchange rates and dynamically update the DOM with new money information.  This makes localization a snap.
 
+Additionally, the library supports different "voices" to preserve context.  Cash values that are expressed using known colloqual, for example, will be preserved when exchanging values.  So `15 bucks` will be exchanged for `10 quid`, for example.
+
 ## How this serves users and developers
 When delivering content, it's very easy to be currency-biased.  If your backend or API doesn't support displaying money figures in local currencies, you may be alienating your users who may not know the Ruble - Peso exchange rate (for instance).  Since cash.js is lightweight and can be deployed on the server via node, used pre-template on the client side, or applied directly to the DOM after rendering (or any combination thereof), there's no excuse for not internationalizing your money values.
 
 ## Currency support
-cash.js comes with [support for a handful of major currencies](https://github.com/bignimbus/cash.js/blob/master/src/currencies.js) out of the box, but is infinitely extensible.  In addition to traditional currencies, you can set, swap and display exchange rates for cryptocurrencies, virtual currencies, stock prices, toothbrush prices, whatever!  If you have the data, cash.js will make sure that the user can see it in a performant way.
+cash.js comes with [support for a handful of major currencies](https://github.com/bignimbus/cash.js/blob/master/src/currencies.js) out of the box, but is infinitely extensible.  In addition to traditional currencies, you can set, swap and display exchange rates for cryptocurrencies, virtual currencies, stock prices, toothbrush prices, whatever!  If you have the data, cash.js will make sure that the user can see it in a performant way.  Please feel free to submit a pull request with refinements and/or additions to the basket of supported currencies.
 
 ## Configurations
 Cash currently has two distributions: `cash-lite`, which houses the regex engine and templating utility; and `cash`, which is dependent on jQuery and houses the DOM manipulation library and other client-side features.  I intend to make `cash-lite` into an [npm](!https://www.npmjs.com/) module in the near future.
@@ -181,6 +183,6 @@ $.ajax({
 ```
 
 ## Contributing
-cash.js is written using ES6 syntax, transpiled to AMD modules using [babel](!https://babeljs.io/docs/using-babel/).  AMD modules are compiled into one global module via [AMDClean](https://github.com/gfranko/amdclean).  The DOM module also makes use of [Object.observe](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/observe) and [Object.assign](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), so there are some polyfill dependencies.
+cash.js is written using ES6 syntax, transpiled to AMD modules using [babel](!https://babeljs.io/docs/using-babel/).  AMD modules are compiled into one global module via [AMDClean](https://github.com/gfranko/amdclean).  The DOM module also makes use of [Object.assign](!https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign), so there is one polyfill dependency for browsers that do not yet support `Object.assign`.
 
-Want to help? Clone and `npm install --save-dev`.  I will try to keep track of current issues once the repo approaches stability.  There is a precommit hook that builds the app and runs the tests.  No need to run the build task unless you feel like it.
+Want to help? Clone and `npm install --save-dev`.  I will try to keep track of current issues once the repo approaches stability.  There is a precommit hook that builds the app, lints the source code and runs the tests.  No need to run the build task unless you feel like it.

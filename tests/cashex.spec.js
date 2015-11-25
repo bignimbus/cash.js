@@ -6,7 +6,11 @@
         var prefixed, conversationalE, magnitude, suffixed, casual, formal, conversational, symbolic;
         beforeEach(function () {
             cash = new Cash();
-            cash.setValues({"USD": 1}).lookFor("USD", "EUR");
+            cash.setValues({
+              "USD": 1,
+              "EUR": 2,
+              "GBP": 3
+            }).lookFor("USD", "EUR");
             prefixed = '$5';
             suffixed = '5 dollars';
             casual = 'five bucks';
@@ -55,6 +59,21 @@
             cash.tag(magnitude);
             expect(cache[Object.keys(cache)[0]].voice).toBe('conversational');
             delete cache[Object.keys(cache)[0]];
+        });
+
+        describe('when calling exchange', function () {
+            beforeEach(function () {
+              $('body').append('<div id="maintain-voice"></div>');
+            });
+            afterEach(function () {
+              $('#maintain-voice').remove();
+            });
+
+            it('should maintain voice when exchanging currencies', function () {
+              $('#maintain-voice').html(cash.tag(casual));
+              cash.exchange('USD').for('GBP');
+              expect($('#maintain-voice').children('.cash-node').first().text()).toBe('15 quid');
+            });
         });
     });
 })();

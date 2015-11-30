@@ -1,8 +1,10 @@
 (function () {
+    'use strict';
     window.cash = new window.Cash();
-
-    var $lookFor = $('.look-for'),
-        $exchange = $('.exchange');
+    var $input = $('#input .copy'),
+        $lookFor = $('.look-for'),
+        $exchange = $('.exchange'),
+        $submit = $('#submit');
 
     function initialize () {
         var currencies = Object.keys(cash.register.currencies);
@@ -20,6 +22,7 @@
         setValues();
 
         addEventListeners();
+        addHelperText();
     }
 
     function setValues () {
@@ -39,10 +42,9 @@
     }
 
     function addEventListeners () {
-        var $input = $('#input .copy'),
-            $output = $('#output');
-            $text = $('#output .text'),
-            $submit = $('#submit');
+        var $output = $('#output'),
+            $text = $('#output .text');
+
         $('body').on('click', '#submit', function () {
             var newHTML = $text.html() + '<p>' + cash.tag($input.val()) + '</p>';
             $text.html(newHTML);
@@ -87,6 +89,11 @@
             }, 500);
             $el.val('exchange for...');
         });
+    }
+
+    function addHelperText() {
+        $input.text('Welcome to cash. To enter text into the DOM, type it in the text area and click "submit." Each time you submit new text, it is passed into cash\'s #tag method and then added.  <br><br>All money values, such as five bucks or $1,000,000.00 will be recognized and highlighted in green.  To change the currency/currencies to be parsed, click "looking for..."  To exchange all money values on the page to another currency, slick "exchange for..."<br><br>Please note that cash.js is data agnostic, so you can pipe in your own values.  This page is using a third-party api to get up-to-date exchange rate information.');
+        $submit.click();
     }
 
     initialize();

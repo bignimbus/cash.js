@@ -11,6 +11,7 @@ body {
     background: #fff;
     height: 100%;
     margin: 0 auto;
+    max-width: 100%;
     padding: 0;
     position: relative;
     width: 600px;
@@ -43,21 +44,26 @@ body {
 }
 
 .copy {
-    display: inline-block;
+    clear: none;
+    display: block;
+    float: left;
     height: 50px;
-    width: 84%;
+    max-width: 513px;
+    width: calc(97% - 77px); 
 }
 
 #submit {
     background: lightgreen;
     border: 1px solid #000;
-    display: inline-block;
+    clear: none;
+    display: block;
+    float: right;
     font-family: monospace;
     height: 56px;
     margin: 0 auto;
     position: relative;
     vertical-align: top;
-    width: 14%;
+    width: 77px;
 }
 
 #submit:active {

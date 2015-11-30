@@ -85,6 +85,13 @@
             expect(obj[key].magnitude).toEqual([1e2, 1e9]);
         });
 
+        it('should adequately parse large values', function () {
+            cash.tag('if I had $1,000,000.00');
+            var obj = cash.register.cache,
+                key = Object.keys(obj)[0];
+            expect(obj[key].exactValue).toBe(1000000);
+        });
+
         it('should store the exact value of the money string in the "cache register"',
         function () {
             cash.tag('if I had a million dollars...');

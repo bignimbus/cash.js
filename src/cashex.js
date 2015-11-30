@@ -26,7 +26,7 @@ export default class CashEx {
             "rate": this.register.currencies[currency.code].value || 1,
             "str": this.raw,
             "prefixed": currency.index < this.raw.indexOf(nums),
-            "coefficient": parseNums(nums.replace(',', '').trim()),
+            "coefficient": parseNums(nums.replace(/\,/g, '').trim()),
             "magnitude": (this.raw.match(multipliers) || []).map((mul) => {
                 mul = mul.trim();
                 if (this.register.magnitudeAbbreviations[mul]) {

@@ -92,7 +92,7 @@
     }
 
     function addHelperText() {
-        $input.text('Welcome to cash. To enter text into the DOM, type it in the text area and click "submit." Each time you submit new text, it is passed into cash\'s #tag method and then added.  <br><br>All money values, such as five bucks or $1,000,000.00 will be recognized and highlighted in green.  To change the currency/currencies to be parsed, click "looking for..."  To exchange all money values on the page to another currency, slick "exchange for..."<br><br>Please note that cash.js is data agnostic, so you can pipe in your own values.  This page is using a third-party api to get up-to-date exchange rate information.');
+        $input.text('Welcome to cash. To enter text into the DOM, type it in the text area and click "cash.tag()".  Each time you submit new text, it is passed into cash\'s #tag method and then added.  <br><br>All money values, such as five bucks or $1,000,000.00 will be recognized and highlighted in green.  To change the currency/currencies to be parsed, click "looking for..."  To exchange all money values on the page to another currency, slick "exchange for..."<br><br>Please note that cash.js is data agnostic, so you can pipe in your own values.  This page is using a third-party api to get up-to-date exchange rate information.');
         $submit.click();
     }
 
